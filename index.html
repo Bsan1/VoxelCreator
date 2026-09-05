@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VoxelCreator — viewer</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #14161a;
+        --panel: #1c1f26;
+        --line: #2a2f39;
+        --btn: #232833;
+        --btn-hover: #2c323f;
+        --text: #e6e8ec;
+        --muted: #949bab;
+        --accent: #6ea8fe;
+        --accent-ink: #0d1526;
+      }
+      * { box-sizing: border-box; }
+      html, body { height: 100%; margin: 0; }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font: 13px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+        overflow: hidden;
+      }
+      #app { position: fixed; inset: 0; }
+      canvas { display: block; }
+
+      #panel {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        width: 268px;
+        max-height: calc(100vh - 24px);
+        overflow-y: auto;
+        background: color-mix(in srgb, var(--panel) 93%, transparent);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 14px;
+        backdrop-filter: blur(10px);
+      }
+      #panel h1 {
+        display: flex;
+        align-items: center;
+        margin: 0 0 12px;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+      #collapse {
+        margin-left: auto;
+        padding: 2px 7px;
+        font-size: 11px;
+        line-height: 1;
+      }
+      #panel.folded { width: auto; }
+      #panel.folded h1 { margin: 0; }
+      .label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin: 14px 0 6px;
+      }
+      .label:first-of-type { margin-top: 0; }
+
+      button {
+        font: inherit;
+        color: var(--text);
+        background: var(--btn);
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        padding: 6px 9px;
+        cursor: pointer;
+        transition: background 0.12s, border-color 0.12s;
+      }
+      button:hover { background: var(--btn-hover); }
+      button.on {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--accent-ink);
+        font-weight: 600;
+      }
+      button.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--accent-ink);
+        font-weight: 600;
+      }
+      button.primary:hover { background: #83b6ff; }
+      button:disabled { opacity: 0.55; cursor: progress; }
+
+      textarea, select {
+        width: 100%;
+        font: inherit;
+        color: var(--text);
+        background: #12141a;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        padding: 7px 9px;
+        resize: vertical;
+      }
+      textarea:focus, select:focus { outline: 1px solid var(--accent); border-color: var(--accent); }
+
+      #genStatus {
+        margin-top: 8px;
+        padding: 7px 9px;
+        border-radius: 7px;
+        background: #16202e;
+        border: 1px solid #24405e;
+        color: var(--muted);
+        font-size: 11px;
+        white-space: pre-wrap;
+      }
+      #genStatus.bad, #reviseStatus.bad { background: #2a1a1c; border-color: #6b2b31; color: #ffb4b8; }
+      #genStatus.good, #reviseStatus.good { background: #16241d; border-color: #24543c; color: #a6e6c3; }
+      #reviseStatus {
+        margin-top: 8px;
+        padding: 7px 9px;
+        border-radius: 7px;
+        background: #16202e;
+        border: 1px solid #24405e;
+        color: var(--muted);
+        font-size: 11px;
+        white-space: pre-wrap;
+      }
+      #reviseTarget { color: var(--accent); text-transform: none; letter-spacing: 0; }
+
+      .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+      .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+      #models { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+      #models button { text-align: left; }
+      #wide { width: 100%; margin-top: 6px; }
+
+      .row {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 1px 0;
+        color: var(--muted);
+      }
+      .row b { color: var(--text); font-weight: 500; }
+      #stats { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 10px; }
+      #parts {
+        margin-top: 10px;
+        border-top: 1px solid var(--line);
+        padding-top: 8px;
+        max-height: 26vh;
+        overflow: auto;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      #parts div { white-space: nowrap; }
+      #parts .mir { color: var(--accent); }
+      #err {
+        margin-top: 10px;
+        padding: 8px;
+        border-radius: 7px;
+        background: #2a1a1c;
+        border: 1px solid #6b2b31;
+        color: #ffb4b8;
+        font-family: ui-monospace, monospace;
+        font-size: 11px;
+        white-space: pre-wrap;
+      }
+
+      /* Floating name tags used in gallery mode. */
+      #tags { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+      .tag {
+        position: absolute;
+        transform: translate(-50%, 0);
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--panel) 85%, transparent);
+        border: 1px solid var(--line);
+        color: var(--text);
+        font-size: 11px;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+
+      #hint {
+        position: fixed;
+        bottom: 12px;
+        left: 12px;
+        color: var(--muted);
+        font-size: 11px;
+      }
+      #live {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #3ecf8e;
+        margin-right: 6px;
+        vertical-align: middle;
+      }
+      [hidden] { display: none !important; }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <div id="tags"></div>
+
+    <div id="panel">
+      <h1>
+        <span id="live"></span>VoxelCreator
+        <button id="collapse" title="Hide panel">&#9664;</button>
+      </h1>
+      <div id="body">
+
+      <div class="label">Create</div>
+      <textarea id="prompt" rows="2" placeholder="a fire mage with a long beard"></textarea>
+      <div class="grid2" style="margin-top: 6px">
+        <button id="genClaude" class="primary">Generate</button>
+        <select id="engine">
+          <option value="claude">Claude</option>
+          <option value="codex">Codex</option>
+        </select>
+      </div>
+      <div id="genStatus" hidden></div>
+
+      <div class="label">View</div>
+      <div class="grid2">
+        <button id="modeSingle" class="on">Single</button>
+        <button id="modeAll">All models</button>
+      </div>
+
+      <div class="label">Models</div>
+      <div id="models"></div>
+
+      <div class="label" id="reviseLabel">Revise <span id="reviseTarget"></span></div>
+      <textarea id="revisePrompt" rows="2" placeholder="make the crest blue, add a cape"></textarea>
+      <div class="grid2" style="margin-top: 6px">
+        <button id="reviseBtn">Apply</button>
+        <button id="undoBtn" title="Step back one revision">Undo</button>
+      </div>
+      <div id="reviseStatus" hidden></div>
+
+      <div class="label">Camera</div>
+      <div class="grid4">
+        <button data-cam="front">Front</button>
+        <button data-cam="three">3/4</button>
+        <button data-cam="side">Side</button>
+        <button data-cam="top">Top</button>
+      </div>
+
+      <button id="wide">Download .vox</button>
+
+      <div id="stats"></div>
+      <div id="parts"></div>
+      <div id="err" hidden></div>
+      </div>
+    </div>
+
+    <div id="hint">drag to orbit · scroll to zoom · right-drag to pan</div>
+    <script type="module" src="/src/viewer/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,375 @@
+{
+  "name": "princess",
+  "kind": "character",
+  "root": "body",
+  "parts": [
+    {
+      "id": "body",
+      "size": [
+        10,
+        18,
+        7
+      ],
+      "color": "#f0c299"
+    },
+    {
+      "id": "skirt",
+      "size": [
+        16,
+        12,
+        10
+      ],
+      "color": "#5b3a7a",
+      "parent": "body",
+      "anchor": {
+        "to": "bottom",
+        "alignX": "center",
+        "alignZ": "center"
+      },
+      "shape": "box"
+    },
+    {
+      "id": "tiara",
+      "size": [
+        6,
+        4,
+        3
+      ],
+      "color": "#c0c0c0",
+      "parent": "body",
+      "anchor": {
+        "to": "top",
+        "alignX": "center",
+        "alignZ": "center"
+      },
+      "offset": [
+        0,
+        -2,
+        0
+      ],
+      "shape": "box"
+    }
+  ],
+  "details": [
+    {
+      "id": "hair",
+      "part": "body",
+      "region": [
+        0,
+        15,
+        0,
+        9,
+        17,
+        6
+      ],
+      "color": "#e8c56b"
+    },
+    {
+      "id": "eyes",
+      "part": "body",
+      "region": [
+        2,
+        13,
+        6,
+        3,
+        13,
+        6
+      ],
+      "color": "#1b1b1f",
+      "mirror": true
+    },
+    {
+      "id": "mouth",
+      "part": "body",
+      "region": [
+        4,
+        11,
+        6,
+        5,
+        11,
+        6
+      ],
+      "color": "#b5495b"
+    },
+    {
+      "id": "bodice",
+      "part": "body",
+      "region": [
+        0,
+        0,
+        0,
+        9,
+        10,
+        6
+      ],
+      "color": "#5b3a7a"
+    },
+    {
+      "id": "sleeves",
+      "part": "body",
+      "region": [
+        0,
+        2,
+        0,
+        1,
+        9,
+        6
+      ],
+      "color": "#7a52a0",
+      "mirror": true
+    },
+    {
+      "id": "neckline",
+      "part": "body",
+      "region": [
+        3,
+        9,
+        6,
+        6,
+        10,
+        6
+      ],
+      "color": "#d4af37"
+    },
+    {
+      "id": "belt",
+      "part": "body",
+      "region": [
+        0,
+        1,
+        0,
+        9,
+        1,
+        6
+      ],
+      "color": "#d4af37"
+    },
+    {
+      "id": "gown_seam",
+      "part": "skirt",
+      "region": [
+        7,
+        0,
+        9,
+        8,
+        11,
+        9
+      ],
+      "color": "#7a52a0"
+    },
+    {
+      "id": "hem_trim",
+      "part": "skirt",
+      "region": [
+        0,
+        0,
+        0,
+        15,
+        1,
+        9
+      ],
+      "color": "#d4af37"
+    },
+    {
+      "id": "waist_trim",
+      "part": "skirt",
+      "region": [
+        0,
+        10,
+        0,
+        15,
+        11,
+        9
+      ],
+      "color": "#d4af37"
+    }
+  ],
+  "meta": {
+    "genSpec": {
+      "name": "princess",
+      "kind": "character",
+      "root": {
+        "id": "body",
+        "size": [
+          10,
+          18,
+          7
+        ],
+        "color": "#f0c299"
+      },
+      "parts": [
+        {
+          "id": "skirt",
+          "size": [
+            16,
+            12,
+            10
+          ],
+          "color": "#5b3a7a",
+          "parent": "body",
+          "anchor": {
+            "to": "bottom",
+            "alignX": "center",
+            "alignZ": "center"
+          },
+          "shape": "box"
+        },
+        {
+          "id": "tiara",
+          "size": [
+            6,
+            4,
+            3
+          ],
+          "color": "#d4af37",
+          "parent": "body",
+          "anchor": {
+            "to": "top",
+            "alignX": "center",
+            "alignZ": "center"
+          },
+          "offset": [
+            0,
+            -2,
+            0
+          ],
+          "shape": "box"
+        }
+      ],
+      "details": [
+        {
+          "id": "hair",
+          "part": "body",
+          "region": [
+            0,
+            15,
+            0,
+            9,
+            17,
+            6
+          ],
+          "color": "#e8c56b"
+        },
+        {
+          "id": "eyes",
+          "part": "body",
+          "region": [
+            2,
+            13,
+            6,
+            3,
+            13,
+            6
+          ],
+          "color": "#1b1b1f",
+          "mirror": true
+        },
+        {
+          "id": "mouth",
+          "part": "body",
+          "region": [
+            4,
+            11,
+            6,
+            5,
+            11,
+            6
+          ],
+          "color": "#b5495b"
+        },
+        {
+          "id": "bodice",
+          "part": "body",
+          "region": [
+            0,
+            0,
+            0,
+            9,
+            10,
+            6
+          ],
+          "color": "#5b3a7a"
+        },
+        {
+          "id": "sleeves",
+          "part": "body",
+          "region": [
+            0,
+            2,
+            0,
+            1,
+            9,
+            6
+          ],
+          "color": "#7a52a0",
+          "mirror": true
+        },
+        {
+          "id": "neckline",
+          "part": "body",
+          "region": [
+            3,
+            9,
+            6,
+            6,
+            10,
+            6
+          ],
+          "color": "#d4af37"
+        },
+        {
+          "id": "belt",
+          "part": "body",
+          "region": [
+            0,
+            1,
+            0,
+            9,
+            1,
+            6
+          ],
+          "color": "#d4af37"
+        },
+        {
+          "id": "gown_seam",
+          "part": "skirt",
+          "region": [
+            7,
+            0,
+            9,
+            8,
+            11,
+            9
+          ],
+          "color": "#7a52a0"
+        },
+        {
+          "id": "hem_trim",
+          "part": "skirt",
+          "region": [
+            0,
+            0,
+            0,
+            15,
+            1,
+            9
+          ],
+          "color": "#d4af37"
+        },
+        {
+          "id": "waist_trim",
+          "part": "skirt",
+          "region": [
+            0,
+            10,
+            0,
+            15,
+            11,
+            9
+          ],
+          "color": "#d4af37"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "voxelcreator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "viewer": "vite",
+    "mcp": "tsx src/mcp/server.ts",
+    "typecheck": "tsc --noEmit",
+    "test:mcp": "tsx src/mcp/testClient.ts",
+    "generate": "tsx src/generate/cli.ts",
+    "check": "tsx src/check.ts",
+    "test:repair": "tsx src/generate/repairTest.ts",
+    "attach": "tsx src/attachCli.ts",
+    "revise": "tsx src/reviseCli.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "three": "^0.180.0",
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.1",
+    "@types/three": "^0.180.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.5"
+  }
+}

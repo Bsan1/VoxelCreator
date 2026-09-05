@@ -1,0 +1,6 @@
+[mcp_servers.voxelcreator]
+command = "npx"
+args = [
+    "tsx",
+    "src/mcp/server.ts",
+]

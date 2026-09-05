@@ -1,0 +1,489 @@
+{
+  "name": "knight",
+  "kind": "character",
+  "root": "body",
+  "parts": [
+    {
+      "id": "body",
+      "size": [
+        12,
+        26,
+        8
+      ],
+      "color": "#8a8f99"
+    },
+    {
+      "id": "helmet_crest",
+      "size": [
+        2,
+        5,
+        8
+      ],
+      "color": "#c0c0c0",
+      "parent": "body",
+      "anchor": {
+        "to": "top",
+        "alignX": "center",
+        "alignZ": "center"
+      },
+      "offset": [
+        0,
+        -2,
+        0
+      ],
+      "shape": "box"
+    },
+    {
+      "id": "chest_emblem",
+      "size": [
+        4,
+        3,
+        1
+      ],
+      "color": "#c9a227",
+      "parent": "body",
+      "anchor": {
+        "to": "front",
+        "alignX": "center",
+        "alignY": "min"
+      },
+      "offset": [
+        0,
+        13,
+        0
+      ],
+      "shape": "box"
+    }
+  ],
+  "details": [
+    {
+      "id": "helmet_cap",
+      "part": "body",
+      "region": [
+        0,
+        20,
+        0,
+        11,
+        25,
+        7
+      ],
+      "color": "#5b606b"
+    },
+    {
+      "id": "visor_slit",
+      "part": "body",
+      "region": [
+        2,
+        21,
+        7,
+        9,
+        22,
+        7
+      ],
+      "color": "#17181c"
+    },
+    {
+      "id": "collar",
+      "part": "body",
+      "region": [
+        0,
+        18,
+        0,
+        11,
+        19,
+        7
+      ],
+      "color": "#c9a227"
+    },
+    {
+      "id": "pauldron",
+      "part": "body",
+      "region": [
+        0,
+        17,
+        0,
+        1,
+        20,
+        7
+      ],
+      "color": "#5b606b",
+      "mirror": true
+    },
+    {
+      "id": "tabard_front",
+      "part": "body",
+      "region": [
+        1,
+        9,
+        7,
+        10,
+        16,
+        7
+      ],
+      "color": "#1f3d6b"
+    },
+    {
+      "id": "tabard_back",
+      "part": "body",
+      "region": [
+        1,
+        9,
+        0,
+        10,
+        16,
+        0
+      ],
+      "color": "#1f3d6b"
+    },
+    {
+      "id": "tabard_top_trim",
+      "part": "body",
+      "region": [
+        1,
+        17,
+        0,
+        10,
+        17,
+        7
+      ],
+      "color": "#c9a227"
+    },
+    {
+      "id": "tabard_bottom_trim",
+      "part": "body",
+      "region": [
+        1,
+        8,
+        0,
+        10,
+        8,
+        7
+      ],
+      "color": "#c9a227"
+    },
+    {
+      "id": "belt",
+      "part": "body",
+      "region": [
+        0,
+        7,
+        0,
+        11,
+        7,
+        7
+      ],
+      "color": "#2a1f18"
+    },
+    {
+      "id": "belt_buckle",
+      "part": "body",
+      "region": [
+        5,
+        7,
+        7,
+        6,
+        7,
+        7
+      ],
+      "color": "#c9a227"
+    },
+    {
+      "id": "gauntlet",
+      "part": "body",
+      "region": [
+        0,
+        3,
+        0,
+        1,
+        6,
+        7
+      ],
+      "color": "#5b606b",
+      "mirror": true
+    },
+    {
+      "id": "boots",
+      "part": "body",
+      "region": [
+        0,
+        0,
+        0,
+        11,
+        2,
+        7
+      ],
+      "color": "#242427"
+    },
+    {
+      "id": "boot_trim",
+      "part": "body",
+      "region": [
+        2,
+        3,
+        0,
+        9,
+        3,
+        7
+      ],
+      "color": "#c9a227"
+    },
+    {
+      "id": "cloak_back",
+      "part": "body",
+      "region": [
+        0,
+        3,
+        0,
+        11,
+        19,
+        0
+      ],
+      "color": "#1f3d6b"
+    }
+  ],
+  "meta": {
+    "genSpec": {
+      "name": "knight",
+      "kind": "character",
+      "root": {
+        "id": "body",
+        "size": [
+          12,
+          26,
+          8
+        ],
+        "color": "#8a8f99"
+      },
+      "parts": [
+        {
+          "id": "helmet_crest",
+          "size": [
+            2,
+            5,
+            8
+          ],
+          "color": "#c0c0c0",
+          "parent": "body",
+          "anchor": {
+            "to": "top",
+            "alignX": "center",
+            "alignZ": "center"
+          },
+          "offset": [
+            0,
+            -2,
+            0
+          ],
+          "shape": "box"
+        },
+        {
+          "id": "chest_emblem",
+          "size": [
+            4,
+            3,
+            1
+          ],
+          "color": "#c9a227",
+          "parent": "body",
+          "anchor": {
+            "to": "front",
+            "alignX": "center",
+            "alignY": "min"
+          },
+          "offset": [
+            0,
+            13,
+            0
+          ],
+          "shape": "box"
+        }
+      ],
+      "details": [
+        {
+          "id": "helmet_cap",
+          "part": "body",
+          "region": [
+            0,
+            20,
+            0,
+            11,
+            25,
+            7
+          ],
+          "color": "#5b606b"
+        },
+        {
+          "id": "visor_slit",
+          "part": "body",
+          "region": [
+            2,
+            21,
+            7,
+            9,
+            22,
+            7
+          ],
+          "color": "#17181c"
+        },
+        {
+          "id": "collar",
+          "part": "body",
+          "region": [
+            0,
+            18,
+            0,
+            11,
+            19,
+            7
+          ],
+          "color": "#c9a227"
+        },
+        {
+          "id": "pauldron",
+          "part": "body",
+          "region": [
+            0,
+            17,
+            0,
+            1,
+            20,
+            7
+          ],
+          "color": "#5b606b",
+          "mirror": true
+        },
+        {
+          "id": "tabard_front",
+          "part": "body",
+          "region": [
+            1,
+            9,
+            7,
+            10,
+            16,
+            7
+          ],
+          "color": "#1f3d6b"
+        },
+        {
+          "id": "tabard_back",
+          "part": "body",
+          "region": [
+            1,
+            9,
+            0,
+            10,
+            16,
+            0
+          ],
+          "color": "#1f3d6b"
+        },
+        {
+          "id": "tabard_top_trim",
+          "part": "body",
+          "region": [
+            1,
+            17,
+            0,
+            10,
+            17,
+            7
+          ],
+          "color": "#c9a227"
+        },
+        {
+          "id": "tabard_bottom_trim",
+          "part": "body",
+          "region": [
+            1,
+            8,
+            0,
+            10,
+            8,
+            7
+          ],
+          "color": "#c9a227"
+        },
+        {
+          "id": "belt",
+          "part": "body",
+          "region": [
+            0,
+            7,
+            0,
+            11,
+            7,
+            7
+          ],
+          "color": "#2a1f18"
+        },
+        {
+          "id": "belt_buckle",
+          "part": "body",
+          "region": [
+            5,
+            7,
+            7,
+            6,
+            7,
+            7
+          ],
+          "color": "#c9a227"
+        },
+        {
+          "id": "gauntlet",
+          "part": "body",
+          "region": [
+            0,
+            3,
+            0,
+            1,
+            6,
+            7
+          ],
+          "color": "#5b606b",
+          "mirror": true
+        },
+        {
+          "id": "boots",
+          "part": "body",
+          "region": [
+            0,
+            0,
+            0,
+            11,
+            2,
+            7
+          ],
+          "color": "#242427"
+        },
+        {
+          "id": "boot_trim",
+          "part": "body",
+          "region": [
+            2,
+            3,
+            0,
+            9,
+            3,
+            7
+          ],
+          "color": "#c9a227"
+        },
+        {
+          "id": "cloak_back",
+          "part": "body",
+          "region": [
+            0,
+            3,
+            0,
+            11,
+            19,
+            0
+          ],
+          "color": "#1f3d6b"
+        }
+      ]
+    }
+  }
+}

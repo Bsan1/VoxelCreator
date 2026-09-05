@@ -1,0 +1,7 @@
+node_modules/
+out/*.vox
+out/*.png
+out/*.glb
+dist/
+.vite/
+scenes/.history/
