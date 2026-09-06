@@ -179,6 +179,15 @@
       }
       #editStatus b { color: var(--accent); }
       body.editing canvas { cursor: crosshair; }
+      body.picking canvas { cursor: copy; }
+      #exitConfirm {
+        margin-top: 8px;
+        padding: 9px;
+        border-radius: 8px;
+        background: #2a2417;
+        border: 1px solid #6b5a2b;
+      }
+      #exitConfirm p { margin: 0 0 8px; font-size: 11px; color: #f0dfa8; }
 
       button.ghost {
         width: 100%;
@@ -228,6 +237,7 @@
       }
 
       .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+      .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
       .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
       #models {
         display: grid;
@@ -370,15 +380,25 @@
       <div class="label">Edit</div>
       <button id="editToggle" style="width: 100%">Edit voxels</button>
       <div id="editPanel" hidden>
-        <div class="grid2" style="margin-top: 6px">
+        <div class="grid3" style="margin-top: 6px">
           <button id="toolAdd" class="on">Add</button>
           <button id="toolRemove">Remove</button>
+          <button id="toolPick" title="Pick a colour off the model">Pick</button>
         </div>
         <div id="swatches"></div>
         <div id="editStatus"></div>
         <div class="grid2" style="margin-top: 6px">
           <button id="editSave" class="primary">Save</button>
           <button id="editDiscard">Discard</button>
+        </div>
+      </div>
+
+      <div id="exitConfirm" hidden>
+        <p>You have unsaved voxel edits.</p>
+        <div class="grid3">
+          <button id="exitSave" class="primary">Save</button>
+          <button id="exitDiscard">Discard</button>
+          <button id="exitCancel">Back</button>
         </div>
       </div>
 

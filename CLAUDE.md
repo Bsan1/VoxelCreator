@@ -210,13 +210,21 @@ whether an edit broke the model. A scene is only saved if it builds.
 
 ## Hand editing
 
-The viewer has an **Edit voxels** panel: Add or Remove, a swatch row taken from
+The viewer has an **Edit voxels** panel: Add, Remove or Pick, a swatch row from
 the model's own palette, and Save / Discard. Opening it frees the LEFT
 mouse button for editing and moves rotation to right-drag; the wheel still
 zooms. Disabling the orbit outright made editing miserable — you could not
 reach the back of a model. Clicks go into a buffer and the preview updates
 immediately, but nothing reaches the scene until Save; Discard drops the
 buffer.
+
+**Pick** is the eyedropper: click any voxel to take its colour, and the tool
+switches straight back to Add, which is the only reason to pick one.
+
+Closing the editor or switching model with unsaved edits asks first — Save,
+Discard or Back. Without that the buffer stayed live after closing and the
+preview kept showing the edits, so they looked applied when nothing had been
+written.
 
 Edits are stored as an explicit layer on `scene.edits`, not baked into the parts:
 

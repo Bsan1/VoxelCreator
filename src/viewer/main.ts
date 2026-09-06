@@ -96,7 +96,11 @@ function meshFor(
   });
   mesh.instanceMatrix.needsUpdate = true;
   if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
-  if (record) instanceVoxels = visible.map(([x, y, z]) => [x, y, z] as [number, number, number]);
+  if (record) {
+    instanceVoxels = visible.map(([x, y, z]) => [x, y, z] as [number, number, number]);
+    const hexes = palette.colors();
+    instanceColors = visible.map(([, , , v]) => hexes[v - 1] ?? '#ffffff');
+  }
   return { mesh, drawn: visible.length };
 }
 
@@ -314,12 +318,14 @@ $('modelsLabel').addEventListener('click', () => {
 modelsEl.addEventListener('click', (e) => {
   const btn = (e.target as HTMLElement).closest('button');
   const name = btn?.dataset.model;
-  if (!name) return;
+  if (!name || name === current) return;
+  confirmThen(() => {
   current = name;
   mode = 'single';
   syncModeButtons();
   renderModelButtons();
   rerender();
+  });
 });
 
 document.querySelectorAll<HTMLButtonElement>('[data-cam]').forEach((b) => {
@@ -614,13 +620,15 @@ function answerPairs(): Array<{ q: string; a: string }> {
  */
 type Added = [number, number, number, string];
 let editing = false;
-let editTool: 'add' | 'remove' = 'add';
+let editTool: 'add' | 'remove' | 'pick' = 'add';
 let editColor = '#ffffff';
 const pendingAdded = new Map<string, Added>();
 const pendingRemoved = new Set<string>();
 
 /** Voxel coordinates for each drawn instance, so a raycast hit maps back. */
 let instanceVoxels: Array<[number, number, number]> = [];
+/** Hex of each drawn instance, so the picker can read a colour off the model. */
+let instanceColors: string[] = [];
 /** How far the build pushed content over; grid coord minus this is layout space. */
 let buildShift: [number, number, number] = [0, 0, 0];
 
@@ -718,18 +726,67 @@ swatchesEl.addEventListener('click', (e) => {
   renderSwatches();
 });
 
-editToggle.addEventListener('click', () => setEditing(!editing));
+/**
+ * Closing with a full buffer used to leave the edits showing in the preview,
+ * so they looked applied when nothing had been written. Anything that would
+ * abandon them asks first.
+ */
+const exitConfirm = $('exitConfirm');
+let afterConfirm: (() => void) | null = null;
 
-$<HTMLButtonElement>('toolAdd').addEventListener('click', () => {
-  editTool = 'add';
-  $('toolAdd').classList.add('on');
-  $('toolRemove').classList.remove('on');
+const hasPending = () => pendingAdded.size + pendingRemoved.size > 0;
+
+function confirmThen(action: () => void): void {
+  if (!hasPending()) {
+    action();
+    return;
+  }
+  afterConfirm = action;
+  exitConfirm.hidden = false;
+}
+
+function closeConfirm(): void {
+  exitConfirm.hidden = true;
+  afterConfirm = null;
+}
+
+$<HTMLButtonElement>('exitCancel').addEventListener('click', closeConfirm);
+
+$<HTMLButtonElement>('exitDiscard').addEventListener('click', () => {
+  const next = afterConfirm;
+  closeConfirm();
+  clearPending();
+  rerender(true);
+  next?.();
 });
-$<HTMLButtonElement>('toolRemove').addEventListener('click', () => {
-  editTool = 'remove';
-  $('toolRemove').classList.add('on');
-  $('toolAdd').classList.remove('on');
+
+$<HTMLButtonElement>('exitSave').addEventListener('click', async () => {
+  const next = afterConfirm;
+  closeConfirm();
+  await saveEdits();
+  next?.();
 });
+
+editToggle.addEventListener('click', () => {
+  if (editing) confirmThen(() => setEditing(false));
+  else setEditing(true);
+});
+
+function setTool(tool: typeof editTool): void {
+  editTool = tool;
+  for (const [id, t] of [
+    ['toolAdd', 'add'],
+    ['toolRemove', 'remove'],
+    ['toolPick', 'pick'],
+  ] as const) {
+    $(id).classList.toggle('on', t === tool);
+  }
+  document.body.classList.toggle('picking', tool === 'pick');
+}
+
+$<HTMLButtonElement>('toolAdd').addEventListener('click', () => setTool('add'));
+$<HTMLButtonElement>('toolRemove').addEventListener('click', () => setTool('remove'));
+$<HTMLButtonElement>('toolPick').addEventListener('click', () => setTool('pick'));
 
 function clearPending(): void {
   pendingAdded.clear();
@@ -742,7 +799,7 @@ $<HTMLButtonElement>('editDiscard').addEventListener('click', () => {
   rerender(true);
 });
 
-$<HTMLButtonElement>('editSave').addEventListener('click', async () => {
+async function saveEdits(): Promise<void> {
   const entry = loaded.get(current);
   if (!entry) return;
   // Merge with whatever the scene already carried, so saving twice accumulates.
@@ -766,7 +823,9 @@ $<HTMLButtonElement>('editSave').addEventListener('click', async () => {
   } catch (e) {
     editStatus.textContent = e instanceof Error ? e.message : String(e);
   }
-});
+}
+
+$<HTMLButtonElement>('editSave').addEventListener('click', () => void saveEdits());
 
 /** Turn a click into an edit. The face normal decides where an added voxel goes. */
 const raycaster = new THREE.Raycaster();
@@ -789,6 +848,18 @@ renderer.domElement.addEventListener('pointerdown', (e) => {
   if (hit?.instanceId === undefined) return;
   const voxel = instanceVoxels[hit.instanceId];
   if (!voxel) return;
+
+  if (editTool === 'pick') {
+    const picked = instanceColors[hit.instanceId];
+    if (picked) {
+      editColor = picked;
+      renderSwatches();
+      // Straight back to placing, which is the only reason to pick a colour.
+      setTool('add');
+      editStatus.innerHTML = `picked <b>${picked}</b> — back to Add`;
+    }
+    return;
+  }
 
   const toLayout = (p: [number, number, number]): [number, number, number] => [
     p[0] - buildShift[0],
