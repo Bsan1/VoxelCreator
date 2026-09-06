@@ -654,19 +654,33 @@ function syncEditStatus(): void {
       : `<b>${a}</b> added, <b>${r}</b> removed — unsaved`;
 }
 
+/**
+ * Editing frees the LEFT button rather than disabling the orbit outright.
+ * Losing the camera makes editing miserable — you cannot reach the back of a
+ * model — so right-drag takes over rotation and the wheel still zooms.
+ */
 function setEditing(on: boolean): void {
   editing = on;
   editPanel.hidden = !on;
   editToggle.classList.toggle('on', on);
   editToggle.textContent = on ? 'Close editor' : 'Edit voxels';
-  // Locking the orbit is what makes a click mean "edit" and not "rotate".
-  controls.enabled = !on;
+  controls.mouseButtons = on
+    ? { LEFT: null, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.ROTATE }
+    : { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN };
   document.body.classList.toggle('editing', on);
+  $('hint').textContent = on
+    ? 'left-click to edit · right-drag to orbit · scroll to zoom'
+    : 'drag to orbit · scroll to zoom · right-drag to pan';
   if (on) {
     renderSwatches();
     syncEditStatus();
   }
 }
+
+// Right-drag is the orbit while editing, so the browser menu has to stay out.
+renderer.domElement.addEventListener('contextmenu', (e) => {
+  if (editing) e.preventDefault();
+});
 
 function renderSwatches(): void {
   const entry = loaded.get(current);

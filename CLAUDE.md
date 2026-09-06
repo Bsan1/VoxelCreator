@@ -211,10 +211,12 @@ whether an edit broke the model. A scene is only saved if it builds.
 ## Hand editing
 
 The viewer has an **Edit voxels** panel: Add or Remove, a swatch row taken from
-the model's own palette, and Save / Discard. Opening it **locks the orbit** —
-with the camera live a click would mean "rotate", not "edit". Clicks go into a
-buffer and the preview updates immediately, but nothing reaches the scene until
-Save; Discard drops the buffer.
+the model's own palette, and Save / Discard. Opening it frees the LEFT
+mouse button for editing and moves rotation to right-drag; the wheel still
+zooms. Disabling the orbit outright made editing miserable — you could not
+reach the back of a model. Clicks go into a buffer and the preview updates
+immediately, but nothing reaches the scene until Save; Discard drops the
+buffer.
 
 Edits are stored as an explicit layer on `scene.edits`, not baked into the parts:
 
