@@ -216,9 +216,11 @@ with the camera live a click would mean "rotate", not "edit". Clicks go into a
 buffer and the preview updates immediately, but nothing reaches the scene until
 Save; Discard drops the buffer.
 
-Edits are stored as an explicit layer (), not baked into the parts:
+Edits are stored as an explicit layer on `scene.edits`, not baked into the parts:
 
-
+```json
+"edits": { "added": [[8, 22, 12, "#f2ede1"]], "removed": [[11, 14, 11]] }
+```
 
 The semantic scene has nowhere to put "a voxel at 8,22,12", and baking one in
 would end revision. As a layer, the parts stay generated and revisable, and
@@ -226,8 +228,9 @@ deleting the layer restores exactly what the generator made.
 
 Coordinates are in **layout space**, not final grid space. A voxel added outside
 the parts' own box grows the grid and shifts the built content to make room, so
- is what converts between the two. Storing layout coordinates
-is what keeps hand edits valid when the model is later resized.
+`BuildResult.shift` is what converts between the two — without it an add could
+only ever go inward, which rules out a nose or an ear. Storing layout
+coordinates is what keeps hand edits valid when the model is later resized.
 
 Saving snapshots the previous version, so 
 steps back through hand edits too.
