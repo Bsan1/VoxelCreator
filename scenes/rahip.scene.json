@@ -1,0 +1,419 @@
+{
+  "name": "rahip",
+  "kind": "character",
+  "root": "body",
+  "parts": [
+    {
+      "id": "body",
+      "size": [
+        12,
+        24,
+        12
+      ],
+      "color": "#8b1a2a"
+    },
+    {
+      "id": "cap",
+      "size": [
+        12,
+        4,
+        12
+      ],
+      "color": "#4a1420",
+      "parent": "body",
+      "anchor": {
+        "to": "top",
+        "alignX": "center",
+        "alignZ": "center"
+      },
+      "offset": [
+        0,
+        -1,
+        0
+      ],
+      "shape": "box"
+    }
+  ],
+  "details": [
+    {
+      "id": "head_fill",
+      "part": "body",
+      "region": [
+        0,
+        16,
+        0,
+        11,
+        22,
+        11
+      ],
+      "color": "#e0ac69"
+    },
+    {
+      "id": "collar",
+      "part": "body",
+      "region": [
+        0,
+        15,
+        0,
+        11,
+        16,
+        11
+      ],
+      "color": "#f2ede1"
+    },
+    {
+      "id": "brow",
+      "part": "body",
+      "region": [
+        2,
+        21,
+        11,
+        9,
+        21,
+        11
+      ],
+      "color": "#5c3a24"
+    },
+    {
+      "id": "eyes",
+      "part": "body",
+      "region": [
+        3,
+        19,
+        11,
+        4,
+        20,
+        11
+      ],
+      "color": "#2a1f1a",
+      "mirror": true
+    },
+    {
+      "id": "eyes_r",
+      "part": "body",
+      "region": [
+        7,
+        19,
+        11,
+        8,
+        20,
+        11
+      ],
+      "color": "#2a1f1a"
+    },
+    {
+      "id": "beard",
+      "part": "body",
+      "region": [
+        4,
+        16,
+        11,
+        7,
+        17,
+        11
+      ],
+      "color": "#d8d3c9"
+    },
+    {
+      "id": "robe_chest_v",
+      "part": "body",
+      "region": [
+        5,
+        6,
+        11,
+        6,
+        14,
+        11
+      ],
+      "color": "#c9a227"
+    },
+    {
+      "id": "robe_chest_h",
+      "part": "body",
+      "region": [
+        3,
+        12,
+        11,
+        8,
+        13,
+        11
+      ],
+      "color": "#c9a227"
+    },
+    {
+      "id": "sash_waist",
+      "part": "body",
+      "region": [
+        0,
+        8,
+        0,
+        11,
+        9,
+        11
+      ],
+      "color": "#c9a227"
+    },
+    {
+      "id": "arm_l",
+      "part": "body",
+      "region": [
+        0,
+        5,
+        11,
+        1,
+        15,
+        11
+      ],
+      "color": "#6e1420"
+    },
+    {
+      "id": "arm_r",
+      "part": "body",
+      "region": [
+        10,
+        5,
+        11,
+        11,
+        15,
+        11
+      ],
+      "color": "#6e1420"
+    },
+    {
+      "id": "hem",
+      "part": "body",
+      "region": [
+        0,
+        0,
+        0,
+        11,
+        1,
+        11
+      ],
+      "color": "#3a0e15"
+    },
+    {
+      "id": "cap_trim",
+      "part": "cap",
+      "region": [
+        0,
+        0,
+        0,
+        11,
+        0,
+        11
+      ],
+      "color": "#c9a227"
+    }
+  ],
+  "meta": {
+    "genSpec": {
+      "name": "rahip",
+      "root": {
+        "id": "body",
+        "size": [
+          12,
+          24,
+          12
+        ],
+        "color": "#8b1a2a"
+      },
+      "parts": [
+        {
+          "id": "cap",
+          "size": [
+            12,
+            4,
+            12
+          ],
+          "color": "#4a1420",
+          "parent": "body",
+          "anchor": {
+            "to": "top",
+            "alignX": "center",
+            "alignZ": "center"
+          },
+          "offset": [
+            0,
+            -1,
+            0
+          ],
+          "shape": "box"
+        }
+      ],
+      "details": [
+        {
+          "id": "head_fill",
+          "part": "body",
+          "region": [
+            0,
+            16,
+            0,
+            11,
+            22,
+            11
+          ],
+          "color": "#e0ac69"
+        },
+        {
+          "id": "collar",
+          "part": "body",
+          "region": [
+            0,
+            15,
+            0,
+            11,
+            16,
+            11
+          ],
+          "color": "#f2ede1"
+        },
+        {
+          "id": "brow",
+          "part": "body",
+          "region": [
+            2,
+            21,
+            11,
+            9,
+            21,
+            11
+          ],
+          "color": "#5c3a24"
+        },
+        {
+          "id": "eyes",
+          "part": "body",
+          "region": [
+            3,
+            19,
+            11,
+            4,
+            20,
+            11
+          ],
+          "color": "#2a1f1a",
+          "mirror": true
+        },
+        {
+          "id": "eyes_r",
+          "part": "body",
+          "region": [
+            7,
+            19,
+            11,
+            8,
+            20,
+            11
+          ],
+          "color": "#2a1f1a"
+        },
+        {
+          "id": "beard",
+          "part": "body",
+          "region": [
+            4,
+            16,
+            11,
+            7,
+            17,
+            11
+          ],
+          "color": "#d8d3c9"
+        },
+        {
+          "id": "robe_chest_v",
+          "part": "body",
+          "region": [
+            5,
+            6,
+            11,
+            6,
+            14,
+            11
+          ],
+          "color": "#c9a227"
+        },
+        {
+          "id": "robe_chest_h",
+          "part": "body",
+          "region": [
+            3,
+            12,
+            11,
+            8,
+            13,
+            11
+          ],
+          "color": "#c9a227"
+        },
+        {
+          "id": "sash_waist",
+          "part": "body",
+          "region": [
+            0,
+            8,
+            0,
+            11,
+            9,
+            11
+          ],
+          "color": "#c9a227"
+        },
+        {
+          "id": "arm_l",
+          "part": "body",
+          "region": [
+            0,
+            5,
+            11,
+            1,
+            15,
+            11
+          ],
+          "color": "#6e1420"
+        },
+        {
+          "id": "arm_r",
+          "part": "body",
+          "region": [
+            10,
+            5,
+            11,
+            11,
+            15,
+            11
+          ],
+          "color": "#6e1420"
+        },
+        {
+          "id": "hem",
+          "part": "body",
+          "region": [
+            0,
+            0,
+            0,
+            11,
+            1,
+            11
+          ],
+          "color": "#3a0e15"
+        },
+        {
+          "id": "cap_trim",
+          "part": "cap",
+          "region": [
+            0,
+            0,
+            0,
+            11,
+            0,
+            11
+          ],
+          "color": "#c9a227"
+        }
+      ],
+      "kind": "character"
+    }
+  }
+}

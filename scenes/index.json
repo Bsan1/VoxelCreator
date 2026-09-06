@@ -1,27 +1,6 @@
 {
   "scenes": [
-    "blue_robe_mage",
-    "buyucu",
-    "buyucu2",
-    "buyucu3",
-    "buyucu4",
-    "buyucu5",
-    "buyucu6",
-    "buyucu7",
-    "buyucu8",
-    "buyucu_med",
-    "fire_mage",
-    "hat_a_tall",
-    "hat_b_squat",
-    "hat_c_hood",
-    "knight",
-    "knight_armed",
-    "knight_full",
-    "old_blue_robed_wizard",
-    "princess",
-    "red_armored_guard",
-    "shield",
-    "sword"
+    "rahip"
   ],
-  "updated": 1788694228181
+  "updated": 1788695714827
 }

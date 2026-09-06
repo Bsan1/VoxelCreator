@@ -65,6 +65,15 @@
         margin: 14px 0 6px;
       }
       .label:first-of-type { margin-top: 0; }
+      .label.foldable {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        user-select: none;
+      }
+      .label.foldable:hover { color: var(--text); }
+      .label.foldable b { color: var(--accent); font-weight: 600; }
 
       button {
         font: inherit;
@@ -201,7 +210,13 @@
 
       .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
       .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-      #models { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+      #models {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        max-height: 30vh;
+        overflow-y: auto;
+      }
       #models button { text-align: left; }
       #wide { width: 100%; margin-top: 6px; }
 
@@ -319,7 +334,10 @@
         <button id="modeAll">All models</button>
       </div>
 
-      <div class="label">Models</div>
+      <div class="label foldable" id="modelsLabel">
+        <span>Models <b id="modelCount"></b></span>
+        <span id="modelsChevron">▾</span>
+      </div>
       <div id="models"></div>
 
       <div class="label" id="reviseLabel">Revise <span id="reviseTarget"></span></div>

@@ -265,11 +265,29 @@ function clearError(): void {
   liveDot.style.background = '#3ecf8e';
 }
 
+/**
+ * The list folds away. It grows without limit as models accumulate, and an
+ * always-open column of twenty names pushes everything else off the panel.
+ */
+let modelsFolded = false;
+
+function syncModelsFold(): void {
+  modelsEl.hidden = modelsFolded;
+  $('modelsChevron').textContent = modelsFolded ? '▸' : '▾';
+  $('modelCount').textContent = names.length ? String(names.length) : '';
+}
+
 function renderModelButtons(): void {
   modelsEl.innerHTML = names
     .map((n) => `<button data-model="${n}"${n === current && mode === 'single' ? ' class="on"' : ''}>${n}</button>`)
     .join('');
+  syncModelsFold();
 }
+
+$('modelsLabel').addEventListener('click', () => {
+  modelsFolded = !modelsFolded;
+  syncModelsFold();
+});
 
 
 modelsEl.addEventListener('click', (e) => {
