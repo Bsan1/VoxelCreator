@@ -220,11 +220,16 @@ function renderAll(): void {
   partsEl.hidden = true;
 }
 
-function rerender(): void {
+/**
+ * `keepCamera` matters while editing: every click rebuilds the mesh, and
+ * re-framing on each one threw the view back to the preset, so you lost your
+ * position after every single voxel.
+ */
+function rerender(keepCamera = false): void {
   try {
     if (mode === 'single') renderSingle();
     else renderAll();
-    applyCamera(camPreset);
+    if (!keepCamera) applyCamera(camPreset);
     clearError();
   } catch (e) {
     showError(e);
@@ -390,7 +395,7 @@ async function poll(): Promise<void> {
 
     const watch = mode === 'all' ? names : [current];
     const changed = await Promise.all(watch.map((n) => fetchScene(n)));
-    if (listChanged || changed.some(Boolean)) rerender();
+    if (listChanged || changed.some(Boolean)) rerender(editing);
     clearError();
   } catch (e) {
     showError(e);
@@ -619,7 +624,13 @@ let instanceVoxels: Array<[number, number, number]> = [];
 /** How far the build pushed content over; grid coord minus this is layout space. */
 let buildShift: [number, number, number] = [0, 0, 0];
 
-/** Saved edits plus the unsaved buffer, with removals cancelling additions. */
+/**
+ * Saved edits plus the unsaved buffer, where the LATEST action on a cell wins.
+ *
+ * Applying every removal last made deletion permanent: a voxel you had removed
+ * could never be put back, because the removal outlived any later add. A cell
+ * is only ever in one buffer, so the two can be applied independently.
+ */
 function mergeEdits(
   existing: VoxelScene['edits'],
   addedBuf: Map<string, Added>,
@@ -627,8 +638,12 @@ function mergeEdits(
 ): NonNullable<VoxelScene['edits']> {
   const added = new Map<string, Added>();
   for (const a of existing?.added ?? []) added.set(key3(a[0], a[1], a[2]), a);
-  for (const [k, a] of addedBuf) added.set(k, a);
   const removed = new Set((existing?.removed ?? []).map((r) => key3(r[0], r[1], r[2])));
+
+  for (const [k, a] of addedBuf) {
+    added.set(k, a);
+    removed.delete(k); // putting something back beats having deleted it
+  }
   for (const k of removedBuf) {
     removed.add(k);
     added.delete(k);
@@ -724,7 +739,7 @@ function clearPending(): void {
 
 $<HTMLButtonElement>('editDiscard').addEventListener('click', () => {
   clearPending();
-  rerender();
+  rerender(true);
 });
 
 $<HTMLButtonElement>('editSave').addEventListener('click', async () => {
@@ -798,7 +813,7 @@ renderer.domElement.addEventListener('pointerdown', (e) => {
     pendingAdded.set(k, [...target, editColor] as Added);
   }
   syncEditStatus();
-  rerender();
+  rerender(true);
 });
 
 // ---- Body dimensions ------------------------------------------------------
