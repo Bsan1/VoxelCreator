@@ -274,6 +274,21 @@ export function validate(
     add('requested_size', 'pass', 'No size was requested');
   }
 
+  // A body wider than it is deep is a slab: it reads head-on and falls apart
+  // from every other angle, and every part stacked on it inherits the error.
+  if (!isCharacter || !rootPlaced) {
+    add('square_base', 'pass', 'Footprint rules apply to characters only');
+  } else if (rootPlaced.size[0] === rootPlaced.size[2]) {
+    add('square_base', 'pass', `Footprint is square (${rootPlaced.size[0]}x${rootPlaced.size[2]})`);
+  } else {
+    add(
+      'square_base',
+      'warn',
+      `Body footprint is ${rootPlaced.size[0]} wide by ${rootPlaced.size[2]} deep. ` +
+        'Make them equal — a slab body looks wrong from any angle but the front.',
+    );
+  }
+
   // A tall narrow block reads as a monument, not a character. Voxel figures
   // need to be chunky — this is the proportion failure that no amount of
   // painted detail can rescue.

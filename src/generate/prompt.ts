@@ -49,23 +49,29 @@ brim and a real tapering cone above it. A helmet has a crest. A crown has
 points. Give headwear its true shape — a plain box on top of a plain box is
 the single most common way these models come out looking like a postbox.
 
-  Use "shape": "cone" for a pointed hat, "pyramid" for an angular one, and
-  stack pieces to shape it further:
-
-    { "id":"brim","size":[14,2,14],"color":"#2f3f66","parent":"body",
-      "anchor":{"to":"top"} },
-    { "id":"cone","size":[10,16,10],"color":"#2f3f66","shape":"cone",
-      "parent":"brim","anchor":{"to":"top"} }
+  Use "shape": "cone" for a pointed hat and "pyramid" for an angular one.
 
   A tall thin BOX on the head is not a hat. If you write a box up there, stop
-  and make it a cone, or bend it by stacking two pieces with an offset.
+  and make it a cone, or step it down in pieces.
 
-  BUT HEADWEAR IS STILL SMALL. Measure it against the body:
-    a brim is at most 4 voxels wider than the body IN TOTAL — 16 on a
-      12-wide body, never more, and 2 voxels tall
-    everything on the head together is at most 40% of the body height —
-      on a 26-tall body that is 10, so a 16-tall cone is far too much
-    a helmet or cap is 4-6 tall
+  HEADWEAR IS BUILT AS A STEPPED STACK, AND IT IS SMALL.
+
+  On a body 10 wide, 22 tall and 10 deep, a wizard hat is exactly this:
+
+    brim  [12, 1, 12]   +2 on width AND depth, 1 voxel tall
+    cone  [ 6, 6,  6]   drops to about 60% of the body width
+    tip   [ 4, 2,  4]   a short cap on top
+
+  The rules that shape comes from:
+    - A BRIM GROWS IN BOTH DIRECTIONS EQUALLY, and only by 2 each. A brim
+      wider than the body but no deeper is a plank; one twice the body depth
+      is a flying saucer. Match the body's depth plus 2.
+    - A brim is 1 or 2 voxels tall. Never more.
+    - Above the brim, step down in two or three pieces rather than running one
+      long cone. Each piece is narrower and shorter than the one below.
+    - Everything on the head together is at most 40% of the body height.
+    - A helmet or cap with no brim is 4-6 tall and the body's own width.
+
   A hat taller than the head it sits on turns the figure into a tower.
 
 THE BASE IS ONE SOLID FOOTING. Never split the bottom into two leg blocks —
@@ -123,8 +129,12 @@ in doubt, paint it instead of building it.
 
 "size" is [width, height, depth] in voxels.
 
-  Width is usually 40-55% of height. 12 wide by 26 tall is a good default.
-  10 by 34 is a monument, not a person.
+  THE FOOTPRINT IS SQUARE. Width and depth are the same number. A body 12
+  wide and 8 deep is a slab: it looks fine head-on and wrong from every other
+  angle, and everything stacked on it inherits the mistake. 12 x 26 x 12.
+
+  Width is usually 40-55% of height. 12 wide by 26 tall by 12 deep is a good
+  default. 10 by 34 is a monument, not a person.
 
   THE HEAD IS THE TOP THIRD of the body — not the top fifth. On a 26-tall
   body the head is roughly y = 17 to 26, and it is mostly FACE: skin colour,
@@ -294,6 +304,8 @@ How to fix each kind:
   offset (or move its anchor) until it overlaps its parent.
 - "thin in two or more axes": that part is a stick. Thicken it, or turn it into
   a relief panel (thin in one axis only, wide across the other two).
+- "footprint is N wide by M deep": set the root depth equal to its width.
+  Then widen the hat brim to match the new depth plus 2.
 - "too narrow and reads as a pillar": widen the root part, or shorten it.
   Keep the head at the top third and move the face features with it.
 - "only N painted regions": add more entries to "details" — trim bands at the
