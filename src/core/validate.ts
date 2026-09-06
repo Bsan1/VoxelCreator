@@ -195,8 +195,33 @@ export function validate(
   // 100%; a figure with separated limbs scores around 40%. This is the check
   // that keeps the house style — the silhouette is meant to read as one mass,
   // stepped where the concept needs it, not as an articulated puppet.
+  // The prism rule describes the BODY, not what sits on its head. A pointed
+  // hat, a crest or a plume is supposed to have its own shape, so the fill is
+  // measured only up to the top of the root mass — everything above that is
+  // headwear and is exempt.
+  const rootPlaced = build.layout.placed.find((p) => !p.part.parent && !p.part.mirrorOf);
+  const bodyTop = rootPlaced ? rootPlaced.pos[1] + rootPlaced.size[1] : grid.sy;
+  let bodyVoxels = 0;
+  let bodyMinX = Infinity, bodyMaxX = -Infinity, bodyMinZ = Infinity, bodyMaxZ = -Infinity;
+  for (let y = 0; y < Math.min(bodyTop, grid.sy); y++) {
+    for (let z = 0; z < grid.sz; z++) {
+      for (let x = 0; x < grid.sx; x++) {
+        if (grid.get(x, y, z) === 0) continue;
+        bodyVoxels++;
+        if (x < bodyMinX) bodyMinX = x;
+        if (x > bodyMaxX) bodyMaxX = x;
+        if (z < bodyMinZ) bodyMinZ = z;
+        if (z > bodyMaxZ) bodyMaxZ = z;
+      }
+    }
+  }
+  const bodyVolume =
+    bodyVoxels === 0
+      ? 0
+      : (bodyMaxX - bodyMinX + 1) * Math.min(bodyTop, grid.sy) * (bodyMaxZ - bodyMinZ + 1);
+
   const PRISM_MIN_PCT = opts.prismMinPct ?? 60;
-  const fillPct = (voxels / volume) * 100;
+  const fillPct = bodyVolume > 0 ? (bodyVoxels / bodyVolume) * 100 : (voxels / volume) * 100;
   if (!isCharacter) {
     add(
       'prism_fidelity',
@@ -211,10 +236,33 @@ export function validate(
     add(
       'prism_fidelity',
       'warn',
-      `Only fills ${fillPct.toFixed(0)}% of its bounding box (want ${PRISM_MIN_PCT}%+). ` +
-        'The silhouette has strayed too far from a rectangular prism — merge or ' +
-        'remove protruding parts rather than adding more.',
+      `The body fills only ${fillPct.toFixed(0)}% of its bounding box (want ` +
+        `${PRISM_MIN_PCT}%+). The main mass has strayed too far from a rectangular ` +
+        'prism — merge or remove parts that stick out of the torso, and paint that ' +
+        'detail on instead. Headwear is not counted, so this is about the body.',
     );
+  }
+
+  // A tall narrow block reads as a monument, not a character. Voxel figures
+  // need to be chunky — this is the proportion failure that no amount of
+  // painted detail can rescue.
+  const MIN_ASPECT = 0.45;
+  if (!isCharacter || !rootPlaced) {
+    add('proportion', 'pass', 'Proportion rules apply to characters only');
+  } else {
+    const [rw, rh] = rootPlaced.size;
+    const aspect = rw / rh;
+    if (aspect >= MIN_ASPECT) {
+      add('proportion', 'pass', `Body is ${rw}x${rh}, aspect ${aspect.toFixed(2)}`);
+    } else {
+      add(
+        'proportion',
+        'warn',
+        `Body is ${rw} wide by ${rh} tall (aspect ${aspect.toFixed(2)}, want ` +
+          `${MIN_ASPECT}+). That is too narrow and reads as a pillar — widen it to ` +
+          `at least ${Math.ceil(rh * MIN_ASPECT)} or shorten it.`,
+      );
+    }
   }
 
   // A model that narrows to a point at the bottom looks like it is balancing or

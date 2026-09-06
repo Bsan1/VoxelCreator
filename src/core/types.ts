@@ -23,7 +23,7 @@ export interface Anchor {
   alignZ?: Align;
 }
 
-export type ShapeKind = 'box' | 'sphere' | 'cylinder';
+export type ShapeKind = 'box' | 'sphere' | 'cylinder' | 'cone' | 'pyramid';
 
 export interface Part {
   id: string;

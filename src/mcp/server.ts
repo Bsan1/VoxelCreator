@@ -30,7 +30,7 @@ const anchor = z.object({
   alignY: align.optional(),
   alignZ: align.optional(),
 });
-const shape = z.enum(['box', 'sphere', 'cylinder']);
+const shape = z.enum(['box', 'sphere', 'cylinder', 'cone', 'pyramid']);
 const region = z.tuple([
   z.number().int(), z.number().int(), z.number().int(),
   z.number().int(), z.number().int(), z.number().int(),

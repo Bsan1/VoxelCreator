@@ -1,0 +1,441 @@
+{
+  "name": "buyucu6",
+  "kind": "character",
+  "root": "body",
+  "parts": [
+    {
+      "id": "body",
+      "size": [
+        12,
+        26,
+        9
+      ],
+      "color": "#2f4f8f"
+    },
+    {
+      "id": "brim",
+      "size": [
+        14,
+        2,
+        14
+      ],
+      "color": "#233a66",
+      "parent": "body",
+      "anchor": {
+        "to": "top"
+      },
+      "offset": [
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "id": "cone",
+      "size": [
+        8,
+        9,
+        8
+      ],
+      "color": "#2f4f8f",
+      "shape": "cone",
+      "parent": "brim",
+      "anchor": {
+        "to": "top"
+      }
+    }
+  ],
+  "details": [
+    {
+      "id": "head_skin",
+      "part": "body",
+      "region": [
+        1,
+        17,
+        8,
+        10,
+        25,
+        8
+      ],
+      "color": "#e8c9a0"
+    },
+    {
+      "id": "eyes",
+      "part": "body",
+      "region": [
+        3,
+        21,
+        8,
+        4,
+        22,
+        8
+      ],
+      "color": "#1b1b1f",
+      "mirror": true
+    },
+    {
+      "id": "brow",
+      "part": "body",
+      "region": [
+        2,
+        23,
+        8,
+        9,
+        23,
+        8
+      ],
+      "color": "#d9d9d9"
+    },
+    {
+      "id": "nose",
+      "part": "body",
+      "region": [
+        5,
+        19,
+        8,
+        6,
+        20,
+        8
+      ],
+      "color": "#d8b48c"
+    },
+    {
+      "id": "beard",
+      "part": "body",
+      "region": [
+        3,
+        15,
+        8,
+        8,
+        18,
+        8
+      ],
+      "color": "#f2f2f2"
+    },
+    {
+      "id": "collar",
+      "part": "body",
+      "region": [
+        0,
+        16,
+        0,
+        11,
+        16,
+        8
+      ],
+      "color": "#233a66"
+    },
+    {
+      "id": "robe_trim_chest",
+      "part": "body",
+      "region": [
+        5,
+        6,
+        8,
+        6,
+        15,
+        8
+      ],
+      "color": "#c9a227"
+    },
+    {
+      "id": "belt",
+      "part": "body",
+      "region": [
+        0,
+        8,
+        0,
+        11,
+        9,
+        8
+      ],
+      "color": "#c9a227"
+    },
+    {
+      "id": "star_emblem",
+      "part": "body",
+      "region": [
+        4,
+        11,
+        8,
+        7,
+        13,
+        8
+      ],
+      "color": "#e8d477"
+    },
+    {
+      "id": "arm_band_r",
+      "part": "body",
+      "region": [
+        0,
+        6,
+        0,
+        1,
+        14,
+        8
+      ],
+      "color": "#233a66"
+    },
+    {
+      "id": "arm_band_l",
+      "part": "body",
+      "region": [
+        10,
+        6,
+        0,
+        11,
+        14,
+        8
+      ],
+      "color": "#233a66"
+    },
+    {
+      "id": "hem",
+      "part": "body",
+      "region": [
+        0,
+        1,
+        0,
+        11,
+        2,
+        8
+      ],
+      "color": "#233a66"
+    },
+    {
+      "id": "boots",
+      "part": "body",
+      "region": [
+        0,
+        0,
+        0,
+        11,
+        0,
+        8
+      ],
+      "color": "#4a3524"
+    }
+  ],
+  "meta": {
+    "genSpec": {
+      "name": "buyucu6",
+      "root": {
+        "id": "body",
+        "size": [
+          12,
+          26,
+          9
+        ],
+        "color": "#2f4f8f"
+      },
+      "parts": [
+        {
+          "id": "brim",
+          "size": [
+            14,
+            2,
+            14
+          ],
+          "color": "#233a66",
+          "parent": "body",
+          "anchor": {
+            "to": "top"
+          },
+          "offset": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "id": "cone",
+          "size": [
+            8,
+            9,
+            8
+          ],
+          "color": "#2f4f8f",
+          "shape": "cone",
+          "parent": "brim",
+          "anchor": {
+            "to": "top"
+          }
+        }
+      ],
+      "details": [
+        {
+          "id": "head_skin",
+          "part": "body",
+          "region": [
+            1,
+            17,
+            8,
+            10,
+            25,
+            8
+          ],
+          "color": "#e8c9a0"
+        },
+        {
+          "id": "eyes",
+          "part": "body",
+          "region": [
+            3,
+            21,
+            8,
+            4,
+            22,
+            8
+          ],
+          "color": "#1b1b1f",
+          "mirror": true
+        },
+        {
+          "id": "brow",
+          "part": "body",
+          "region": [
+            2,
+            23,
+            8,
+            9,
+            23,
+            8
+          ],
+          "color": "#d9d9d9"
+        },
+        {
+          "id": "nose",
+          "part": "body",
+          "region": [
+            5,
+            19,
+            8,
+            6,
+            20,
+            8
+          ],
+          "color": "#d8b48c"
+        },
+        {
+          "id": "beard",
+          "part": "body",
+          "region": [
+            3,
+            15,
+            8,
+            8,
+            18,
+            8
+          ],
+          "color": "#f2f2f2"
+        },
+        {
+          "id": "collar",
+          "part": "body",
+          "region": [
+            0,
+            16,
+            0,
+            11,
+            16,
+            8
+          ],
+          "color": "#233a66"
+        },
+        {
+          "id": "robe_trim_chest",
+          "part": "body",
+          "region": [
+            5,
+            6,
+            8,
+            6,
+            15,
+            8
+          ],
+          "color": "#c9a227"
+        },
+        {
+          "id": "belt",
+          "part": "body",
+          "region": [
+            0,
+            8,
+            0,
+            11,
+            9,
+            8
+          ],
+          "color": "#c9a227"
+        },
+        {
+          "id": "star_emblem",
+          "part": "body",
+          "region": [
+            4,
+            11,
+            8,
+            7,
+            13,
+            8
+          ],
+          "color": "#e8d477"
+        },
+        {
+          "id": "arm_band_r",
+          "part": "body",
+          "region": [
+            0,
+            6,
+            0,
+            1,
+            14,
+            8
+          ],
+          "color": "#233a66"
+        },
+        {
+          "id": "arm_band_l",
+          "part": "body",
+          "region": [
+            10,
+            6,
+            0,
+            11,
+            14,
+            8
+          ],
+          "color": "#233a66"
+        },
+        {
+          "id": "hem",
+          "part": "body",
+          "region": [
+            0,
+            1,
+            0,
+            11,
+            2,
+            8
+          ],
+          "color": "#233a66"
+        },
+        {
+          "id": "boots",
+          "part": "body",
+          "region": [
+            0,
+            0,
+            0,
+            11,
+            0,
+            8
+          ],
+          "color": "#4a3524"
+        }
+      ],
+      "kind": "character"
+    }
+  }
+}

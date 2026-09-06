@@ -22,12 +22,35 @@ snake_case regardless — they are identifiers, not display text.
 
 === THE HOUSE STYLE ===
 
-Every model is essentially ONE RECTANGULAR PRISM.
+THE BODY is essentially ONE RECTANGULAR PRISM.
 
-Start from a single box. That box is the model. A character is a standing
-block: the head is the top of it, the body is the rest of it, and the face and
-clothing are PAINTED ON that block. There is no separate head, no separate
-arms, no separate legs.
+Start from a single box. That box is the character: the head is the top of it,
+the body is the rest of it, and the face and clothing are PAINTED ON it. There
+is no separate head, no separate arms, no separate legs.
+
+WHAT SITS ON THE HEAD IS NOT BOUND BY THAT RULE. A wizard's hat is a hat: a
+brim and a real tapering cone above it. A helmet has a crest. A crown has
+points. Give headwear its true shape — a plain box on top of a plain box is
+the single most common way these models come out looking like a postbox.
+
+  Use "shape": "cone" for a pointed hat, "pyramid" for an angular one, and
+  stack pieces to shape it further:
+
+    { "id":"brim","size":[14,2,14],"color":"#2f3f66","parent":"body",
+      "anchor":{"to":"top"} },
+    { "id":"cone","size":[10,16,10],"color":"#2f3f66","shape":"cone",
+      "parent":"brim","anchor":{"to":"top"} }
+
+  A tall thin BOX on the head is not a hat. If you write a box up there, stop
+  and make it a cone, or bend it by stacking two pieces with an offset.
+
+  BUT HEADWEAR IS STILL SMALL. Measure it against the body:
+    a brim is at most 4 voxels wider than the body IN TOTAL — 16 on a
+      12-wide body, never more, and 2 voxels tall
+    everything on the head together is at most 40% of the body height —
+      on a 26-tall body that is 10, so a 16-tall cone is far too much
+    a helmet or cap is 4-6 tall
+  A hat taller than the head it sits on turns the figure into a tower.
 
 THE BASE IS ONE SOLID FOOTING. Never split the bottom into two leg blocks —
 that turns the figure into a puppet, which this style does not do. Boots are a
@@ -42,8 +65,24 @@ The ways you may leave the plain box, within the silhouette budget above:
    flares (narrow above, wide below), broad shoulders over a narrower waist.
    If the request does not imply a shape like that, do not step it.
 
-2. SMALL PROTRUSIONS — a hat brim, a nose, a snout, an item in the hand.
-   One or two, for named features. Never as decoration.
+   A FLARE IS NOT A PLINTH. A wide slab at the bottom, in a bright colour,
+   ringed with bands, is a pedestal the figure stands on — not a garment.
+
+     at most 4 voxels wider than the body IN TOTAL, so 16 on a 12-wide body
+     at most a quarter of the body height
+     the SAME colour family as the robe above it, never a metal
+     no horizontal bands across it
+
+   Most characters do not need one at all. Unless the request says gown, robe
+   or dress, leave the body straight and paint the hem.
+
+   BIG MASSES TAKE THE GARMENT COLOUR. Gold, silver and brass are for thin
+   trim lines only — a few voxels tall. A large gold shape reads as masonry
+   or a plinth, never as cloth or armour.
+
+2. SMALL PROTRUSIONS — a nose, a snout, an ear, a shoulder pad.
+   One or two, for named features. Never as decoration. (Headwear is not
+   counted here — it is free to be its own shape, see above.)
 
 3. RELIEF PANELS — a part 1-2 voxels deep laid flat on a face of the body, for
    raised detail: a belt, a collar, a chest plate, a buckle. Use these when the
@@ -66,8 +105,22 @@ in doubt, paint it instead of building it.
 
 { "id": "body", "size": [10, 26, 8], "color": "#6b4a2f" }
 
-"size" is [width, height, depth] in voxels. A character is usually 8-14 wide,
-20-34 tall, 6-10 deep. Keep it chunky; thin models read badly as voxels.
+"size" is [width, height, depth] in voxels.
+
+PROPORTION IS THE WHOLE GAME. Get this wrong and nothing else saves the model.
+
+  Width must be at least 45% of height. 12 wide by 26 tall is right.
+  10 by 26 is already too narrow, and 10 by 34 is a monument, not a person.
+  A character is usually 10-16 wide, 22-30 tall, 8-12 deep.
+
+  THE HEAD IS THE TOP THIRD of the body — not the top fifth. On a 26-tall
+  body the head is roughly y = 17 to 26, and it is mostly FACE: skin colour,
+  with big readable eyes in it. Realistic human proportion looks wrong here.
+  These read like toys, and toys have big heads.
+
+  If a hat, hair or helmet eats the head, the figure has no face left. Cover
+  at most the top third OF THE HEAD region with it — so on a 26-tall body a
+  hat brim sits around y = 23-24, never lower.
 
 --- parts ---
 
@@ -85,7 +138,8 @@ in doubt, paint it instead of building it.
           top, bottom, left, right, front, back, center
           optional alignX / alignY / alignZ: "min" | "center" | "max"
   offset  [x,y,z] nudge in voxels after anchoring; negative Y sinks it in
-  shape   "box" (default), "sphere" or "cylinder" — box almost always
+  shape   "box" (default), "cone", "pyramid", "cylinder", "sphere".
+          The body is a box. Headwear is where cone and pyramid belong.
 
 For a symmetric pair, define the right one and mirror the left:
 
@@ -103,12 +157,28 @@ from [0,0,0] to size-1. Painting only recolors voxels that already exist, so it
 can never create floating blocks. "mirror": true also paints the left/right
 mirrored copy — use it for eyes, cheeks, hands, boots.
 
-THE FACE MUST STAY READABLE. This is the single most common failure: a hood,
-beard, helmet or hair painted across the whole upper block leaves a blank slab
-with no face, and the figure reads as a sack rather than a character.
+THE HEAD MUST READ AS A HEAD. This is what separates a character from a
+painted post, and it is the most common thing to get wrong.
 
-  - Decide the face band first — roughly the top fifth of the body, on the
-    front face — and paint eyes there before anything else.
+The body is one block, so nothing tells the eye where the head is unless you
+paint it. THE ENTIRE HEAD THIRD MUST BE A DIFFERENT COLOUR FROM THE BODY —
+fill it with skin, or with the hood, hair or helmet colour, across the full
+width and around the sides. Then put the face features inside that patch.
+
+  Wrong: a blue body with two dark dots near the top. That is a postbox.
+  Right: a blue body whose top third is a solid band of skin or helmet
+         colour, with eyes, brow and mouth inside it, and a collar line
+         where that band meets the body.
+
+A collar or neckline at the boundary, one or two voxels tall in a contrasting
+colour, is what makes the join read. Do not skip it.
+
+THE FACE MUST STAY READABLE. A hood, beard, helmet or hair painted across the
+whole upper block leaves a blank slab with no face, and the figure reads as a
+sack rather than a character.
+
+  - Decide the head third first — the top third of the body, on the front
+    face — and paint the eyes in it before anything else.
   - A hood or helmet frames the face: paint it around the face band, not over
     it. Leave the eyes exposed.
   - After every other detail, the eyes must still be visible from the front.
@@ -124,17 +194,23 @@ face colour on each side of it.
   no face. "Long white beard" still means about 5 voxels tall, not 12. Length
   in the request describes the character, not the voxel count.
 
-THIS IS WHERE YOU DO THE WORK. On a 10x26x8 body, paint:
-  the face or visor slot high on the front, around y = 19-23 — a single
-    horizontal band of a contrasting colour reads as a visor; two small squares
-    read as eyes
-  hair or a helmet as a cap over the top and upper sides
-  a collar or gorget as a band just below the head area
+THIS IS WHERE YOU DO THE WORK. On a 12x26x9 body, paint:
+  THE FACE FIRST, in the head third (y 17-26) on the front face (z = 8):
+    eyes — two blocks, each 2 wide and 2 tall, around y = 21-22, with 2 or 3
+      voxels of face between them. Small single-voxel eyes disappear.
+    brow or visor — a darker band just above the eyes reads as a helmet slot
+    mouth or beard — small, below the eyes, around y = 18-19
+    leave the rest of the head band in face colour so the features register
+  hair or a helmet as a cap over the very top and upper sides only
+  a collar as a band where the head meets the body, around y = 16
   the tunic, dress or breastplate as a broad band across the middle
   an emblem centred on the chest — a cross, a crest, a stripe
-  trim as thin horizontal bands at the collar, waist and hem, in a metal colour
+  trim as thin horizontal bands at the collar and waist, in a metal colour
   arms as two vertical bands down the left and right front edges
   boots as a band across the bottom
+
+Do not ring the figure with evenly spaced horizontal stripes. Three or four
+bands at equal intervals down a tall block is what a postbox looks like.
 
 Layered trim is what makes these read as designed rather than plain: a dark
 base, a broad mid-tone garment, then thin bright trim lines picking out the
@@ -205,6 +281,8 @@ How to fix each kind:
   offset (or move its anchor) until it overlaps its parent.
 - "thin in two or more axes": that part is a stick. Thicken it, or turn it into
   a relief panel (thin in one axis only, wide across the other two).
+- "too narrow and reads as a pillar": widen the root part, or shorten it.
+  Keep the head at the top third and move the face features with it.
 - "only N painted regions": add more entries to "details" — trim bands at the
   collar, waist and hem, an emblem on the chest, seams, cuffs, a contrasting
   band for the footwear. Do NOT add parts to satisfy this.
