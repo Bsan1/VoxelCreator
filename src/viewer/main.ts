@@ -404,7 +404,12 @@ async function runGeneration(): Promise<void> {
     const res = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ prompt, engine: engineEl.value, answers: answerPairs() }),
+      body: JSON.stringify({
+        prompt,
+        engine: engineEl.value,
+        answers: answerPairs(),
+        size: requestedSize(),
+      }),
     });
     const data = (await res.json()) as {
       name?: string; elapsedMs?: number; parts?: string[]; warnings?: string[];
@@ -559,6 +564,29 @@ function answerPairs(): Array<{ q: string; a: string }> {
     .filter((q) => answers.has(q.id))
     .map((q) => ({ q: q.q, a: answers.get(q.id)! }));
 }
+
+// ---- Body dimensions ------------------------------------------------------
+
+/**
+ * Exact voxel dimensions for the body. Left empty the model picks, and the
+ * proportion guard applies; filled in, the artist's numbers win outright and
+ * that guard steps aside.
+ */
+const sizeW = $<HTMLInputElement>('sizeW');
+const sizeH = $<HTMLInputElement>('sizeH');
+const sizeD = $<HTMLInputElement>('sizeD');
+
+function requestedSize(): [number, number, number] | undefined {
+  const n = [sizeW, sizeH, sizeD].map((el) => Number(el.value));
+  if (n.some((v) => !Number.isFinite(v) || v < 4)) return undefined;
+  return n as [number, number, number];
+}
+
+$<HTMLButtonElement>('sizeClear').addEventListener('click', () => {
+  sizeW.value = '';
+  sizeH.value = '';
+  sizeD.value = '';
+});
 
 askBtn.addEventListener('click', () => void runQuestions());
 buildBtn.addEventListener('click', () => void runGeneration());

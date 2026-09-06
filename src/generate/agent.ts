@@ -186,7 +186,12 @@ export const runCliForTest = runCli;
  */
 function evaluate(
   raw: string,
-  opts: { name?: string; kind?: SceneKind; base?: VoxelScene } = {},
+  opts: {
+    name?: string;
+    kind?: SceneKind;
+    base?: VoxelScene;
+    requestedSize?: [number, number, number];
+  } = {},
 ): Attempt {
   const json = extractJsonObject(raw);
   let scene: VoxelScene;
@@ -211,6 +216,7 @@ function evaluate(
     // A flat floor rather than a dial: every character gets a baseline amount
     // of painted detail, because the failure mode is always too little.
     detailMin: scene.kind === 'item' ? undefined : 10,
+    requestedSize: opts.requestedSize,
   }); // throws before anything is saved
   const problems = report.checks
     .filter((c) => c.severity !== 'pass')
@@ -243,6 +249,8 @@ export async function generate(
     effort?: string;
     /** Answers to the clarifying questions, folded into the prompt. */
     answers?: string;
+    /** Exact body size in voxels: [width, height, depth]. */
+    size?: [number, number, number];
   } = {},
 ): Promise<GenerateResult> {
   const engine = opts.engine ?? 'claude';
@@ -257,7 +265,7 @@ export async function generate(
   const initial =
     kind === 'item'
       ? buildItemPrompt(userPrompt, characterBlock)
-      : buildPrompt(userPrompt, opts.answers);
+      : buildPrompt(userPrompt, opts.answers, opts.size);
   const run = await runWithRepair(userPrompt, initial, {
     engine,
     timeoutMs,
@@ -270,6 +278,7 @@ export async function generate(
     // parts and passed the same checks. Left to inherit a global xhigh, a
     // single character costs about a dollar in reasoning nobody reads.
     effort: opts.effort ?? 'medium',
+    requestedSize: opts.size,
   });
 
   saveScene(run.best.scene);
@@ -397,11 +406,12 @@ async function runWithRepair(
     effort?: string;
     /** Scene an edit list applies to, when revising. */
     base?: VoxelScene;
+    requestedSize?: [number, number, number];
     /** Original instruction, so a revision repair can restate the goal. */
     instruction?: string;
   },
 ): Promise<{ best: Attempt; attempts: number; firstProblems: string[]; usage: CallUsage }> {
-  const { engine, timeoutMs, maxRepairs, name, kind, model, effort, base, instruction } = opts;
+  const { engine, timeoutMs, maxRepairs, name, kind, model, effort, base, instruction, requestedSize } = opts;
 
   // A revision repairs by producing a better edit list, not by restating the
   // whole model — asking for a full spec here invites it to change things
@@ -431,7 +441,7 @@ async function runWithRepair(
 
     let candidate: Attempt;
     try {
-      candidate = evaluate(raw, { name, kind, base });
+      candidate = evaluate(raw, { name, kind, base, requestedSize });
     } catch (e) {
       // Unparsable or unbuildable. Retry with the error as the defect list;
       // if there are no retries left, surface it rather than saving nothing.

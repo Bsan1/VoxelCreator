@@ -7,7 +7,23 @@
  * earned by something in the request. Left unchecked a model will decorate,
  * which is what produces a figure covered in pointless bumps.
  */
-export function buildPrompt(userPrompt: string, answers?: string): string {
+export function buildPrompt(
+  userPrompt: string,
+  answers?: string,
+  size?: [number, number, number],
+): string {
+  const sizeBlock = size
+    ? `
+=== THE BODY SIZE IS FIXED ===
+
+The root part must be exactly [${size[0]}, ${size[1]}, ${size[2]}] — width,
+height, depth in voxels. The artist chose these. Do not adjust them, do not
+round them, do not talk yourself into a different shape.
+
+Everything else scales to fit: the head is the top third of ${size[1]}, so
+roughly y = ${Math.round((size[1] * 2) / 3)} to ${size[1]}, and headwear is at
+most ${Math.round(size[1] * 0.4)} tall and ${size[0] + 4} wide.
+` : '';
   return `You are a voxel artist working in one specific house style. Turn the request below into ONE JSON object describing a voxel model.
 
 Output ONLY the JSON object. No prose, no explanation, no code fence.
@@ -15,7 +31,7 @@ Output ONLY the JSON object. No prose, no explanation, no code fence.
 REQUEST: ${userPrompt}
 ${answers ? `
 ${answers}
-` : ''}
+` : ''}${sizeBlock}
 The request may be written in any language. Read it in whatever language it is
 written, and answer with JSON either way. Keep "name" and every id in English
 snake_case regardless — they are identifiers, not display text.
@@ -107,11 +123,8 @@ in doubt, paint it instead of building it.
 
 "size" is [width, height, depth] in voxels.
 
-PROPORTION IS THE WHOLE GAME. Get this wrong and nothing else saves the model.
-
-  Width must be at least 45% of height. 12 wide by 26 tall is right.
-  10 by 26 is already too narrow, and 10 by 34 is a monument, not a person.
-  A character is usually 10-16 wide, 22-30 tall, 8-12 deep.
+  Width is usually 40-55% of height. 12 wide by 26 tall is a good default.
+  10 by 34 is a monument, not a person.
 
   THE HEAD IS THE TOP THIRD of the body — not the top fifth. On a 26-tall
   body the head is roughly y = 17 to 26, and it is mostly FACE: skin colour,

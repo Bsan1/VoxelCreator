@@ -33,18 +33,20 @@ function generateApi(): Plugin {
         };
 
         try {
-          const { prompt, engine, answers } = JSON.parse(
+          const { prompt, engine, answers, size } = JSON.parse(
             Buffer.concat(chunks).toString() || '{}',
           ) as {
             prompt?: string;
             engine?: Engine;
             answers?: Array<{ q: string; a: string }>;
+            size?: [number, number, number];
           };
           if (!prompt?.trim()) return send(400, { error: 'prompt is required' });
 
           const result = await generate(prompt, {
             engine: engine ?? 'claude',
             answers: answers?.length ? formatAnswers(answers) : undefined,
+            size,
           });
           const build = buildScene(result.scene);
           writeFileSync(

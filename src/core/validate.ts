@@ -91,6 +91,8 @@ export function validate(
     /** Painted-region count and the floor the detail dial asks for. */
     detailCount?: number;
     detailMin?: number;
+    /** Exact body size the artist asked for, if any. */
+    requestedSize?: [number, number, number];
   } = {},
 ): ValidationReport {
   const { grid, palette } = build;
@@ -201,22 +203,32 @@ export function validate(
   // headwear and is exempt.
   const rootPlaced = build.layout.placed.find((p) => !p.part.parent && !p.part.mirrorOf);
   const bodyTop = rootPlaced ? rootPlaced.pos[1] + rootPlaced.size[1] : grid.sy;
-  let bodyVoxels = 0;
+
+  // The box is defined by the BODY PARTS, not by whatever voxels happen to sit
+  // below the head line. A hat brim sunk a voxel into the head would otherwise
+  // widen the body's bounding box and make a solid torso score 40%.
   let bodyMinX = Infinity, bodyMaxX = -Infinity, bodyMinZ = Infinity, bodyMaxZ = -Infinity;
-  for (let y = 0; y < Math.min(bodyTop, grid.sy); y++) {
-    for (let z = 0; z < grid.sz; z++) {
-      for (let x = 0; x < grid.sx; x++) {
-        if (grid.get(x, y, z) === 0) continue;
-        bodyVoxels++;
-        if (x < bodyMinX) bodyMinX = x;
-        if (x > bodyMaxX) bodyMaxX = x;
-        if (z < bodyMinZ) bodyMinZ = z;
-        if (z > bodyMaxZ) bodyMaxZ = z;
+  for (const p of build.layout.placed) {
+    const centreY = p.pos[1] + p.size[1] / 2;
+    if (centreY >= bodyTop) continue; // headwear
+    bodyMinX = Math.min(bodyMinX, p.pos[0]);
+    bodyMaxX = Math.max(bodyMaxX, p.pos[0] + p.size[0] - 1);
+    bodyMinZ = Math.min(bodyMinZ, p.pos[2]);
+    bodyMaxZ = Math.max(bodyMaxZ, p.pos[2] + p.size[2] - 1);
+  }
+
+  let bodyVoxels = 0;
+  if (bodyMinX !== Infinity) {
+    for (let y = 0; y < Math.min(bodyTop, grid.sy); y++) {
+      for (let z = bodyMinZ; z <= bodyMaxZ; z++) {
+        for (let x = bodyMinX; x <= bodyMaxX; x++) {
+          if (grid.get(x, y, z) !== 0) bodyVoxels++;
+        }
       }
     }
   }
   const bodyVolume =
-    bodyVoxels === 0
+    bodyMinX === Infinity
       ? 0
       : (bodyMaxX - bodyMinX + 1) * Math.min(bodyTop, grid.sy) * (bodyMaxZ - bodyMinZ + 1);
 
@@ -243,12 +255,31 @@ export function validate(
     );
   }
 
+  // When the artist gave exact dimensions, those win: the proportion guard is
+  // a fallback for when nobody said, and it must not argue with a stated size.
+  if (opts.requestedSize && rootPlaced) {
+    const want = opts.requestedSize;
+    const got = rootPlaced.size;
+    if (want[0] === got[0] && want[1] === got[1] && want[2] === got[2]) {
+      add('requested_size', 'pass', `Body is the requested ${want.join('x')}`);
+    } else {
+      add(
+        'requested_size',
+        'warn',
+        `The body is ${got.join('x')} but ${want.join('x')} was asked for. ` +
+          'Set the root part to exactly that size and move the painted regions to match.',
+      );
+    }
+  } else {
+    add('requested_size', 'pass', 'No size was requested');
+  }
+
   // A tall narrow block reads as a monument, not a character. Voxel figures
   // need to be chunky — this is the proportion failure that no amount of
   // painted detail can rescue.
-  const MIN_ASPECT = 0.45;
-  if (!isCharacter || !rootPlaced) {
-    add('proportion', 'pass', 'Proportion rules apply to characters only');
+  const MIN_ASPECT = 0.4;
+  if (!isCharacter || !rootPlaced || opts.requestedSize) {
+    add('proportion', 'pass', 'Proportion is the artist\'s call here');
   } else {
     const [rw, rh] = rootPlaced.size;
     const aspect = rw / rh;

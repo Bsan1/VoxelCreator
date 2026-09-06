@@ -16,10 +16,22 @@ const flagValue = (flag: string): { value?: string; idx: number } => {
 const nameFlag = flagValue('--name');
 const forFlag = flagValue('--for');
 const effortFlag = flagValue('--effort');
+const sizeFlag = flagValue('--size');
 const isItem = argv.includes('--item') || forFlag.idx !== -1;
 const consumed = new Set(
-  [nameFlag.idx + 1, forFlag.idx + 1, effortFlag.idx + 1].filter((i) => i > 0),
+  [nameFlag.idx + 1, forFlag.idx + 1, effortFlag.idx + 1, sizeFlag.idx + 1].filter((i) => i > 0),
 );
+/** "12x26x9" -> [12, 26, 9] */
+const parseSize = (v?: string): [number, number, number] | undefined => {
+  if (!v) return undefined;
+  const n = v.toLowerCase().split(/[x,*]/).map(Number);
+  if (n.length !== 3 || n.some((d) => !Number.isFinite(d) || d < 1 || d > 200)) {
+    console.error(`--size must look like 12x26x9 (got "\")`);
+    process.exit(1);
+  }
+  return n as [number, number, number];
+};
+
 const prompt = argv
   .filter((a, i) => !a.startsWith('--') && !consumed.has(i))
   .join(' ')
@@ -30,6 +42,7 @@ if (!prompt) {
     'Usage:\n' +
       '  npm run generate -- "a knight in plate armour" [--codex] [--name knight]\n' +
       '  npm run generate -- "a kite shield" --for knight --name shield\n' +
+      '  npm run generate -- "bir kral" --size 14x24x10   (width x height x depth)\n' +
       '\n--for <character> generates equipment matched to that character\'s ' +
       'palette and scale. --item generates equipment with no reference.',
   );
@@ -46,6 +59,7 @@ const result = await generate(prompt, {
   item: isItem,
   forCharacter: forFlag.value,
   effort: effortFlag.value,
+  size: parseSize(sizeFlag.value),
 });
 
 const build = buildScene(result.scene);

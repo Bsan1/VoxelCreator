@@ -128,6 +128,30 @@
       }
       #reviseTarget { color: var(--accent); text-transform: none; letter-spacing: 0; }
 
+      /* Body dimensions in voxels. Empty means the model picks. */
+      .sizeRow {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-top: 8px;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .sizeRow input {
+        width: 100%;
+        min-width: 0;
+        padding: 5px 4px;
+        font: inherit;
+        font-size: 11px;
+        text-align: center;
+        color: var(--text);
+        background: #12141a;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+      }
+      .sizeRow input:focus { outline: 1px solid var(--accent); border-color: var(--accent); }
+      #sizeClear { padding: 4px 7px; font-size: 10px; }
+
       button.ghost {
         width: 100%;
         margin-top: 6px;
@@ -261,6 +285,16 @@
 
       <div class="label">Create</div>
       <textarea id="prompt" rows="2" placeholder="a fire mage with a long beard"></textarea>
+      <div class="sizeRow">
+        <span>Body</span>
+        <input type="number" id="sizeW" min="4" max="200" placeholder="W" />
+        <span>×</span>
+        <input type="number" id="sizeH" min="4" max="200" placeholder="H" />
+        <span>×</span>
+        <input type="number" id="sizeD" min="4" max="200" placeholder="D" />
+        <button id="sizeClear" title="Let the model decide">auto</button>
+      </div>
+
       <div class="grid2" style="margin-top: 6px">
         <button id="askBtn" class="primary">Discuss →</button>
         <select id="engine">
