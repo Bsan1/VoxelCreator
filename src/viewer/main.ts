@@ -697,6 +697,9 @@ function setEditing(on: boolean): void {
   if (on) {
     renderSwatches();
     syncEditStatus();
+    // The panel is taller than the window, so opening the editor has to bring
+    // it into view — otherwise the tools and Save sit below the fold.
+    requestAnimationFrame(() => editPanel.scrollIntoView({ block: 'nearest' }));
   }
 }
 

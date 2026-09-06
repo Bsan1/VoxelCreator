@@ -180,6 +180,15 @@
       #editStatus b { color: var(--accent); }
       body.editing canvas { cursor: crosshair; }
       body.picking canvas { cursor: copy; }
+      /* Save sat at the very bottom of a panel taller than the window, so it
+         scrolled out of reach and looked broken. Pin it while editing. */
+      .stickyActions {
+        position: sticky;
+        bottom: -14px;
+        margin-top: 8px;
+        padding: 8px 0 6px;
+        background: linear-gradient(to bottom, transparent, var(--panel) 30%);
+      }
       #exitConfirm {
         margin-top: 8px;
         padding: 9px;
@@ -387,7 +396,7 @@
         </div>
         <div id="swatches"></div>
         <div id="editStatus"></div>
-        <div class="grid2" style="margin-top: 6px">
+        <div class="grid2 stickyActions">
           <button id="editSave" class="primary">Save</button>
           <button id="editDiscard">Discard</button>
         </div>
