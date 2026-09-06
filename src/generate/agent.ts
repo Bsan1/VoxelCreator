@@ -86,12 +86,13 @@ export interface CliResult {
   usage?: CallUsage;
 }
 
-function commandFor(engine: Engine, model?: string): { cmd: string; args: string[] } {
+function commandFor(engine: Engine, model?: string, effort?: string): { cmd: string; args: string[] } {
   // The prompt goes in on stdin: it is far longer than a Windows command line
   // will take as an argument.
   if (engine === 'claude') {
     const args = ['-p', '--output-format', 'json', '--disallowed-tools', TOOLS_OFF];
     if (model) args.push('--model', model);
+    if (effort) args.push('--effort', effort);
     return { cmd: isWindows ? 'claude.exe' : 'claude', args };
   }
   const args = ['exec', '-'];
@@ -137,8 +138,9 @@ function runCli(
   prompt: string,
   timeoutMs: number,
   model?: string,
+  effort?: string,
 ): Promise<CliResult> {
-  const { cmd, args } = commandFor(engine, model);
+  const { cmd, args } = commandFor(engine, model, effort);
   return new Promise((resolve, reject) => {
     // Only .cmd shims need a shell; spawning the .exe directly avoids passing
     // unescaped arguments through cmd.exe.
@@ -230,6 +232,8 @@ export async function generate(
     forCharacter?: string;
     /** Override the CLI model, e.g. "haiku" for cheap edits. */
     model?: string;
+    /** Reasoning effort. Left unset, the CLI uses your configured default. */
+    effort?: string;
   } = {},
 ): Promise<GenerateResult> {
   const engine = opts.engine ?? 'claude';
@@ -250,6 +254,7 @@ export async function generate(
     name: opts.name,
     kind,
     model: opts.model,
+    effort: opts.effort,
   });
 
   saveScene(run.best.scene);
@@ -284,6 +289,7 @@ export async function revise(
     repairs?: number;
     saveAs?: string;
     model?: string;
+    effort?: string;
   } = {},
 ): Promise<GenerateResult> {
   const engine = opts.engine ?? 'claude';
@@ -307,6 +313,10 @@ export async function revise(
     name: outName,
     kind,
     model: opts.model,
+    // A revision emits a short edit list against a spec it can already see.
+    // Measured at xhigh it spent ~8x the output tokens on reasoning to reach
+    // the same two-line answer, so it defaults low unless asked otherwise.
+    effort: opts.effort ?? 'low',
     base: current,
     instruction,
   });
@@ -345,13 +355,15 @@ async function runWithRepair(
     name?: string;
     kind: SceneKind;
     model?: string;
+    /** Reasoning effort for the CLI, e.g. "low" for mechanical edits. */
+    effort?: string;
     /** Scene an edit list applies to, when revising. */
     base?: VoxelScene;
     /** Original instruction, so a revision repair can restate the goal. */
     instruction?: string;
   },
 ): Promise<{ best: Attempt; attempts: number; firstProblems: string[]; usage: CallUsage }> {
-  const { engine, timeoutMs, maxRepairs, name, kind, model, base, instruction } = opts;
+  const { engine, timeoutMs, maxRepairs, name, kind, model, effort, base, instruction } = opts;
 
   // A revision repairs by producing a better edit list, not by restating the
   // whole model — asking for a full spec here invites it to change things
@@ -369,7 +381,7 @@ async function runWithRepair(
   let firstProblems: string[] = [];
 
   for (let attempt = 1; attempt <= maxRepairs + 1; attempt++) {
-    const call = await runCli(engine, lastPrompt, timeoutMs, model);
+    const call = await runCli(engine, lastPrompt, timeoutMs, model, effort);
     const raw = call.text;
     if (call.usage) {
       totals.inputTokens += call.usage.inputTokens;
