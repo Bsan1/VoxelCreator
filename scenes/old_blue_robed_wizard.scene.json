@@ -1,0 +1,489 @@
+{
+  "name": "old_blue_robed_wizard",
+  "kind": "character",
+  "root": "body",
+  "parts": [
+    {
+      "id": "body",
+      "size": [
+        10,
+        26,
+        8
+      ],
+      "color": "#2b4a7a"
+    },
+    {
+      "id": "hat_brim",
+      "size": [
+        12,
+        2,
+        8
+      ],
+      "color": "#b8c2cc",
+      "parent": "body",
+      "anchor": {
+        "to": "top",
+        "alignX": "center",
+        "alignZ": "center"
+      },
+      "shape": "box"
+    },
+    {
+      "id": "hat_cone",
+      "size": [
+        6,
+        10,
+        6
+      ],
+      "color": "#17233d",
+      "parent": "hat_brim",
+      "anchor": {
+        "to": "top",
+        "alignX": "center",
+        "alignZ": "center"
+      },
+      "offset": [
+        0,
+        -1,
+        0
+      ],
+      "shape": "box"
+    },
+    {
+      "id": "hat_tip",
+      "size": [
+        4,
+        5,
+        4
+      ],
+      "color": "#17233d",
+      "parent": "hat_cone",
+      "anchor": {
+        "to": "top",
+        "alignX": "center",
+        "alignZ": "center"
+      },
+      "offset": [
+        0,
+        -1,
+        0
+      ],
+      "shape": "box"
+    },
+    {
+      "id": "beard",
+      "size": [
+        6,
+        12,
+        1
+      ],
+      "color": "#f5f5f0",
+      "parent": "body",
+      "anchor": {
+        "to": "front",
+        "alignX": "center",
+        "alignY": "min"
+      },
+      "offset": [
+        0,
+        9,
+        0
+      ],
+      "shape": "box"
+    }
+  ],
+  "details": [
+    {
+      "id": "eyes",
+      "part": "body",
+      "region": [
+        3,
+        20,
+        7,
+        3,
+        21,
+        7
+      ],
+      "color": "#1b1b1f",
+      "mirror": true
+    },
+    {
+      "id": "mouth",
+      "part": "body",
+      "region": [
+        4,
+        18,
+        7,
+        5,
+        18,
+        7
+      ],
+      "color": "#8a8a85"
+    },
+    {
+      "id": "collar_trim",
+      "part": "body",
+      "region": [
+        0,
+        23,
+        7,
+        9,
+        23,
+        7
+      ],
+      "color": "#b8c2cc"
+    },
+    {
+      "id": "shoulder_trim",
+      "part": "body",
+      "region": [
+        0,
+        18,
+        7,
+        1,
+        19,
+        7
+      ],
+      "color": "#b8c2cc",
+      "mirror": true
+    },
+    {
+      "id": "belt",
+      "part": "body",
+      "region": [
+        0,
+        12,
+        7,
+        9,
+        12,
+        7
+      ],
+      "color": "#b8c2cc"
+    },
+    {
+      "id": "belt_buckle",
+      "part": "body",
+      "region": [
+        4,
+        12,
+        7,
+        5,
+        12,
+        7
+      ],
+      "color": "#d4af37"
+    },
+    {
+      "id": "robe_seam",
+      "part": "body",
+      "region": [
+        4,
+        2,
+        7,
+        5,
+        11,
+        7
+      ],
+      "color": "#1d3a63"
+    },
+    {
+      "id": "hem_trim",
+      "part": "body",
+      "region": [
+        0,
+        0,
+        7,
+        9,
+        1,
+        7
+      ],
+      "color": "#b8c2cc"
+    },
+    {
+      "id": "arms",
+      "part": "body",
+      "region": [
+        0,
+        5,
+        7,
+        0,
+        19,
+        7
+      ],
+      "color": "#17233d",
+      "mirror": true
+    },
+    {
+      "id": "sleeve_cuffs",
+      "part": "body",
+      "region": [
+        0,
+        5,
+        7,
+        0,
+        6,
+        7
+      ],
+      "color": "#b8c2cc",
+      "mirror": true
+    },
+    {
+      "id": "beard_shade",
+      "part": "beard",
+      "region": [
+        2,
+        0,
+        0,
+        3,
+        11,
+        0
+      ],
+      "color": "#dcdcd6"
+    }
+  ],
+  "meta": {
+    "genSpec": {
+      "name": "old_blue_robed_wizard",
+      "kind": "character",
+      "root": {
+        "id": "body",
+        "size": [
+          10,
+          26,
+          8
+        ],
+        "color": "#2b4a7a"
+      },
+      "parts": [
+        {
+          "id": "hat_brim",
+          "size": [
+            12,
+            2,
+            8
+          ],
+          "color": "#b8c2cc",
+          "parent": "body",
+          "anchor": {
+            "to": "top",
+            "alignX": "center",
+            "alignZ": "center"
+          },
+          "shape": "box"
+        },
+        {
+          "id": "hat_cone",
+          "size": [
+            6,
+            10,
+            6
+          ],
+          "color": "#17233d",
+          "parent": "hat_brim",
+          "anchor": {
+            "to": "top",
+            "alignX": "center",
+            "alignZ": "center"
+          },
+          "offset": [
+            0,
+            -1,
+            0
+          ],
+          "shape": "box"
+        },
+        {
+          "id": "hat_tip",
+          "size": [
+            4,
+            5,
+            4
+          ],
+          "color": "#17233d",
+          "parent": "hat_cone",
+          "anchor": {
+            "to": "top",
+            "alignX": "center",
+            "alignZ": "center"
+          },
+          "offset": [
+            0,
+            -1,
+            0
+          ],
+          "shape": "box"
+        },
+        {
+          "id": "beard",
+          "size": [
+            6,
+            12,
+            1
+          ],
+          "color": "#f5f5f0",
+          "parent": "body",
+          "anchor": {
+            "to": "front",
+            "alignX": "center",
+            "alignY": "min"
+          },
+          "offset": [
+            0,
+            9,
+            0
+          ],
+          "shape": "box"
+        }
+      ],
+      "details": [
+        {
+          "id": "eyes",
+          "part": "body",
+          "region": [
+            3,
+            20,
+            7,
+            3,
+            21,
+            7
+          ],
+          "color": "#1b1b1f",
+          "mirror": true
+        },
+        {
+          "id": "mouth",
+          "part": "body",
+          "region": [
+            4,
+            18,
+            7,
+            5,
+            18,
+            7
+          ],
+          "color": "#8a8a85"
+        },
+        {
+          "id": "collar_trim",
+          "part": "body",
+          "region": [
+            0,
+            23,
+            7,
+            9,
+            23,
+            7
+          ],
+          "color": "#b8c2cc"
+        },
+        {
+          "id": "shoulder_trim",
+          "part": "body",
+          "region": [
+            0,
+            18,
+            7,
+            1,
+            19,
+            7
+          ],
+          "color": "#b8c2cc",
+          "mirror": true
+        },
+        {
+          "id": "belt",
+          "part": "body",
+          "region": [
+            0,
+            12,
+            7,
+            9,
+            12,
+            7
+          ],
+          "color": "#b8c2cc"
+        },
+        {
+          "id": "belt_buckle",
+          "part": "body",
+          "region": [
+            4,
+            12,
+            7,
+            5,
+            12,
+            7
+          ],
+          "color": "#d4af37"
+        },
+        {
+          "id": "robe_seam",
+          "part": "body",
+          "region": [
+            4,
+            2,
+            7,
+            5,
+            11,
+            7
+          ],
+          "color": "#1d3a63"
+        },
+        {
+          "id": "hem_trim",
+          "part": "body",
+          "region": [
+            0,
+            0,
+            7,
+            9,
+            1,
+            7
+          ],
+          "color": "#b8c2cc"
+        },
+        {
+          "id": "arms",
+          "part": "body",
+          "region": [
+            0,
+            5,
+            7,
+            0,
+            19,
+            7
+          ],
+          "color": "#17233d",
+          "mirror": true
+        },
+        {
+          "id": "sleeve_cuffs",
+          "part": "body",
+          "region": [
+            0,
+            5,
+            7,
+            0,
+            6,
+            7
+          ],
+          "color": "#b8c2cc",
+          "mirror": true
+        },
+        {
+          "id": "beard_shade",
+          "part": "beard",
+          "region": [
+            2,
+            0,
+            0,
+            3,
+            11,
+            0
+          ],
+          "color": "#dcdcd6"
+        }
+      ]
+    }
+  }
+}

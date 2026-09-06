@@ -14,14 +14,11 @@ import { revise, type Engine } from './generate/agent.js';
  */
 const argv = process.argv.slice(2);
 const engine: Engine = argv.includes('--codex') ? 'codex' : 'claude';
-const flagVal = (f: string) => { const i = argv.indexOf(f); return { v: i === -1 ? undefined : argv[i + 1], i }; };
-const boxFlag = flagVal('--boxiness');
-const detailFlag = flagVal('--detail');
 const asIdx = argv.indexOf('--as');
 const saveAs = asIdx === -1 ? undefined : argv[asIdx + 1];
 // Guard the -1 case: asIdx + 1 would be 0 and swallow the first argument.
 const asValueIdx = asIdx === -1 ? -1 : asIdx + 1;
-const consumed = new Set([asValueIdx, boxFlag.i + 1, detailFlag.i + 1].filter((i) => i > 0));
+const consumed = new Set([asValueIdx].filter((i) => i > 0));
 const positional = argv.filter((a, i) => !a.startsWith('--') && !consumed.has(i));
 const [sceneName, ...rest] = positional;
 const instruction = rest.join(' ').trim();
@@ -50,12 +47,7 @@ if (!instruction) {
 }
 
 console.log(`revising "${sceneName}" with ${engine}: "${instruction}"`);
-const numOrUndef = (v?: string) => (v === undefined ? undefined : Number(v));
-const result = await revise(sceneName, instruction, {
-  engine,
-  saveAs,
-  dials: { boxiness: numOrUndef(boxFlag.v), detail: numOrUndef(detailFlag.v) },
-});
+const result = await revise(sceneName, instruction, { engine, saveAs });
 
 const build = buildScene(result.scene);
 writeFileSync(join(OUT_DIR, `${result.scene.name}.vox`), writeVox(build.grid, build.palette));

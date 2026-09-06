@@ -1,5 +1,3 @@
-import { describeDials, normalizeDials, type StyleDials } from './dials.js';
-
 /**
  * The instruction given to the generating model.
  *
@@ -9,19 +7,18 @@ import { describeDials, normalizeDials, type StyleDials } from './dials.js';
  * earned by something in the request. Left unchecked a model will decorate,
  * which is what produces a figure covered in pointless bumps.
  */
-export function buildPrompt(userPrompt: string, dials?: StyleDials): string {
-  const d = normalizeDials(dials);
+export function buildPrompt(userPrompt: string, answers?: string): string {
   return `You are a voxel artist working in one specific house style. Turn the request below into ONE JSON object describing a voxel model.
 
 Output ONLY the JSON object. No prose, no explanation, no code fence.
 
 REQUEST: ${userPrompt}
-
+${answers ? `
+${answers}
+` : ''}
 The request may be written in any language. Read it in whatever language it is
 written, and answer with JSON either way. Keep "name" and every id in English
 snake_case regardless — they are identifiers, not display text.
-
-${describeDials(d)}
 
 === THE HOUSE STYLE ===
 
@@ -112,12 +109,20 @@ with no face, and the figure reads as a sack rather than a character.
 
   - Decide the face band first — roughly the top fifth of the body, on the
     front face — and paint eyes there before anything else.
-  - A beard occupies only BELOW the eyes, and never the full width: leave at
-    least one voxel of skin either side so it reads as a beard, not a bib.
   - A hood or helmet frames the face: paint it around the face band, not over
     it. Leave the eyes exposed.
   - After every other detail, the eyes must still be visible from the front.
     If a garment would cover them, move the garment down.
+
+FACIAL HAIR IS PAINT, AND IT IS SMALL. A beard is a painted region, never a
+part. On a body 26 tall it is about 4 voxels tall and 4 wide — it hangs just
+under the mouth and stops well above the chest. Leave at least 2 voxels of
+face colour on each side of it.
+
+  A beard the width of the body, or running a third of its height, is the
+  single ugliest thing you can do here: the figure turns into a pale slab with
+  no face. "Long white beard" still means about 5 voxels tall, not 12. Length
+  in the request describes the character, not the voxel count.
 
 THIS IS WHERE YOU DO THE WORK. On a 10x26x8 body, paint:
   the face or visor slot high on the front, around y = 19-23 — a single

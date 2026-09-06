@@ -12,7 +12,7 @@ import { loadScene } from '../core/store.js';
 import { extractJsonObject, sceneToSpec, specToScene, type GenSpec } from './spec.js';
 import { applyOps, type RevisionOp } from './patch.js';
 import { buildPatchRepairPrompt, buildRevisePrompt } from './revisePrompt.js';
-import { detailTarget, normalizeDials, prismMinPct, type StyleDials } from './dials.js';
+import { buildQuestionsPrompt, type Question } from './questions.js';
 
 /**
  * Generation runs through the user's own Claude Code or Codex CLI over stdin,
@@ -186,7 +186,7 @@ export const runCliForTest = runCli;
  */
 function evaluate(
   raw: string,
-  opts: { name?: string; kind?: SceneKind; base?: VoxelScene; dials?: StyleDials } = {},
+  opts: { name?: string; kind?: SceneKind; base?: VoxelScene } = {},
 ): Attempt {
   const json = extractJsonObject(raw);
   let scene: VoxelScene;
@@ -205,15 +205,12 @@ function evaluate(
     scene = specToScene(spec);
   }
 
-  const d = normalizeDials(opts.dials ?? (scene.meta?.dials as StyleDials | undefined));
-  const target = detailTarget(d);
-  // Thresholds come from the same dials the prompt was written from, so the
-  // check can never ask for something the instruction did not.
   const report = validate(buildScene(scene), {
     kind: scene.kind,
-    prismMinPct: prismMinPct(d),
     detailCount: scene.details.length,
-    detailMin: scene.kind === 'item' ? undefined : target.min,
+    // A flat floor rather than a dial: every character gets a baseline amount
+    // of painted detail, because the failure mode is always too little.
+    detailMin: scene.kind === 'item' ? undefined : 10,
   }); // throws before anything is saved
   const problems = report.checks
     .filter((c) => c.severity !== 'pass')
@@ -244,8 +241,8 @@ export async function generate(
     model?: string;
     /** Reasoning effort. Left unset, the CLI uses your configured default. */
     effort?: string;
-    /** Boxiness / detail. Persisted on the scene so revisions inherit them. */
-    dials?: Partial<StyleDials>;
+    /** Answers to the clarifying questions, folded into the prompt. */
+    answers?: string;
   } = {},
 ): Promise<GenerateResult> {
   const engine = opts.engine ?? 'claude';
@@ -257,9 +254,10 @@ export async function generate(
     ? describeCharacter(loadScene(opts.forCharacter))
     : undefined;
 
-  const dials = normalizeDials(opts.dials);
   const initial =
-    kind === 'item' ? buildItemPrompt(userPrompt, characterBlock) : buildPrompt(userPrompt, dials);
+    kind === 'item'
+      ? buildItemPrompt(userPrompt, characterBlock)
+      : buildPrompt(userPrompt, opts.answers);
   const run = await runWithRepair(userPrompt, initial, {
     engine,
     timeoutMs,
@@ -272,10 +270,8 @@ export async function generate(
     // parts and passed the same checks. Left to inherit a global xhigh, a
     // single character costs about a dollar in reasoning nobody reads.
     effort: opts.effort ?? 'medium',
-    dials,
   });
 
-  run.best.scene.meta = { ...(run.best.scene.meta ?? {}), dials };
   saveScene(run.best.scene);
   return {
     scene: run.best.scene,
@@ -289,6 +285,29 @@ export async function generate(
     usage: run.usage,
     applied: run.best.applied,
   };
+}
+
+/**
+ * Ask what the request leaves open, before building anything.
+ *
+ * One cheap call at low effort: the model is picking questions, not designing.
+ */
+export async function askQuestions(
+  userPrompt: string,
+  opts: { engine?: Engine; timeoutMs?: number } = {},
+): Promise<{ questions: Question[]; usage?: CallUsage }> {
+  const engine = opts.engine ?? 'claude';
+  const call = await runCli(
+    engine,
+    buildQuestionsPrompt(userPrompt),
+    opts.timeoutMs ?? 180_000,
+    undefined,
+    'low',
+  );
+  const json = extractJsonObject(call.text) as { questions?: Question[] };
+  const questions = Array.isArray(json.questions) ? json.questions : [];
+  if (questions.length === 0) throw new Error('The model did not return any questions');
+  return { questions, usage: call.usage };
 }
 
 /**
@@ -309,8 +328,6 @@ export async function revise(
     saveAs?: string;
     model?: string;
     effort?: string;
-    /** Override the stored dials for this revision onward. */
-    dials?: Partial<StyleDials>;
   } = {},
 ): Promise<GenerateResult> {
   const engine = opts.engine ?? 'claude';
@@ -320,7 +337,6 @@ export async function revise(
 
   const current = loadScene(sceneName);
   const kind = current.kind ?? 'character';
-  const dials = normalizeDials(opts.dials ?? (current.meta?.dials as Partial<StyleDials> | undefined));
   const outName = opts.saveAs ?? sceneName;
 
   const initial = buildRevisePrompt(
@@ -341,13 +357,11 @@ export async function revise(
     effort: opts.effort ?? 'low',
     base: current,
     instruction,
-    dials,
   });
 
   // Only snapshot when overwriting; saving under a new name leaves the
   // original scene untouched anyway.
   if (outName === sceneName) snapshotScene(sceneName);
-  run.best.scene.meta = { ...(run.best.scene.meta ?? {}), dials };
   saveScene(run.best.scene);
 
   return {
@@ -381,14 +395,13 @@ async function runWithRepair(
     model?: string;
     /** Reasoning effort for the CLI, e.g. "low" for mechanical edits. */
     effort?: string;
-    dials?: StyleDials;
     /** Scene an edit list applies to, when revising. */
     base?: VoxelScene;
     /** Original instruction, so a revision repair can restate the goal. */
     instruction?: string;
   },
 ): Promise<{ best: Attempt; attempts: number; firstProblems: string[]; usage: CallUsage }> {
-  const { engine, timeoutMs, maxRepairs, name, kind, model, effort, base, instruction, dials } = opts;
+  const { engine, timeoutMs, maxRepairs, name, kind, model, effort, base, instruction } = opts;
 
   // A revision repairs by producing a better edit list, not by restating the
   // whole model — asking for a full spec here invites it to change things
@@ -418,7 +431,7 @@ async function runWithRepair(
 
     let candidate: Attempt;
     try {
-      candidate = evaluate(raw, { name, kind, base, dials });
+      candidate = evaluate(raw, { name, kind, base });
     } catch (e) {
       // Unparsable or unbuildable. Retry with the error as the defect list;
       // if there are no retries left, surface it rather than saving nothing.

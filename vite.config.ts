@@ -2,7 +2,8 @@ import { defineConfig, type Plugin } from 'vite';
 import { buildScene } from './src/core/build.js';
 import { OUT_DIR } from './src/core/store.js';
 import { writeVox } from './src/io/vox.js';
-import { generate, revise, type Engine } from './src/generate/agent.js';
+import { askQuestions, generate, revise, type Engine } from './src/generate/agent.js';
+import { formatAnswers } from './src/generate/questions.js';
 import { revertScene } from './src/core/store.js';
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -32,12 +33,19 @@ function generateApi(): Plugin {
         };
 
         try {
-          const { prompt, engine, dials } = JSON.parse(
+          const { prompt, engine, answers } = JSON.parse(
             Buffer.concat(chunks).toString() || '{}',
-          ) as { prompt?: string; engine?: Engine; dials?: { boxiness?: number; detail?: number } };
+          ) as {
+            prompt?: string;
+            engine?: Engine;
+            answers?: Array<{ q: string; a: string }>;
+          };
           if (!prompt?.trim()) return send(400, { error: 'prompt is required' });
 
-          const result = await generate(prompt, { engine: engine ?? 'claude', dials });
+          const result = await generate(prompt, {
+            engine: engine ?? 'claude',
+            answers: answers?.length ? formatAnswers(answers) : undefined,
+          });
           const build = buildScene(result.scene);
           writeFileSync(
             join(OUT_DIR, `${result.scene.name}.vox`),
@@ -62,6 +70,34 @@ function generateApi(): Plugin {
         }
       });
 
+      server.middlewares.use('/api/questions', async (req, res) => {
+        if (req.method !== 'POST') {
+          res.statusCode = 405;
+          res.end('POST only');
+          return;
+        }
+        const chunks: Buffer[] = [];
+        for await (const c of req) chunks.push(c as Buffer);
+
+        const send = (code: number, body: unknown) => {
+          res.statusCode = code;
+          res.setHeader('content-type', 'application/json');
+          res.end(JSON.stringify(body));
+        };
+
+        try {
+          const { prompt, engine } = JSON.parse(Buffer.concat(chunks).toString() || '{}') as {
+            prompt?: string;
+            engine?: Engine;
+          };
+          if (!prompt?.trim()) return send(400, { error: 'prompt is required' });
+          const { questions, usage } = await askQuestions(prompt, { engine: engine ?? 'claude' });
+          send(200, { questions, usage });
+        } catch (e) {
+          send(500, { error: e instanceof Error ? e.message : String(e) });
+        }
+      });
+
       server.middlewares.use('/api/revise', async (req, res) => {
         if (req.method !== 'POST') {
           res.statusCode = 405;
@@ -78,11 +114,10 @@ function generateApi(): Plugin {
         };
 
         try {
-          const { scene, instruction, engine, undo, dials } = JSON.parse(
+          const { scene, instruction, engine, undo } = JSON.parse(
             Buffer.concat(chunks).toString() || '{}',
           ) as {
             scene?: string; instruction?: string; engine?: Engine; undo?: boolean;
-            dials?: { boxiness?: number; detail?: number };
           };
           if (!scene) return send(400, { error: 'scene is required' });
 
@@ -97,7 +132,7 @@ function generateApi(): Plugin {
           }
 
           if (!instruction?.trim()) return send(400, { error: 'instruction is required' });
-          const result = await revise(scene, instruction, { engine: engine ?? 'claude', dials });
+          const result = await revise(scene, instruction, { engine: engine ?? 'claude' });
           const build = buildScene(result.scene);
           writeFileSync(
             join(OUT_DIR, `${result.scene.name}.vox`),

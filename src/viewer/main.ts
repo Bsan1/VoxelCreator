@@ -404,7 +404,7 @@ async function runGeneration(): Promise<void> {
     const res = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ prompt, engine: engineEl.value, dials: currentDials() }),
+      body: JSON.stringify({ prompt, engine: engineEl.value, answers: answerPairs() }),
     });
     const data = (await res.json()) as {
       name?: string; elapsedMs?: number; parts?: string[]; warnings?: string[];
@@ -414,6 +414,7 @@ async function runGeneration(): Promise<void> {
     clearInterval(tick);
     if (!res.ok || data.error) throw new Error(data.error ?? `HTTP ${res.status}`);
 
+    qaEl.hidden = true;
     current = data.name!;
     mode = 'single';
     syncModeButtons();
@@ -435,51 +436,138 @@ async function runGeneration(): Promise<void> {
   }
 }
 
-// ---- Art-direction dials --------------------------------------------------
-
-const boxinessEl = $<HTMLInputElement>('boxiness');
-const detailEl = $<HTMLInputElement>('detail');
+// ---- Ask before building --------------------------------------------------
 
 /**
- * The hints matter: a slider with no feedback is guesswork. These say what the
- * number will actually do, including the bounding-box fill the model gets
- * measured against, so the dial reads as a rule rather than a mood.
+ * A one-line prompt underspecifies a model and the generator fills the gaps
+ * generically. Answering a few targeted questions first is what turns "a
+ * wizard" into something specific enough to build well.
  */
-function describeBoxiness(v: number): string {
-  const fill = Math.round(30 + v * 0.52);
-  if (v >= 85) return `almost a pure box · must fill ${fill}% of its bounds`;
-  if (v >= 65) return `one mass, a step or two allowed · ${fill}% fill`;
-  if (v >= 40) return `stepped and shaped, still one figure · ${fill}% fill`;
-  return `free silhouette, layered volumes · ${fill}% fill`;
+interface Question {
+  id: string;
+  q: string;
+  options: string[];
 }
 
-function describeDetail(v: number): string {
-  const aim = Math.round(3 + (v / 100) * 19);
-  if (v >= 80) return `richly trimmed · aim ~${aim} painted regions, relief panels`;
-  if (v >= 45) return `moderate · aim ~${aim} painted regions`;
-  if (v >= 20) return `restrained · aim ~${aim} regions, large flat areas`;
-  return `minimal · ~${aim} regions, silhouette carries it`;
+const askBtn = $<HTMLButtonElement>('askBtn');
+const buildBtn = $<HTMLButtonElement>('buildBtn');
+const qaEl = $('qa');
+const qaListEl = $('qaList');
+
+let questions: Question[] = [];
+/** Question id -> chosen or typed answer. */
+const answers = new Map<string, string>();
+
+function renderQuestions(): void {
+  qaListEl.innerHTML = questions
+    .map(
+      (q, i) => `
+      <div class="q" data-q="${i}">
+        <p>${escapeHtml(q.q)}</p>
+        <div class="qopts">
+          ${q.options
+            .map(
+              (o, j) =>
+                `<button class="qopt" data-q="${i}" data-o="${j}">${escapeHtml(o)}</button>`,
+            )
+            .join('')}
+        </div>
+        <input data-q="${i}" placeholder="or write your own" />
+      </div>`,
+    )
+    .join('');
+  qaEl.hidden = false;
 }
 
-function syncDials(): void {
-  const b = Number(boxinessEl.value);
-  const d = Number(detailEl.value);
-  $('boxinessVal').textContent = String(b);
-  $('detailVal').textContent = String(d);
-  $('boxinessHint').textContent = describeBoxiness(b);
-  $('detailHint').textContent = describeDetail(d);
-}
+const escapeHtml = (s: string) =>
+  s.replace(/[&<>"']/g, (c) =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!,
+  );
 
-boxinessEl.addEventListener('input', syncDials);
-detailEl.addEventListener('input', syncDials);
-syncDials();
+qaListEl.addEventListener('click', (e) => {
+  const btn = (e.target as HTMLElement).closest<HTMLElement>('.qopt');
+  if (!btn) return;
+  const qi = Number(btn.dataset.q);
+  const oi = Number(btn.dataset.o);
+  const q = questions[qi];
+  const picked = q.options[oi];
+  // Clicking the chosen option again clears it, so a question can be skipped.
+  const already = answers.get(q.id) === picked;
+  if (already) answers.delete(q.id);
+  else answers.set(q.id, picked);
 
-const currentDials = () => ({
-  boxiness: Number(boxinessEl.value),
-  detail: Number(detailEl.value),
+  qaListEl
+    .querySelectorAll<HTMLElement>(`.qopt[data-q="${qi}"]`)
+    .forEach((b) => b.classList.toggle('on', !already && b === btn));
+  const input = qaListEl.querySelector<HTMLInputElement>(`input[data-q="${qi}"]`);
+  if (input && !already) input.value = '';
 });
 
-genBtn.addEventListener('click', () => void runGeneration());
+qaListEl.addEventListener('input', (e) => {
+  const input = e.target as HTMLInputElement;
+  if (input.tagName !== 'INPUT') return;
+  const qi = Number(input.dataset.q);
+  const q = questions[qi];
+  if (input.value.trim()) answers.set(q.id, input.value.trim());
+  else answers.delete(q.id);
+  qaListEl
+    .querySelectorAll<HTMLElement>(`.qopt[data-q="${qi}"]`)
+    .forEach((b) => b.classList.remove('on'));
+});
+
+async function runQuestions(): Promise<void> {
+  const prompt = promptEl.value.trim();
+  if (!prompt) {
+    setStatus('Type what you want first — the grey text is only a placeholder.', 'bad');
+    promptEl.focus();
+    return;
+  }
+  askBtn.disabled = true;
+  const started = Date.now();
+  const tick = setInterval(
+    () => setStatus(`thinking of questions… ${Math.round((Date.now() - started) / 1000)}s`),
+    500,
+  );
+  try {
+    const res = await fetch('/api/questions', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ prompt, engine: engineEl.value }),
+    });
+    const data = (await res.json()) as {
+      questions?: Question[];
+      usage?: { outputTokens: number; inputTokens: number; costUsd?: number };
+      error?: string;
+    };
+    clearInterval(tick);
+    if (!res.ok || data.error) throw new Error(data.error ?? `HTTP ${res.status}`);
+    questions = data.questions ?? [];
+    answers.clear();
+    renderQuestions();
+    setStatus(`${questions.length} questions${costLine(data.usage)}`, '');
+  } catch (e) {
+    clearInterval(tick);
+    setStatus(e instanceof Error ? e.message : String(e), 'bad');
+  } finally {
+    askBtn.disabled = false;
+  }
+}
+
+/** The answers travel to the generator as plain question/answer pairs. */
+function answerPairs(): Array<{ q: string; a: string }> {
+  return questions
+    .filter((q) => answers.has(q.id))
+    .map((q) => ({ q: q.q, a: answers.get(q.id)! }));
+}
+
+askBtn.addEventListener('click', () => void runQuestions());
+buildBtn.addEventListener('click', () => void runGeneration());
+genBtn.addEventListener('click', () => {
+  questions = [];
+  answers.clear();
+  qaEl.hidden = true;
+  void runGeneration();
+});
 
 // ---- Revision -------------------------------------------------------------
 
@@ -517,7 +605,7 @@ async function postRevise(body: Record<string, unknown>, label: string): Promise
     const res = await fetch('/api/revise', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ scene: current, engine: engineEl.value, dials: currentDials(), ...body }),
+      body: JSON.stringify({ scene: current, engine: engineEl.value, ...body }),
     });
     const data = (await res.json()) as {
       name?: string; elapsedMs?: number; parts?: string[]; warnings?: string[];
