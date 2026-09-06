@@ -384,7 +384,13 @@ function setStatus(text: string, kind: '' | 'good' | 'bad' = ''): void {
 
 async function runGeneration(): Promise<void> {
   const prompt = promptEl.value.trim();
-  if (!prompt) return;
+  if (!prompt) {
+    // Returning silently here made the button look broken: the placeholder
+    // reads as pre-filled text, so an empty box does not look empty.
+    setStatus('Type what you want first — the grey text is only a placeholder.', 'bad');
+    promptEl.focus();
+    return;
+  }
 
   genBtn.disabled = true;
   const started = Date.now();
@@ -554,7 +560,15 @@ function lastRawFor(name: string): void {
 
 reviseBtn.addEventListener('click', () => {
   const instruction = revisePromptEl.value.trim();
-  if (!instruction || !current) return;
+  if (!current) {
+    setReviseStatus('Pick a model first.', 'bad');
+    return;
+  }
+  if (!instruction) {
+    setReviseStatus('Say what to change — the grey text is only a placeholder.', 'bad');
+    revisePromptEl.focus();
+    return;
+  }
   void postRevise({ instruction }, 'revising');
 });
 
