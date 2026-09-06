@@ -4,7 +4,7 @@ import { OUT_DIR } from './src/core/store.js';
 import { writeVox } from './src/io/vox.js';
 import { askQuestions, generate, revise, type Engine } from './src/generate/agent.js';
 import { formatAnswers } from './src/generate/questions.js';
-import { revertScene } from './src/core/store.js';
+import { loadScene, revertScene, saveScene, snapshotScene } from './src/core/store.js';
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -95,6 +95,56 @@ function generateApi(): Plugin {
           if (!prompt?.trim()) return send(400, { error: 'prompt is required' });
           const { questions, usage } = await askQuestions(prompt, { engine: engine ?? 'claude' });
           send(200, { questions, usage });
+        } catch (e) {
+          send(500, { error: e instanceof Error ? e.message : String(e) });
+        }
+      });
+
+      server.middlewares.use('/api/edits', async (req, res) => {
+        if (req.method !== 'POST') {
+          res.statusCode = 405;
+          res.end('POST only');
+          return;
+        }
+        const chunks: Buffer[] = [];
+        for await (const c of req) chunks.push(c as Buffer);
+
+        const send = (code: number, body: unknown) => {
+          res.statusCode = code;
+          res.setHeader('content-type', 'application/json');
+          res.end(JSON.stringify(body));
+        };
+
+        try {
+          const { scene: name, edits } = JSON.parse(
+            Buffer.concat(chunks).toString() || '{}',
+          ) as {
+            scene?: string;
+            edits?: {
+              added: Array<[number, number, number, string]>;
+              removed: Array<[number, number, number]>;
+            };
+          };
+          if (!name) return send(400, { error: 'scene is required' });
+
+          const scene = loadScene(name);
+          scene.edits =
+            edits && (edits.added.length > 0 || edits.removed.length > 0) ? edits : undefined;
+
+          // Build before writing, exactly as generation does — a bad edit
+          // fails here rather than leaving an unopenable scene on disk.
+          const build = buildScene(scene);
+          snapshotScene(name);
+          saveScene(scene);
+          writeFileSync(join(OUT_DIR, `${name}.vox`), writeVox(build.grid, build.palette));
+
+          send(200, {
+            name,
+            added: edits?.added.length ?? 0,
+            removed: edits?.removed.length ?? 0,
+            size: [build.grid.sx, build.grid.sy, build.grid.sz],
+            voxels: build.grid.count(),
+          });
         } catch (e) {
           send(500, { error: e instanceof Error ? e.message : String(e) });
         }

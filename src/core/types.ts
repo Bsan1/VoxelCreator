@@ -79,6 +79,21 @@ export interface Socket {
  */
 export type SceneKind = 'character' | 'item' | 'assembly';
 
+/**
+ * Manual voxel touch-ups, applied after the scene is built.
+ *
+ * The scene is semantic — parts and painted regions — so "put a voxel here"
+ * has nowhere to live in it. Keeping hand edits as an explicit layer on top
+ * means the model stays revisable: regenerate or resize the parts and these
+ * still apply, and dropping the layer restores exactly what the generator made.
+ */
+export interface VoxelEdits {
+  /** [x, y, z, hex] in final grid coordinates. */
+  added: Array<[number, number, number, string]>;
+  /** [x, y, z] cleared after the build. */
+  removed: Array<[number, number, number]>;
+}
+
 export interface VoxelScene {
   name: string;
   /** Defaults to "character" when absent. */
@@ -89,6 +104,8 @@ export interface VoxelScene {
   details: Detail[];
   /** Mounting points for equipment. Characters have them; items do not. */
   sockets?: Socket[];
+  /** Hand edits layered over the built voxels. */
+  edits?: VoxelEdits;
   meta?: Record<string, unknown>;
 }
 

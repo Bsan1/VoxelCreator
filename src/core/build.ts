@@ -1,13 +1,18 @@
 import { VoxelGrid } from './grid.js';
-import { Palette } from './palette.js';
 import { fillShape, hollowRegion } from './primitives.js';
 import { layoutScene, type LayoutResult } from './layout.js';
+import { normalizeHex, Palette } from './palette.js';
 import type { Detail, PlacedPart, VoxelScene } from './types.js';
 
 export interface BuildResult {
   grid: VoxelGrid;
   palette: Palette;
   layout: LayoutResult;
+  /**
+   * How far the built content was pushed to make room for outward hand edits.
+   * Grid coordinate minus this is the layout coordinate an edit is stored in.
+   */
+  shift: [number, number, number];
 }
 
 /**
@@ -50,12 +55,33 @@ export function buildScene(scene: VoxelScene): BuildResult {
   if (gx <= 0 || gy <= 0 || gz <= 0) {
     throw new Error(`Scene "${scene.name}" produced an empty grid`);
   }
-  const grid = new VoxelGrid(gx, gy, gz);
+
+  // Hand-added voxels may sit outside the parts' own box — a nose, an ear.
+  // Their coordinates are stored in layout space, so the grid grows and the
+  // built content shifts to make room, and the stored numbers stay valid when
+  // the model is later resized.
+  let padX = 0, padY = 0, padZ = 0;
+  let extX = gx, extY = gy, extZ = gz;
+  for (const [x, y, z] of scene.edits?.added ?? []) {
+    padX = Math.max(padX, -x);
+    padY = Math.max(padY, -y);
+    padZ = Math.max(padZ, -z);
+    extX = Math.max(extX, x + 1);
+    extY = Math.max(extY, y + 1);
+    extZ = Math.max(extZ, z + 1);
+  }
+  const shift: [number, number, number] = [padX, padY, padZ];
+  const grid = new VoxelGrid(extX + padX, extY + padY, extZ + padZ);
   const palette = new Palette();
 
   const byId = new Map(scene.parts.map((p) => [p.id, p]));
 
-  for (const pp of layout.placed) {
+  const shifted = layout.placed.map((pp) => ({
+    ...pp,
+    pos: [pp.pos[0] + shift[0], pp.pos[1] + shift[1], pp.pos[2] + shift[2]] as [number, number, number],
+  }));
+
+  for (const pp of shifted) {
     const source = byId.get(pp.sourceId)!;
     const colorIdx = palette.indexOf(source.color);
     fillShape(grid, source.shape ?? 'box', pp.pos, pp.size, colorIdx);
@@ -69,12 +95,22 @@ export function buildScene(scene: VoxelScene): BuildResult {
     const colorIdx = palette.indexOf(detail.color);
     // Applies to the named part and to any part mirroring it, so a detail
     // defined once on the right boot also lands on the left.
-    for (const pp of layout.placed) {
+    for (const pp of shifted) {
       if (pp.sourceId !== detail.part) continue;
       applyRegion(grid, pp, detail.region, colorIdx, pp.mirrored);
       if (detail.mirror) applyRegion(grid, pp, detail.region, colorIdx, !pp.mirrored);
     }
   }
 
-  return { grid, palette, layout };
+  // Hand edits go on last, so they win over anything the parts painted.
+  if (scene.edits) {
+    for (const [x, y, z, hex] of scene.edits.added) {
+      grid.set(x + shift[0], y + shift[1], z + shift[2], palette.indexOf(normalizeHex(hex)));
+    }
+    for (const [x, y, z] of scene.edits.removed) {
+      grid.set(x + shift[0], y + shift[1], z + shift[2], 0);
+    }
+  }
+
+  return { grid, palette, layout: { ...layout, placed: shifted }, shift };
 }

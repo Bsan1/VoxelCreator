@@ -161,6 +161,25 @@
       .sizeRow input:focus { outline: 1px solid var(--accent); border-color: var(--accent); }
       #sizeClear { padding: 4px 7px; font-size: 10px; }
 
+      /* Editing. The swatch row is the palette of the model being edited. */
+      #swatches { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+      .swatch {
+        width: 20px;
+        height: 20px;
+        padding: 0;
+        border-radius: 5px;
+        border: 2px solid transparent;
+        cursor: pointer;
+      }
+      .swatch.on { border-color: var(--text); }
+      #editStatus {
+        margin-top: 8px;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      #editStatus b { color: var(--accent); }
+      body.editing canvas { cursor: crosshair; }
+
       button.ghost {
         width: 100%;
         margin-top: 6px;
@@ -347,6 +366,21 @@
         <button id="undoBtn" title="Step back one revision">Undo</button>
       </div>
       <div id="reviseStatus" hidden></div>
+
+      <div class="label">Edit</div>
+      <button id="editToggle" style="width: 100%">Edit voxels</button>
+      <div id="editPanel" hidden>
+        <div class="grid2" style="margin-top: 6px">
+          <button id="toolAdd" class="on">Add</button>
+          <button id="toolRemove">Remove</button>
+        </div>
+        <div id="swatches"></div>
+        <div id="editStatus"></div>
+        <div class="grid2" style="margin-top: 6px">
+          <button id="editSave" class="primary">Save</button>
+          <button id="editDiscard">Discard</button>
+        </div>
+      </div>
 
       <div class="label">Camera</div>
       <div class="grid4">

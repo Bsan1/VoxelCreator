@@ -67,7 +67,10 @@ let camPreset: 'front' | 'three' | 'side' | 'top' | 'gallery' = 'three';
  * cannot be seen, and dropping them keeps the instance count near surface area
  * rather than volume.
  */
-function meshFor(build: BuildResult): { mesh: THREE.InstancedMesh; drawn: number } {
+function meshFor(
+  build: BuildResult,
+  record = false,
+): { mesh: THREE.InstancedMesh; drawn: number } {
   const { grid, palette } = build;
   const colors = palette.colors().map((hex) => {
     const { r, g, b } = parseHex(hex);
@@ -93,6 +96,7 @@ function meshFor(build: BuildResult): { mesh: THREE.InstancedMesh; drawn: number
   });
   mesh.instanceMatrix.needsUpdate = true;
   if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+  if (record) instanceVoxels = visible.map(([x, y, z]) => [x, y, z] as [number, number, number]);
   return { mesh, drawn: visible.length };
 }
 
@@ -124,8 +128,20 @@ function addTag(name: string, pos: THREE.Vector3): void {
 function renderSingle(): void {
   const entry = loaded.get(current);
   if (!entry) return;
-  const build = buildScene(entry.scene);
-  const { mesh, drawn } = meshFor(build);
+
+  // Preview unsaved edits without touching the loaded scene, so Discard is
+  // just dropping the buffer.
+  const preview =
+    pendingAdded.size + pendingRemoved.size > 0
+      ? {
+          ...entry.scene,
+          edits: mergeEdits(entry.scene.edits, pendingAdded, pendingRemoved),
+        }
+      : entry.scene;
+
+  const build = buildScene(preview);
+  buildShift = build.shift;
+  const { mesh, drawn } = meshFor(build, true);
   clearModels();
   modelRoot.add(mesh);
 
@@ -582,6 +598,194 @@ function answerPairs(): Array<{ q: string; a: string }> {
     .filter((q) => answers.has(q.id))
     .map((q) => ({ q: q.q, a: answers.get(q.id)! }));
 }
+
+// ---- Voxel editing --------------------------------------------------------
+
+/**
+ * Hand edits are held here and only written when Save is pressed, so clicking
+ * around never touches the saved model. They live as an explicit layer over
+ * the built voxels — the semantic scene has nowhere to put "a voxel at 5,12,3"
+ * and must stay revisable.
+ */
+type Added = [number, number, number, string];
+let editing = false;
+let editTool: 'add' | 'remove' = 'add';
+let editColor = '#ffffff';
+const pendingAdded = new Map<string, Added>();
+const pendingRemoved = new Set<string>();
+
+/** Voxel coordinates for each drawn instance, so a raycast hit maps back. */
+let instanceVoxels: Array<[number, number, number]> = [];
+/** How far the build pushed content over; grid coord minus this is layout space. */
+let buildShift: [number, number, number] = [0, 0, 0];
+
+/** Saved edits plus the unsaved buffer, with removals cancelling additions. */
+function mergeEdits(
+  existing: VoxelScene['edits'],
+  addedBuf: Map<string, Added>,
+  removedBuf: Set<string>,
+): NonNullable<VoxelScene['edits']> {
+  const added = new Map<string, Added>();
+  for (const a of existing?.added ?? []) added.set(key3(a[0], a[1], a[2]), a);
+  for (const [k, a] of addedBuf) added.set(k, a);
+  const removed = new Set((existing?.removed ?? []).map((r) => key3(r[0], r[1], r[2])));
+  for (const k of removedBuf) {
+    removed.add(k);
+    added.delete(k);
+  }
+  return {
+    added: [...added.values()],
+    removed: [...removed].map((k) => k.split(',').map(Number) as [number, number, number]),
+  };
+}
+
+const editToggle = $<HTMLButtonElement>('editToggle');
+const editPanel = $('editPanel');
+const editStatus = $('editStatus');
+const swatchesEl = $('swatches');
+const key3 = (x: number, y: number, z: number) => `${x},${y},${z}`;
+
+function syncEditStatus(): void {
+  const a = pendingAdded.size;
+  const r = pendingRemoved.size;
+  editStatus.innerHTML =
+    a + r === 0
+      ? 'Click a voxel to edit. Nothing changed yet.'
+      : `<b>${a}</b> added, <b>${r}</b> removed — unsaved`;
+}
+
+function setEditing(on: boolean): void {
+  editing = on;
+  editPanel.hidden = !on;
+  editToggle.classList.toggle('on', on);
+  editToggle.textContent = on ? 'Close editor' : 'Edit voxels';
+  // Locking the orbit is what makes a click mean "edit" and not "rotate".
+  controls.enabled = !on;
+  document.body.classList.toggle('editing', on);
+  if (on) {
+    renderSwatches();
+    syncEditStatus();
+  }
+}
+
+function renderSwatches(): void {
+  const entry = loaded.get(current);
+  if (!entry) return;
+  const colours = buildScene(entry.scene).palette.colors();
+  if (!colours.includes(editColor)) editColor = colours[0] ?? '#ffffff';
+  swatchesEl.innerHTML = colours
+    .map(
+      (c) =>
+        `<button class="swatch${c === editColor ? ' on' : ''}" data-c="${c}" ` +
+        `style="background:${c}" title="${c}"></button>`,
+    )
+    .join('');
+}
+
+swatchesEl.addEventListener('click', (e) => {
+  const b = (e.target as HTMLElement).closest<HTMLElement>('.swatch');
+  if (!b?.dataset.c) return;
+  editColor = b.dataset.c;
+  renderSwatches();
+});
+
+editToggle.addEventListener('click', () => setEditing(!editing));
+
+$<HTMLButtonElement>('toolAdd').addEventListener('click', () => {
+  editTool = 'add';
+  $('toolAdd').classList.add('on');
+  $('toolRemove').classList.remove('on');
+});
+$<HTMLButtonElement>('toolRemove').addEventListener('click', () => {
+  editTool = 'remove';
+  $('toolRemove').classList.add('on');
+  $('toolAdd').classList.remove('on');
+});
+
+function clearPending(): void {
+  pendingAdded.clear();
+  pendingRemoved.clear();
+  syncEditStatus();
+}
+
+$<HTMLButtonElement>('editDiscard').addEventListener('click', () => {
+  clearPending();
+  rerender();
+});
+
+$<HTMLButtonElement>('editSave').addEventListener('click', async () => {
+  const entry = loaded.get(current);
+  if (!entry) return;
+  // Merge with whatever the scene already carried, so saving twice accumulates.
+  const edits = mergeEdits(entry.scene.edits, pendingAdded, pendingRemoved);
+
+  try {
+    const res = await fetch('/api/edits', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        scene: current,
+        edits,
+      }),
+    });
+    const data = (await res.json()) as { added?: number; removed?: number; error?: string };
+    if (!res.ok || data.error) throw new Error(data.error ?? `HTTP ${res.status}`);
+    clearPending();
+    loaded.delete(current);
+    await poll();
+    editStatus.innerHTML = `saved — <b>${data.added}</b> added, <b>${data.removed}</b> removed`;
+  } catch (e) {
+    editStatus.textContent = e instanceof Error ? e.message : String(e);
+  }
+});
+
+/** Turn a click into an edit. The face normal decides where an added voxel goes. */
+const raycaster = new THREE.Raycaster();
+renderer.domElement.addEventListener('pointerdown', (e) => {
+  if (!editing || e.button !== 0) return;
+  const mesh = modelRoot.children.find((c) => c instanceof THREE.InstancedMesh) as
+    | THREE.InstancedMesh
+    | undefined;
+  if (!mesh) return;
+
+  const rect = renderer.domElement.getBoundingClientRect();
+  raycaster.setFromCamera(
+    new THREE.Vector2(
+      ((e.clientX - rect.left) / rect.width) * 2 - 1,
+      -((e.clientY - rect.top) / rect.height) * 2 + 1,
+    ),
+    camera,
+  );
+  const hit = raycaster.intersectObject(mesh)[0];
+  if (hit?.instanceId === undefined) return;
+  const voxel = instanceVoxels[hit.instanceId];
+  if (!voxel) return;
+
+  const toLayout = (p: [number, number, number]): [number, number, number] => [
+    p[0] - buildShift[0],
+    p[1] - buildShift[1],
+    p[2] - buildShift[2],
+  ];
+
+  if (editTool === 'remove') {
+    const k = key3(...toLayout(voxel));
+    pendingRemoved.add(k);
+    pendingAdded.delete(k);
+  } else {
+    // Step one cell along the face that was hit.
+    const n = hit.face?.normal ?? new THREE.Vector3(0, 1, 0);
+    const target = toLayout([
+      voxel[0] + Math.round(n.x),
+      voxel[1] + Math.round(n.y),
+      voxel[2] + Math.round(n.z),
+    ]);
+    const k = key3(...target);
+    pendingRemoved.delete(k);
+    pendingAdded.set(k, [...target, editColor] as Added);
+  }
+  syncEditStatus();
+  rerender();
+});
 
 // ---- Body dimensions ------------------------------------------------------
 
