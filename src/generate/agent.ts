@@ -1,9 +1,9 @@
 import { spawn } from 'node:child_process';
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { buildScene } from '../core/build.js';
-import { saveScene, snapshotScene } from '../core/store.js';
+import { OUT_DIR, saveScene, snapshotScene } from '../core/store.js';
 import { formatReport, validate, type ValidationReport } from '../core/validate.js';
 import type { SceneKind, VoxelScene } from '../core/types.js';
 import { buildPrompt, buildRepairPrompt } from './prompt.js';
@@ -13,6 +13,8 @@ import { extractJsonObject, sceneToSpec, specToScene, type GenSpec } from './spe
 import { applyOps, type RevisionOp } from './patch.js';
 import { buildPatchRepairPrompt, buildRevisePrompt } from './revisePrompt.js';
 import { buildQuestionsPrompt, type Question } from './questions.js';
+import { buildCritiquePrompt } from './visual.js';
+import { renderSheet } from '../render/raster.js';
 
 /**
  * Generation runs through the user's own Claude Code or Codex CLI over stdin,
@@ -87,11 +89,20 @@ export interface CliResult {
   usage?: CallUsage;
 }
 
-function commandFor(engine: Engine, model?: string, effort?: string): { cmd: string; args: string[] } {
+function commandFor(
+  engine: Engine,
+  model?: string,
+  effort?: string,
+  allowTools?: string,
+): { cmd: string; args: string[] } {
   // The prompt goes in on stdin: it is far longer than a Windows command line
   // will take as an argument.
   if (engine === 'claude') {
-    const args = ['-p', '--output-format', 'json', '--disallowed-tools', TOOLS_OFF];
+    const args = ['-p', '--output-format', 'json'];
+    // The visual pass needs Read to open the render; everything else is a pure
+    // text completion and ships tool schemas for nothing.
+    if (allowTools) args.push('--allowed-tools', allowTools);
+    else args.push('--disallowed-tools', TOOLS_OFF);
     if (model) args.push('--model', model);
     if (effort) args.push('--effort', effort);
     return { cmd: isWindows ? 'claude.exe' : 'claude', args };
@@ -140,8 +151,9 @@ function runCli(
   timeoutMs: number,
   model?: string,
   effort?: string,
+  allowTools?: string,
 ): Promise<CliResult> {
-  const { cmd, args } = commandFor(engine, model, effort);
+  const { cmd, args } = commandFor(engine, model, effort, allowTools);
   return new Promise((resolve, reject) => {
     // Only .cmd shims need a shell; spawning the .exe directly avoids passing
     // unescaped arguments through cmd.exe.
@@ -294,6 +306,128 @@ export async function generate(
     usage: run.usage,
     applied: run.best.applied,
   };
+}
+
+/**
+ * Render the model, look at it, and apply what the eye catches.
+ *
+ * This is the general form of every fix that used to be a hand-written prompt
+ * rule. It costs one call with an image attached — more than a text pass, and
+ * the only thing that catches a failure nobody anticipated.
+ */
+export async function visualPass(
+  sceneName: string,
+  userPrompt: string,
+  opts: { engine?: Engine; timeoutMs?: number } = {},
+): Promise<{
+  scene: VoxelScene;
+  applied: string[];
+  report: ValidationReport;
+  imagePath: string;
+  usage?: CallUsage;
+  /** Set when the visual edits were discarded for making things worse. */
+  rejected?: string[];
+}> {
+  const engine = opts.engine ?? 'claude';
+  const current = loadScene(sceneName);
+  const built = buildScene(current);
+
+  mkdirSync(OUT_DIR, { recursive: true });
+  const imagePath = join(OUT_DIR, `${sceneName}.png`);
+  writeFileSync(imagePath, renderSheet(built.grid, built.palette, 320));
+
+  const call = await runCli(
+    engine,
+    buildCritiquePrompt(
+      imagePath.replace(/\\/g, '/'),
+      userPrompt,
+      JSON.stringify(sceneToSpec(current), null, 2),
+    ),
+    opts.timeoutMs ?? 420_000,
+    undefined,
+    'medium',
+    'Read',
+  );
+
+  const json = extractJsonObject(call.text) as { ops?: RevisionOp[] };
+  if (!Array.isArray(json.ops) || json.ops.length === 0) {
+    // Nothing to change is a legitimate answer.
+    return {
+      scene: current,
+      applied: [],
+      report: validate(built, { kind: current.kind }),
+      imagePath,
+      usage: call.usage,
+    };
+  }
+
+  const before = validate(built, { kind: current.kind });
+  const beforeProblems = before.checks.filter((c) => c.severity !== 'pass').length;
+
+  let patched = applyOps(current, json.ops);
+  let rebuilt = buildScene(patched.scene); // throws before anything is saved
+  let report = validate(rebuilt, { kind: patched.scene.kind });
+  let problems = report.checks
+    .filter((c) => c.severity !== 'pass')
+    .map((c) => `${c.id}: ${c.message}`);
+
+  // Eyes and structure are different judges. A change that looks right can
+  // detach a part or break parity, so the deterministic checks get the last
+  // word — the same repair loop generation uses.
+  if (problems.length > 0) {
+    const fix = await runCli(
+      engine,
+      buildPatchRepairPrompt(
+        JSON.stringify(sceneToSpec(patched.scene), null, 2),
+        `keep the visual improvements, fix the structure: ${userPrompt}`,
+        problems,
+      ),
+      opts.timeoutMs ?? 420_000,
+      undefined,
+      'low',
+    );
+    try {
+      const fixJson = extractJsonObject(fix.text) as { ops?: RevisionOp[] };
+      if (Array.isArray(fixJson.ops) && fixJson.ops.length > 0) {
+        const refixed = applyOps(patched.scene, fixJson.ops);
+        const rebuilt2 = buildScene(refixed.scene);
+        const report2 = validate(rebuilt2, { kind: refixed.scene.kind });
+        const problems2 = report2.checks.filter((c) => c.severity !== 'pass');
+        if (problems2.length < problems.length) {
+          patched = { scene: refixed.scene, applied: [...patched.applied, ...refixed.applied] };
+          rebuilt = rebuilt2;
+          report = report2;
+          problems = problems2.map((c) => `${c.id}: ${c.message}`);
+        }
+      }
+    } catch {
+      // A failed repair just leaves the visual result to be judged below.
+    }
+    if (fix.usage && call.usage) {
+      call.usage.inputTokens += fix.usage.inputTokens;
+      call.usage.outputTokens += fix.usage.outputTokens;
+      call.usage.costUsd = (call.usage.costUsd ?? 0) + (fix.usage.costUsd ?? 0);
+    }
+  }
+
+  // Never save something worse than what was there. Looking is worth doing
+  // even when the answer is "leave it alone".
+  if (problems.length > beforeProblems) {
+    return {
+      scene: current,
+      applied: [],
+      report: before,
+      imagePath,
+      usage: call.usage,
+      rejected: problems,
+    };
+  }
+
+  snapshotScene(sceneName);
+  saveScene(patched.scene);
+  writeFileSync(imagePath, renderSheet(rebuilt.grid, rebuilt.palette, 320));
+
+  return { scene: patched.scene, applied: patched.applied, report, imagePath, usage: call.usage };
 }
 
 /**

@@ -208,6 +208,30 @@ The agent drives these over MCP; `.mcp.json` wires them into Claude Code.
 Every mutating tool returns a validation report, so you learn immediately
 whether an edit broke the model. A scene is only saved if it builds.
 
+## The visual pass
+
+```bash
+npm run look -- knight "a knight in ornate plate armour"
+npm run render -- knight     # just the PNG, no model call
+```
+
+Renders the model front and three-quarter, hands the image back, and applies
+the edits it returns. This is the general form of what used to be hand-written
+prompt rules: every quality failure here was obvious on sight and invisible in
+JSON, and encoding them one at a time does not generalise.
+
+The renderer is a software raycaster (`src/render/`) — no GPU, no browser, no
+native module. PNG encoding uses the zlib Node already ships.
+
+Structure gets the last word. Visual edits run through the same deterministic
+repair loop, and if the result has more problems than what was there, the whole
+set is discarded and the model is left alone. Two constraints the eye keeps
+breaking are stated in the critique prompt because of this: width parity, and
+that a cone tapers to a point so nothing can be stacked on it.
+
+Costs about $0.15-0.30 a look. Opt in per model rather than running on every
+generation.
+
 ## Not built yet
 
 - `.glb` export for Unity (needs a greedy mesher).

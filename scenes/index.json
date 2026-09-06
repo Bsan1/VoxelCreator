@@ -11,6 +11,9 @@
     "buyucu8",
     "buyucu_med",
     "fire_mage",
+    "hat_a_tall",
+    "hat_b_squat",
+    "hat_c_hood",
     "knight",
     "knight_armed",
     "knight_full",
@@ -20,5 +23,5 @@
     "shield",
     "sword"
   ],
-  "updated": 1788680673359
+  "updated": 1788694228181
 }

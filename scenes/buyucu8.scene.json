@@ -15,8 +15,8 @@
     {
       "id": "hem",
       "size": [
-        16,
-        6,
+        14,
+        5,
         12
       ],
       "color": "#2c3a72",
@@ -49,30 +49,11 @@
       "id": "hat_cone",
       "size": [
         8,
-        5,
+        10,
         8
       ],
       "color": "#232d58",
       "parent": "hat_brim",
-      "anchor": {
-        "to": "top"
-      },
-      "offset": [
-        0,
-        -1,
-        0
-      ],
-      "shape": "cone"
-    },
-    {
-      "id": "hat_tip",
-      "size": [
-        4,
-        2,
-        4
-      ],
-      "color": "#232d58",
-      "parent": "hat_cone",
       "anchor": {
         "to": "top"
       },
@@ -97,19 +78,6 @@
         11
       ],
       "color": "#e0ac69"
-    },
-    {
-      "id": "collar",
-      "part": "body",
-      "region": [
-        0,
-        15,
-        0,
-        11,
-        15,
-        11
-      ],
-      "color": "#c9a227"
     },
     {
       "id": "brow",
@@ -169,10 +137,10 @@
       "id": "beard",
       "part": "body",
       "region": [
-        4,
-        15,
+        3,
+        6,
         10,
-        7,
+        8,
         18,
         11
       ],
@@ -205,19 +173,6 @@
       "color": "#c9a227"
     },
     {
-      "id": "emblem",
-      "part": "body",
-      "region": [
-        5,
-        11,
-        11,
-        6,
-        12,
-        11
-      ],
-      "color": "#c9a227"
-    },
-    {
       "id": "sleeve",
       "part": "body",
       "region": [
@@ -232,26 +187,13 @@
       "mirror": true
     },
     {
-      "id": "hem_trim",
-      "part": "hem",
-      "region": [
-        0,
-        5,
-        0,
-        15,
-        5,
-        11
-      ],
-      "color": "#c9a227"
-    },
-    {
       "id": "boots",
       "part": "hem",
       "region": [
         0,
         0,
         0,
-        15,
+        13,
         1,
         11
       ],

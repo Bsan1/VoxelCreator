@@ -12,7 +12,10 @@
     "check": "tsx src/check.ts",
     "test:repair": "tsx src/generate/repairTest.ts",
     "attach": "tsx src/attachCli.ts",
-    "revise": "tsx src/reviseCli.ts"
+    "revise": "tsx src/reviseCli.ts",
+    "hats": "tsx src/hatVariants.ts",
+    "render": "tsx src/renderCli.ts",
+    "look": "tsx src/lookCli.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
