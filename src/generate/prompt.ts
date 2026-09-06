@@ -1,3 +1,5 @@
+import { describeDials, normalizeDials, type StyleDials } from './dials.js';
+
 /**
  * The instruction given to the generating model.
  *
@@ -7,12 +9,19 @@
  * earned by something in the request. Left unchecked a model will decorate,
  * which is what produces a figure covered in pointless bumps.
  */
-export function buildPrompt(userPrompt: string): string {
+export function buildPrompt(userPrompt: string, dials?: StyleDials): string {
+  const d = normalizeDials(dials);
   return `You are a voxel artist working in one specific house style. Turn the request below into ONE JSON object describing a voxel model.
 
 Output ONLY the JSON object. No prose, no explanation, no code fence.
 
 REQUEST: ${userPrompt}
+
+The request may be written in any language. Read it in whatever language it is
+written, and answer with JSON either way. Keep "name" and every id in English
+snake_case regardless — they are identifiers, not display text.
+
+${describeDials(d)}
 
 === THE HOUSE STYLE ===
 
@@ -29,8 +38,7 @@ painted band across the bottom, or at most one shallow step the full width of
 the body. Arms are painted as vertical bands down the sides, or raised as a
 relief panel.
 
-You may leave the plain box only in these three ways, and only when the request
-actually calls for it:
+The ways you may leave the plain box, within the silhouette budget above:
 
 1. STEPPED PROFILE — stack boxes of different widths on the same centre line.
    Use this for a silhouette the concept genuinely has: a dress or robe that
@@ -47,9 +55,6 @@ actually calls for it:
 DO NOT add bumps, ridges, studs or protrusions that nothing in the request
 asked for. A plain, clean box with a well-painted face beats a lumpy one. When
 in doubt, paint it instead of building it.
-
-A good model fills at least 60% of its own bounding box. A figure with limbs
-sticking out scores about 40% and is wrong for this style.
 
 === FORMAT ===
 
@@ -100,6 +105,19 @@ For a symmetric pair, define the right one and mirror the left:
 from [0,0,0] to size-1. Painting only recolors voxels that already exist, so it
 can never create floating blocks. "mirror": true also paints the left/right
 mirrored copy — use it for eyes, cheeks, hands, boots.
+
+THE FACE MUST STAY READABLE. This is the single most common failure: a hood,
+beard, helmet or hair painted across the whole upper block leaves a blank slab
+with no face, and the figure reads as a sack rather than a character.
+
+  - Decide the face band first — roughly the top fifth of the body, on the
+    front face — and paint eyes there before anything else.
+  - A beard occupies only BELOW the eyes, and never the full width: leave at
+    least one voxel of skin either side so it reads as a beard, not a bib.
+  - A hood or helmet frames the face: paint it around the face band, not over
+    it. Leave the eyes exposed.
+  - After every other detail, the eyes must still be visible from the front.
+    If a garment would cover them, move the garment down.
 
 THIS IS WHERE YOU DO THE WORK. On a 10x26x8 body, paint:
   the face or visor slot high on the front, around y = 19-23 — a single
@@ -182,6 +200,9 @@ How to fix each kind:
   offset (or move its anchor) until it overlaps its parent.
 - "thin in two or more axes": that part is a stick. Thicken it, or turn it into
   a relief panel (thin in one axis only, wide across the other two).
+- "only N painted regions": add more entries to "details" — trim bands at the
+  collar, waist and hem, an emblem on the chest, seams, cuffs, a contrasting
+  band for the footwear. Do NOT add parts to satisfy this.
 - "exceeds the 255 the .vox format allows": reduce the number of colours.
 
 NEVER DROP A FEATURE THE REQUEST ASKED FOR. If the request names a staff, a

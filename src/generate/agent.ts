@@ -12,6 +12,7 @@ import { loadScene } from '../core/store.js';
 import { extractJsonObject, sceneToSpec, specToScene, type GenSpec } from './spec.js';
 import { applyOps, type RevisionOp } from './patch.js';
 import { buildPatchRepairPrompt, buildRevisePrompt } from './revisePrompt.js';
+import { detailTarget, normalizeDials, prismMinPct, type StyleDials } from './dials.js';
 
 /**
  * Generation runs through the user's own Claude Code or Codex CLI over stdin,
@@ -185,7 +186,7 @@ export const runCliForTest = runCli;
  */
 function evaluate(
   raw: string,
-  opts: { name?: string; kind?: SceneKind; base?: VoxelScene } = {},
+  opts: { name?: string; kind?: SceneKind; base?: VoxelScene; dials?: StyleDials } = {},
 ): Attempt {
   const json = extractJsonObject(raw);
   let scene: VoxelScene;
@@ -204,7 +205,16 @@ function evaluate(
     scene = specToScene(spec);
   }
 
-  const report = validate(buildScene(scene), { kind: scene.kind }); // throws before anything is saved
+  const d = normalizeDials(opts.dials ?? (scene.meta?.dials as StyleDials | undefined));
+  const target = detailTarget(d);
+  // Thresholds come from the same dials the prompt was written from, so the
+  // check can never ask for something the instruction did not.
+  const report = validate(buildScene(scene), {
+    kind: scene.kind,
+    prismMinPct: prismMinPct(d),
+    detailCount: scene.details.length,
+    detailMin: scene.kind === 'item' ? undefined : target.min,
+  }); // throws before anything is saved
   const problems = report.checks
     .filter((c) => c.severity !== 'pass')
     .map((c) => `${c.id}: ${c.message}`);
@@ -234,10 +244,12 @@ export async function generate(
     model?: string;
     /** Reasoning effort. Left unset, the CLI uses your configured default. */
     effort?: string;
+    /** Boxiness / detail. Persisted on the scene so revisions inherit them. */
+    dials?: Partial<StyleDials>;
   } = {},
 ): Promise<GenerateResult> {
   const engine = opts.engine ?? 'claude';
-  const timeoutMs = opts.timeoutMs ?? 240_000;
+  const timeoutMs = opts.timeoutMs ?? 420_000;
   const maxRepairs = opts.repairs ?? 1;
   const started = Date.now();
   const kind: SceneKind = opts.item || opts.forCharacter ? 'item' : 'character';
@@ -245,8 +257,9 @@ export async function generate(
     ? describeCharacter(loadScene(opts.forCharacter))
     : undefined;
 
+  const dials = normalizeDials(opts.dials);
   const initial =
-    kind === 'item' ? buildItemPrompt(userPrompt, characterBlock) : buildPrompt(userPrompt);
+    kind === 'item' ? buildItemPrompt(userPrompt, characterBlock) : buildPrompt(userPrompt, dials);
   const run = await runWithRepair(userPrompt, initial, {
     engine,
     timeoutMs,
@@ -254,9 +267,15 @@ export async function generate(
     name: opts.name,
     kind,
     model: opts.model,
-    effort: opts.effort,
+    // Measured on the same prompt: xhigh spent 50k output tokens over 579s for
+    // $0.90, medium 10k over 140s for $0.38 — and medium's model had more
+    // parts and passed the same checks. Left to inherit a global xhigh, a
+    // single character costs about a dollar in reasoning nobody reads.
+    effort: opts.effort ?? 'medium',
+    dials,
   });
 
+  run.best.scene.meta = { ...(run.best.scene.meta ?? {}), dials };
   saveScene(run.best.scene);
   return {
     scene: run.best.scene,
@@ -290,15 +309,18 @@ export async function revise(
     saveAs?: string;
     model?: string;
     effort?: string;
+    /** Override the stored dials for this revision onward. */
+    dials?: Partial<StyleDials>;
   } = {},
 ): Promise<GenerateResult> {
   const engine = opts.engine ?? 'claude';
-  const timeoutMs = opts.timeoutMs ?? 240_000;
+  const timeoutMs = opts.timeoutMs ?? 420_000;
   const maxRepairs = opts.repairs ?? 1;
   const started = Date.now();
 
   const current = loadScene(sceneName);
   const kind = current.kind ?? 'character';
+  const dials = normalizeDials(opts.dials ?? (current.meta?.dials as Partial<StyleDials> | undefined));
   const outName = opts.saveAs ?? sceneName;
 
   const initial = buildRevisePrompt(
@@ -319,11 +341,13 @@ export async function revise(
     effort: opts.effort ?? 'low',
     base: current,
     instruction,
+    dials,
   });
 
   // Only snapshot when overwriting; saving under a new name leaves the
   // original scene untouched anyway.
   if (outName === sceneName) snapshotScene(sceneName);
+  run.best.scene.meta = { ...(run.best.scene.meta ?? {}), dials };
   saveScene(run.best.scene);
 
   return {
@@ -357,13 +381,14 @@ async function runWithRepair(
     model?: string;
     /** Reasoning effort for the CLI, e.g. "low" for mechanical edits. */
     effort?: string;
+    dials?: StyleDials;
     /** Scene an edit list applies to, when revising. */
     base?: VoxelScene;
     /** Original instruction, so a revision repair can restate the goal. */
     instruction?: string;
   },
 ): Promise<{ best: Attempt; attempts: number; firstProblems: string[]; usage: CallUsage }> {
-  const { engine, timeoutMs, maxRepairs, name, kind, model, effort, base, instruction } = opts;
+  const { engine, timeoutMs, maxRepairs, name, kind, model, effort, base, instruction, dials } = opts;
 
   // A revision repairs by producing a better edit list, not by restating the
   // whole model — asking for a full spec here invites it to change things
@@ -393,7 +418,7 @@ async function runWithRepair(
 
     let candidate: Attempt;
     try {
-      candidate = evaluate(raw, { name, kind, base });
+      candidate = evaluate(raw, { name, kind, base, dials });
     } catch (e) {
       // Unparsable or unbuildable. Retry with the error as the defect list;
       // if there are no retries left, surface it rather than saving nothing.

@@ -128,6 +128,29 @@
       }
       #reviseTarget { color: var(--accent); text-transform: none; letter-spacing: 0; }
 
+      .dial { margin-top: 10px; }
+      .dial label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .dial label b { color: var(--accent); font-weight: 600; }
+      .dial small {
+        display: block;
+        margin-top: 2px;
+        font-size: 10px;
+        line-height: 1.35;
+        color: var(--muted);
+        opacity: 0.85;
+      }
+      input[type="range"] {
+        width: 100%;
+        margin: 4px 0 0;
+        accent-color: var(--accent);
+        background: transparent;
+      }
+
       .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
       .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
       #models { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
@@ -214,7 +237,18 @@
 
       <div class="label">Create</div>
       <textarea id="prompt" rows="2" placeholder="a fire mage with a long beard"></textarea>
-      <div class="grid2" style="margin-top: 6px">
+      <div class="dial">
+        <label for="boxiness">Boxiness <b id="boxinessVal">65</b></label>
+        <input type="range" id="boxiness" min="0" max="100" step="5" value="65" />
+        <small id="boxinessHint"></small>
+      </div>
+      <div class="dial">
+        <label for="detail">Detail <b id="detailVal">50</b></label>
+        <input type="range" id="detail" min="0" max="100" step="5" value="50" />
+        <small id="detailHint"></small>
+      </div>
+
+      <div class="grid2" style="margin-top: 8px">
         <button id="genClaude" class="primary">Generate</button>
         <select id="engine">
           <option value="claude">Claude</option>

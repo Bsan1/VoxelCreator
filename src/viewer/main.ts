@@ -106,7 +106,10 @@ function clearModels(): void {
 }
 
 const costLine = (u?: { outputTokens: number; inputTokens: number; costUsd?: number }) =>
-  u ? ` · ${(u.inputTokens / 1000).toFixed(0)}k in / ${u.outputTokens.toLocaleString()} out` + (u.costUsd ? ` · ${u.costUsd.toFixed(3)}` : '') : '';
+  u
+    ? ` · ${(u.inputTokens / 1000).toFixed(0)}k in / ${u.outputTokens.toLocaleString()} out` +
+      (u.costUsd ? ` · $${u.costUsd.toFixed(3)}` : '')
+    : '';
 
 const row = (k: string, v: string) => `<div class="row"><span>${k}</span><b>${v}</b></div>`;
 
@@ -395,7 +398,7 @@ async function runGeneration(): Promise<void> {
     const res = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ prompt, engine: engineEl.value }),
+      body: JSON.stringify({ prompt, engine: engineEl.value, dials: currentDials() }),
     });
     const data = (await res.json()) as {
       name?: string; elapsedMs?: number; parts?: string[]; warnings?: string[];
@@ -425,6 +428,50 @@ async function runGeneration(): Promise<void> {
     genBtn.disabled = false;
   }
 }
+
+// ---- Art-direction dials --------------------------------------------------
+
+const boxinessEl = $<HTMLInputElement>('boxiness');
+const detailEl = $<HTMLInputElement>('detail');
+
+/**
+ * The hints matter: a slider with no feedback is guesswork. These say what the
+ * number will actually do, including the bounding-box fill the model gets
+ * measured against, so the dial reads as a rule rather than a mood.
+ */
+function describeBoxiness(v: number): string {
+  const fill = Math.round(30 + v * 0.52);
+  if (v >= 85) return `almost a pure box · must fill ${fill}% of its bounds`;
+  if (v >= 65) return `one mass, a step or two allowed · ${fill}% fill`;
+  if (v >= 40) return `stepped and shaped, still one figure · ${fill}% fill`;
+  return `free silhouette, layered volumes · ${fill}% fill`;
+}
+
+function describeDetail(v: number): string {
+  const aim = Math.round(3 + (v / 100) * 19);
+  if (v >= 80) return `richly trimmed · aim ~${aim} painted regions, relief panels`;
+  if (v >= 45) return `moderate · aim ~${aim} painted regions`;
+  if (v >= 20) return `restrained · aim ~${aim} regions, large flat areas`;
+  return `minimal · ~${aim} regions, silhouette carries it`;
+}
+
+function syncDials(): void {
+  const b = Number(boxinessEl.value);
+  const d = Number(detailEl.value);
+  $('boxinessVal').textContent = String(b);
+  $('detailVal').textContent = String(d);
+  $('boxinessHint').textContent = describeBoxiness(b);
+  $('detailHint').textContent = describeDetail(d);
+}
+
+boxinessEl.addEventListener('input', syncDials);
+detailEl.addEventListener('input', syncDials);
+syncDials();
+
+const currentDials = () => ({
+  boxiness: Number(boxinessEl.value),
+  detail: Number(detailEl.value),
+});
 
 genBtn.addEventListener('click', () => void runGeneration());
 
@@ -464,7 +511,7 @@ async function postRevise(body: Record<string, unknown>, label: string): Promise
     const res = await fetch('/api/revise', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ scene: current, engine: engineEl.value, ...body }),
+      body: JSON.stringify({ scene: current, engine: engineEl.value, dials: currentDials(), ...body }),
     });
     const data = (await res.json()) as {
       name?: string; elapsedMs?: number; parts?: string[]; warnings?: string[];

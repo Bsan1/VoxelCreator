@@ -1,6 +1,8 @@
 {
   "scenes": [
     "blue_robe_mage",
+    "buyucu",
+    "buyucu_med",
     "knight",
     "knight_armed",
     "knight_full",
@@ -8,5 +10,5 @@
     "shield",
     "sword"
   ],
-  "updated": 1788668781399
+  "updated": 1788671787646
 }

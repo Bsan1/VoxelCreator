@@ -32,13 +32,12 @@ function generateApi(): Plugin {
         };
 
         try {
-          const { prompt, engine } = JSON.parse(Buffer.concat(chunks).toString() || '{}') as {
-            prompt?: string;
-            engine?: Engine;
-          };
+          const { prompt, engine, dials } = JSON.parse(
+            Buffer.concat(chunks).toString() || '{}',
+          ) as { prompt?: string; engine?: Engine; dials?: { boxiness?: number; detail?: number } };
           if (!prompt?.trim()) return send(400, { error: 'prompt is required' });
 
-          const result = await generate(prompt, { engine: engine ?? 'claude' });
+          const result = await generate(prompt, { engine: engine ?? 'claude', dials });
           const build = buildScene(result.scene);
           writeFileSync(
             join(OUT_DIR, `${result.scene.name}.vox`),
@@ -79,9 +78,12 @@ function generateApi(): Plugin {
         };
 
         try {
-          const { scene, instruction, engine, undo } = JSON.parse(
+          const { scene, instruction, engine, undo, dials } = JSON.parse(
             Buffer.concat(chunks).toString() || '{}',
-          ) as { scene?: string; instruction?: string; engine?: Engine; undo?: boolean };
+          ) as {
+            scene?: string; instruction?: string; engine?: Engine; undo?: boolean;
+            dials?: { boxiness?: number; detail?: number };
+          };
           if (!scene) return send(400, { error: 'scene is required' });
 
           if (undo) {
@@ -95,7 +97,7 @@ function generateApi(): Plugin {
           }
 
           if (!instruction?.trim()) return send(400, { error: 'instruction is required' });
-          const result = await revise(scene, instruction, { engine: engine ?? 'claude' });
+          const result = await revise(scene, instruction, { engine: engine ?? 'claude', dials });
           const build = buildScene(result.scene);
           writeFileSync(
             join(OUT_DIR, `${result.scene.name}.vox`),

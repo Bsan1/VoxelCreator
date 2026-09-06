@@ -15,8 +15,14 @@ const flagValue = (flag: string): { value?: string; idx: number } => {
 };
 const nameFlag = flagValue('--name');
 const forFlag = flagValue('--for');
+const effortFlag = flagValue('--effort');
+const boxFlag = flagValue('--boxiness');
+const detailFlag = flagValue('--detail');
 const isItem = argv.includes('--item') || forFlag.idx !== -1;
-const consumed = new Set([nameFlag.idx + 1, forFlag.idx + 1].filter((i) => i > 0));
+const consumed = new Set(
+  [nameFlag.idx + 1, forFlag.idx + 1, boxFlag.idx + 1, detailFlag.idx + 1, effortFlag.idx + 1].filter((i) => i > 0),
+);
+const num = (v?: string): number | undefined => (v === undefined ? undefined : Number(v));
 const prompt = argv
   .filter((a, i) => !a.startsWith('--') && !consumed.has(i))
   .join(' ')
@@ -42,6 +48,8 @@ const result = await generate(prompt, {
   name: nameFlag.value,
   item: isItem,
   forCharacter: forFlag.value,
+  effort: effortFlag.value,
+  dials: { boxiness: num(boxFlag.value), detail: num(detailFlag.value) },
 });
 
 const build = buildScene(result.scene);

@@ -83,7 +83,15 @@ function symmetryPct(grid: VoxelGrid): number {
 
 export function validate(
   build: BuildResult,
-  opts: { requireGround?: boolean; kind?: SceneKind } = {},
+  opts: {
+    requireGround?: boolean;
+    kind?: SceneKind;
+    /** Minimum bounding-box fill, from the boxiness dial. Defaults to 60. */
+    prismMinPct?: number;
+    /** Painted-region count and the floor the detail dial asks for. */
+    detailCount?: number;
+    detailMin?: number;
+  } = {},
 ): ValidationReport {
   const { grid, palette } = build;
   const checks: Check[] = [];
@@ -187,7 +195,7 @@ export function validate(
   // 100%; a figure with separated limbs scores around 40%. This is the check
   // that keeps the house style — the silhouette is meant to read as one mass,
   // stepped where the concept needs it, not as an articulated puppet.
-  const PRISM_MIN_PCT = 60;
+  const PRISM_MIN_PCT = opts.prismMinPct ?? 60;
   const fillPct = (voxels / volume) * 100;
   if (!isCharacter) {
     add(
@@ -291,6 +299,23 @@ export function validate(
       'warn',
       `Thin in two or more axes, will read as noise: ` +
         sticks.map((p) => `${p.part.id} [${p.size.join('x')}]`).join(', '),
+    );
+  }
+
+  // What makes the detail dial real. Without a check, "more detail" is a mood
+  // the model can ignore; with one, falling short is a defect the correction
+  // pass has to answer for.
+  if (opts.detailMin === undefined || opts.detailCount === undefined) {
+    add('detail_density', 'pass', 'No detail target set for this model');
+  } else if (opts.detailCount >= opts.detailMin) {
+    add('detail_density', 'pass', `${opts.detailCount} painted regions`);
+  } else {
+    add(
+      'detail_density',
+      'warn',
+      `Only ${opts.detailCount} painted regions, and this model was asked for at ` +
+        `least ${opts.detailMin}. Add painted detail — trim at the collar, belt and ` +
+        'hem, an emblem, seams — rather than adding parts.',
     );
   }
 
