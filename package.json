@@ -16,7 +16,8 @@
     "hats": "tsx src/hatVariants.ts",
     "render": "tsx src/renderCli.ts",
     "look": "tsx src/lookCli.ts",
-    "clean": "tsx src/cleanCli.ts"
+    "clean": "tsx src/cleanCli.ts",
+    "sheet": "tsx src/sheetCli.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",

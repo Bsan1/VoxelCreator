@@ -41,7 +41,7 @@ const text = (s: string) => ({ content: [{ type: 'text' as const, text: s }] });
 /** Build, then report. Throws if the scene is structurally unbuildable. */
 function reportFor(scene: VoxelScene, note: string): string {
   const build = buildScene(scene);
-  return `${note}\n\n${formatReport(validate(build))}`;
+  return `${note}\n\n${formatReport(validate(build, { kind: scene.kind, scene }))}`;
 }
 
 /**
@@ -140,7 +140,7 @@ server.registerTool(
         details.length > 0 ? 'details:' : 'details: none',
         ...details,
         '',
-        formatReport(validate(build)),
+        formatReport(validate(build, { kind: scene.kind, scene })),
       ].join('\n'),
     );
   },
@@ -323,7 +323,7 @@ server.registerTool(
     writeFileSync(path, bytes);
     return text(
       `Wrote ${path} (${bytes.length} bytes, ${build.grid.count()} voxels, ` +
-        `${build.palette.size} colors).\n\n${formatReport(validate(build))}`,
+        `${build.palette.size} colors).\n\n${formatReport(validate(build, { kind: scene.kind, scene }))}`,
     );
   },
 );

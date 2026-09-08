@@ -68,5 +68,5 @@ if (result.attempts > 1) {
   console.log('\nrepaired after attempt 1 reported:');
   for (const p of result.repairedProblems) console.log(`  - ${p}`);
 }
-console.log(`\n${formatReport(validate(build, { kind: result.scene.kind }))}`);
+console.log(`\n${formatReport(validate(build, { kind: result.scene.kind, scene: result.scene }))}`);
 if (!saveAs) console.log(`\nundo with: npm run revise -- ${sceneName} --undo`);

@@ -1,0 +1,475 @@
+{
+  "name": "ref_robed_a",
+  "kind": "character",
+  "root": "body",
+  "parts": [
+    {
+      "id": "body",
+      "size": [
+        12,
+        27,
+        12
+      ],
+      "color": "#3f6b3a"
+    },
+    {
+      "id": "hood",
+      "size": [
+        12,
+        6,
+        12
+      ],
+      "color": "#4a3a26",
+      "parent": "body",
+      "anchor": {
+        "to": "top",
+        "alignX": "center",
+        "alignZ": "center"
+      },
+      "offset": [
+        0,
+        -1,
+        0
+      ],
+      "shape": "box"
+    }
+  ],
+  "details": [
+    {
+      "id": "head_fill",
+      "part": "body",
+      "region": [
+        0,
+        18,
+        0,
+        11,
+        22,
+        11
+      ],
+      "color": "#c98a5e"
+    },
+    {
+      "id": "collar",
+      "part": "body",
+      "region": [
+        0,
+        17,
+        0,
+        11,
+        17,
+        11
+      ],
+      "color": "#2a2320"
+    },
+    {
+      "id": "brow",
+      "part": "body",
+      "region": [
+        2,
+        21,
+        11,
+        9,
+        21,
+        11
+      ],
+      "color": "#8a5a3a"
+    },
+    {
+      "id": "eyes",
+      "part": "body",
+      "region": [
+        3,
+        19,
+        11,
+        4,
+        20,
+        11
+      ],
+      "color": "#2a1f1a",
+      "mirror": true
+    },
+    {
+      "id": "nose",
+      "part": "body",
+      "region": [
+        5,
+        18,
+        11,
+        6,
+        18,
+        11
+      ],
+      "color": "#a8724c"
+    },
+    {
+      "id": "jerkin_chest",
+      "part": "body",
+      "region": [
+        2,
+        8,
+        11,
+        9,
+        16,
+        11
+      ],
+      "color": "#5a3a24"
+    },
+    {
+      "id": "wool_collar_trim",
+      "part": "body",
+      "region": [
+        2,
+        15,
+        11,
+        9,
+        15,
+        11
+      ],
+      "color": "#274d24"
+    },
+    {
+      "id": "emblem",
+      "part": "body",
+      "region": [
+        4,
+        10,
+        11,
+        7,
+        14,
+        11
+      ],
+      "color": "#c9a24a"
+    },
+    {
+      "id": "belt",
+      "part": "body",
+      "region": [
+        0,
+        7,
+        0,
+        11,
+        8,
+        11
+      ],
+      "color": "#a06a2e"
+    },
+    {
+      "id": "buckle",
+      "part": "body",
+      "region": [
+        5,
+        7,
+        11,
+        6,
+        8,
+        11
+      ],
+      "color": "#c9a24a"
+    },
+    {
+      "id": "arm_r",
+      "part": "body",
+      "region": [
+        10,
+        6,
+        3,
+        11,
+        16,
+        8
+      ],
+      "color": "#2f4d2a",
+      "mirror": true
+    },
+    {
+      "id": "sleeve_cuff_r",
+      "part": "body",
+      "region": [
+        10,
+        6,
+        3,
+        11,
+        7,
+        8
+      ],
+      "color": "#5a3a24",
+      "mirror": true
+    },
+    {
+      "id": "tunic_hem",
+      "part": "body",
+      "region": [
+        0,
+        1,
+        0,
+        11,
+        2,
+        11
+      ],
+      "color": "#274d24"
+    },
+    {
+      "id": "boots",
+      "part": "body",
+      "region": [
+        0,
+        0,
+        0,
+        11,
+        0,
+        11
+      ],
+      "color": "#2a2015"
+    },
+    {
+      "id": "hood_trim",
+      "part": "hood",
+      "region": [
+        0,
+        0,
+        0,
+        11,
+        0,
+        11
+      ],
+      "color": "#a06a2e"
+    }
+  ],
+  "meta": {
+    "genSpec": {
+      "name": "ref_robed_a",
+      "kind": "character",
+      "root": {
+        "id": "body",
+        "size": [
+          12,
+          27,
+          12
+        ],
+        "color": "#3f6b3a"
+      },
+      "parts": [
+        {
+          "id": "hood",
+          "size": [
+            12,
+            6,
+            12
+          ],
+          "color": "#4a3a26",
+          "parent": "body",
+          "anchor": {
+            "to": "top",
+            "alignX": "center",
+            "alignZ": "center"
+          },
+          "offset": [
+            0,
+            -1,
+            0
+          ],
+          "shape": "box"
+        }
+      ],
+      "details": [
+        {
+          "id": "head_fill",
+          "part": "body",
+          "region": [
+            0,
+            18,
+            0,
+            11,
+            22,
+            11
+          ],
+          "color": "#c98a5e"
+        },
+        {
+          "id": "collar",
+          "part": "body",
+          "region": [
+            0,
+            17,
+            0,
+            11,
+            17,
+            11
+          ],
+          "color": "#2a2320"
+        },
+        {
+          "id": "brow",
+          "part": "body",
+          "region": [
+            2,
+            21,
+            11,
+            9,
+            21,
+            11
+          ],
+          "color": "#8a5a3a"
+        },
+        {
+          "id": "eyes",
+          "part": "body",
+          "region": [
+            3,
+            19,
+            11,
+            4,
+            20,
+            11
+          ],
+          "color": "#2a1f1a",
+          "mirror": true
+        },
+        {
+          "id": "nose",
+          "part": "body",
+          "region": [
+            5,
+            18,
+            11,
+            6,
+            18,
+            11
+          ],
+          "color": "#a8724c"
+        },
+        {
+          "id": "jerkin_chest",
+          "part": "body",
+          "region": [
+            2,
+            8,
+            11,
+            9,
+            16,
+            11
+          ],
+          "color": "#5a3a24"
+        },
+        {
+          "id": "wool_collar_trim",
+          "part": "body",
+          "region": [
+            2,
+            15,
+            11,
+            9,
+            15,
+            11
+          ],
+          "color": "#274d24"
+        },
+        {
+          "id": "emblem",
+          "part": "body",
+          "region": [
+            4,
+            10,
+            11,
+            7,
+            14,
+            11
+          ],
+          "color": "#c9a24a"
+        },
+        {
+          "id": "belt",
+          "part": "body",
+          "region": [
+            0,
+            7,
+            0,
+            11,
+            8,
+            11
+          ],
+          "color": "#a06a2e"
+        },
+        {
+          "id": "buckle",
+          "part": "body",
+          "region": [
+            5,
+            7,
+            11,
+            6,
+            8,
+            11
+          ],
+          "color": "#c9a24a"
+        },
+        {
+          "id": "arm_r",
+          "part": "body",
+          "region": [
+            10,
+            6,
+            3,
+            11,
+            16,
+            8
+          ],
+          "color": "#2f4d2a",
+          "mirror": true
+        },
+        {
+          "id": "sleeve_cuff_r",
+          "part": "body",
+          "region": [
+            10,
+            6,
+            3,
+            11,
+            7,
+            8
+          ],
+          "color": "#5a3a24",
+          "mirror": true
+        },
+        {
+          "id": "tunic_hem",
+          "part": "body",
+          "region": [
+            0,
+            1,
+            0,
+            11,
+            2,
+            11
+          ],
+          "color": "#274d24"
+        },
+        {
+          "id": "boots",
+          "part": "body",
+          "region": [
+            0,
+            0,
+            0,
+            11,
+            0,
+            11
+          ],
+          "color": "#2a2015"
+        },
+        {
+          "id": "hood_trim",
+          "part": "hood",
+          "region": [
+            0,
+            0,
+            0,
+            11,
+            0,
+            11
+          ],
+          "color": "#a06a2e"
+        }
+      ]
+    }
+  }
+}

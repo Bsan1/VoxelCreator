@@ -97,6 +97,43 @@ download) and an **All models** mode that lays every scene out in a grid with
 name tags. Camera presets: Front, 3/4, Side, Top. The **◀** button folds the
 panel away and hands its width back to the camera.
 
+## Style profiles
+
+**The style is a swappable constant, not something baked into the tool.** The
+point of pinning a style down is consistent output *for one project*; the next
+project wants a different constant and must be able to have one without editing
+the generator.
+
+`src/core/style.ts` defines what a profile holds; `src/styles/<id>.ts` is one
+project's answer. `activeStyle()` resolves it, and `VOXEL_STYLE=<id>` picks a
+different one. **Nothing in `validate`, `prompt` or the primitives may hard-code
+a style number** — size ladder, boxiness threshold, minimum contrast, taper
+steps and detail budgets all come from the profile. Two profiles are not meant
+to agree; that disagreement is the feature.
+
+Tapering happens deep in the rasteriser, far from anything that knows which
+style is active, so the registry pushes it down once on load via
+`setAmbientTaper`. Threading it through all twenty-odd `buildScene` call sites
+instead would have left some wired and some not, which is the half-applied style
+this whole design exists to prevent.
+
+### The size ladder
+
+Voxel count is to voxel art what pixel size is to pixel art. `prism` works at
+**8x18x8** and offers x0.5, x1, x1.5 and x2, and `size_ladder` warns on anything
+off the rungs. Unlike every other check in the file this one is not a matter of
+taste, it is a number.
+
+Each rung carries **its own detail budget**, because what a model can hold is
+set by its voxel count. A face needs brow, gap, eyes, gap and mouth stacked
+inside the head band, which is a third of the body: six rows at the base size,
+twelve at double. The same face painted at both ends turns one to mush and
+leaves the other empty.
+
+That budget is also what settles the smallest-marking rule. `line1` — a 1-wide
+line is fine, a patch must be at least 2x2 — is the only setting that fits a
+face in six rows; `min2` needs eight and cannot draw one at the base size at all.
+
 ## Generation
 
 Generation shells out to the local `claude` or `codex` CLI over stdin, so it
@@ -105,8 +142,41 @@ runs on your existing subscription — no API key, nothing to configure. Expect
 
 The model returns a `GenSpec` (`src/generate/spec.ts`): a root mass, optional
 parts, and painted details. There is no character preset and no fixed skeleton
-— the art direction lives entirely in `src/generate/prompt.ts`, **which is
-where generation quality is tuned.**
+— the art direction lives in `src/generate/prompt.ts` and, more importantly, in
+the worked example in `src/generate/reference.ts`. **Both are where generation
+quality is tuned, and the example is the stronger lever.**
+
+### Show a model, do not describe one
+
+The prompt spent about 3,000 tokens describing the house style in prose and
+never once showed a finished figure, so every quality failure was answered with
+another paragraph. Prose generalises badly and the rules drifted out of step
+with what actually looked good: the prompt prescribed a three-tier shrinking
+stack for headwear (which produces a wedding cake) and told the model to paint
+the face on the front face only (which leaves the head's sides in garment
+colour, so it never reads as a head). The best model the generator had produced
+did neither of those things.
+
+`reference.ts` holds finished models as complete annotated examples, and the one
+that matches the request is shown before any of the rules. **Prefer teaching a
+new behaviour by improving an example over adding a rule.** `npm run test:mcp`
+validates every reference, so one cannot quietly stop being worth copying.
+
+The example teaches faithfully, flaws included. A prompt rule saying to leave a
+row of skin between brow and eyes was ignored; the example had them touching,
+and the output copied that exactly. Fixing the example fixed the output.
+
+### Match the example to the archetype
+
+A batch of six generations came out well for every cloth-and-skin subject and
+badly for the two that were metal — an armoured knight and a machine — because
+the only example was a robed figure, and nothing showed how to make a
+monochrome subject read. Adding a plated knight, chosen by keywords in the
+request, fixed both in one call each.
+
+A reference is worth adding when a whole archetype comes out badly, not when one
+model does. Two cover most requests today; the next gaps are a creature and a
+vehicle.
 
 A generation is built and validated before anything is written, so a malformed
 reply fails loudly instead of saving a broken scene.
@@ -120,6 +190,12 @@ npm run revise -- knight --undo                   # step back one revision
 ```
 
 Or use the **Revise** box in the viewer, which acts on the selected model.
+
+A revision must answer with an edit list. A reply that restates the whole model
+is rejected and sent back through the repair pass, because accepting one is not
+a revision at all — it silently replaces the model with whatever the reply
+happened to restate. One did exactly that and dropped a figure's painted face
+while keeping its clothing.
 
 Revision feeds the model's **current scene** back as the starting point rather
 than re-running the original prompt, so everything you already accepted
@@ -179,6 +255,9 @@ whole ancestry is centred, so something hanging off a protrusion is left alone.
 | Check | Catches |
 | --- | --- |
 | `prism_fidelity` | a character silhouette that has strayed from a rectangular prism |
+| `face` | a head band in one flat colour, i.e. a figure with no face on it |
+| `flat_band` | a run of rows over a quarter of the height in one unpainted colour |
+| `contrast` | paint the eye cannot see: markings too close in shade to what they sit on |
 | `solid_base` | a base split into separate leg blocks |
 | `base_footprint` | a model tapering to a point at the bottom, which looks unstable |
 | `connectivity` | detached parts |

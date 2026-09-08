@@ -1,0 +1,739 @@
+{
+  "name": "t_king",
+  "kind": "character",
+  "root": "body",
+  "parts": [
+    {
+      "id": "body",
+      "size": [
+        12,
+        26,
+        12
+      ],
+      "color": "#8a6d1a"
+    },
+    {
+      "id": "crown",
+      "size": [
+        12,
+        4,
+        12
+      ],
+      "color": "#f4c430",
+      "parent": "body",
+      "anchor": {
+        "to": "top",
+        "alignX": "center",
+        "alignZ": "center"
+      },
+      "offset": [
+        0,
+        -1,
+        0
+      ],
+      "shape": "box"
+    },
+    {
+      "id": "crown_point_c",
+      "size": [
+        4,
+        5,
+        4
+      ],
+      "color": "#f4c430",
+      "parent": "crown",
+      "anchor": {
+        "to": "top",
+        "alignX": "center",
+        "alignZ": "center"
+      },
+      "offset": [
+        0,
+        -1,
+        0
+      ],
+      "shape": "pyramid"
+    },
+    {
+      "id": "crown_point_r",
+      "size": [
+        3,
+        4,
+        3
+      ],
+      "color": "#f4c430",
+      "parent": "crown",
+      "anchor": {
+        "to": "top",
+        "alignX": "max",
+        "alignZ": "center"
+      },
+      "offset": [
+        -1,
+        -1,
+        0
+      ],
+      "shape": "pyramid"
+    },
+    {
+      "id": "crown_point_l",
+      "mirrorOf": "crown_point_r"
+    },
+    {
+      "id": "cape",
+      "size": [
+        12,
+        16,
+        2
+      ],
+      "color": "#f5f5f0",
+      "parent": "body",
+      "anchor": {
+        "to": "back",
+        "alignX": "center",
+        "alignY": "max"
+      },
+      "offset": [
+        0,
+        -10,
+        0
+      ],
+      "shape": "box"
+    }
+  ],
+  "details": [
+    {
+      "id": "head_fill",
+      "part": "body",
+      "region": [
+        0,
+        17,
+        0,
+        11,
+        25,
+        11
+      ],
+      "color": "#e0ac69"
+    },
+    {
+      "id": "collar",
+      "part": "body",
+      "region": [
+        0,
+        15,
+        0,
+        11,
+        16,
+        11
+      ],
+      "color": "#f2ede1"
+    },
+    {
+      "id": "brow",
+      "part": "body",
+      "region": [
+        2,
+        21,
+        11,
+        9,
+        21,
+        11
+      ],
+      "color": "#6b4423"
+    },
+    {
+      "id": "eyes",
+      "part": "body",
+      "region": [
+        3,
+        18,
+        11,
+        4,
+        19,
+        11
+      ],
+      "color": "#2a1f1a",
+      "mirror": true
+    },
+    {
+      "id": "mouth",
+      "part": "body",
+      "region": [
+        5,
+        17,
+        11,
+        6,
+        17,
+        11
+      ],
+      "color": "#6b3f2a"
+    },
+    {
+      "id": "torso_shade",
+      "part": "body",
+      "region": [
+        0,
+        10,
+        0,
+        11,
+        14,
+        11
+      ],
+      "color": "#c9a227"
+    },
+    {
+      "id": "chest_emblem",
+      "part": "body",
+      "region": [
+        4,
+        11,
+        11,
+        7,
+        13,
+        11
+      ],
+      "color": "#ffd700"
+    },
+    {
+      "id": "chest_gem",
+      "part": "body",
+      "region": [
+        5,
+        12,
+        11,
+        6,
+        12,
+        11
+      ],
+      "color": "#b02020"
+    },
+    {
+      "id": "waist_sash",
+      "part": "body",
+      "region": [
+        0,
+        8,
+        0,
+        11,
+        9,
+        11
+      ],
+      "color": "#ffd700"
+    },
+    {
+      "id": "arm_bands",
+      "part": "body",
+      "region": [
+        0,
+        5,
+        0,
+        1,
+        14,
+        11
+      ],
+      "color": "#6b5416",
+      "mirror": true
+    },
+    {
+      "id": "hem",
+      "part": "body",
+      "region": [
+        0,
+        0,
+        0,
+        11,
+        1,
+        11
+      ],
+      "color": "#5c4812"
+    },
+    {
+      "id": "crown_jewel_front",
+      "part": "crown",
+      "region": [
+        5,
+        1,
+        11,
+        6,
+        2,
+        11
+      ],
+      "color": "#b02020"
+    },
+    {
+      "id": "crown_jewel_side",
+      "part": "crown",
+      "region": [
+        2,
+        1,
+        11,
+        3,
+        2,
+        11
+      ],
+      "color": "#2050b0",
+      "mirror": true
+    },
+    {
+      "id": "crown_point_gem",
+      "part": "crown_point_c",
+      "region": [
+        1,
+        3,
+        1,
+        2,
+        4,
+        2
+      ],
+      "color": "#0a8a3c"
+    },
+    {
+      "id": "cape_trim",
+      "part": "cape",
+      "region": [
+        0,
+        15,
+        0,
+        11,
+        15,
+        1
+      ],
+      "color": "#d4af37"
+    },
+    {
+      "id": "ermine_spot_1",
+      "part": "cape",
+      "region": [
+        2,
+        3,
+        0,
+        3,
+        4,
+        1
+      ],
+      "color": "#1a1a1a"
+    },
+    {
+      "id": "ermine_spot_2",
+      "part": "cape",
+      "region": [
+        7,
+        6,
+        0,
+        8,
+        7,
+        1
+      ],
+      "color": "#1a1a1a"
+    },
+    {
+      "id": "ermine_spot_3",
+      "part": "cape",
+      "region": [
+        4,
+        9,
+        0,
+        5,
+        10,
+        1
+      ],
+      "color": "#1a1a1a"
+    },
+    {
+      "id": "ermine_spot_4",
+      "part": "cape",
+      "region": [
+        8,
+        12,
+        0,
+        9,
+        13,
+        1
+      ],
+      "color": "#1a1a1a"
+    },
+    {
+      "id": "ermine_spot_5",
+      "part": "cape",
+      "region": [
+        2,
+        13,
+        0,
+        3,
+        14,
+        1
+      ],
+      "color": "#1a1a1a"
+    }
+  ],
+  "meta": {
+    "genSpec": {
+      "name": "t_king",
+      "kind": "character",
+      "root": {
+        "id": "body",
+        "size": [
+          12,
+          26,
+          12
+        ],
+        "color": "#8a6d1a"
+      },
+      "parts": [
+        {
+          "id": "crown",
+          "size": [
+            12,
+            4,
+            12
+          ],
+          "color": "#f4c430",
+          "parent": "body",
+          "anchor": {
+            "to": "top",
+            "alignX": "center",
+            "alignZ": "center"
+          },
+          "offset": [
+            0,
+            -1,
+            0
+          ],
+          "shape": "box"
+        },
+        {
+          "id": "crown_point_c",
+          "size": [
+            4,
+            5,
+            4
+          ],
+          "color": "#f4c430",
+          "parent": "crown",
+          "anchor": {
+            "to": "top",
+            "alignX": "center",
+            "alignZ": "center"
+          },
+          "offset": [
+            0,
+            -1,
+            0
+          ],
+          "shape": "pyramid"
+        },
+        {
+          "id": "crown_point_r",
+          "size": [
+            3,
+            4,
+            3
+          ],
+          "color": "#f4c430",
+          "parent": "crown",
+          "anchor": {
+            "to": "top",
+            "alignX": "max",
+            "alignZ": "center"
+          },
+          "offset": [
+            -1,
+            -1,
+            0
+          ],
+          "shape": "pyramid"
+        },
+        {
+          "id": "crown_point_l",
+          "mirrorOf": "crown_point_r"
+        },
+        {
+          "id": "cape",
+          "size": [
+            12,
+            16,
+            2
+          ],
+          "color": "#f5f5f0",
+          "parent": "body",
+          "anchor": {
+            "to": "back",
+            "alignX": "center",
+            "alignY": "max"
+          },
+          "offset": [
+            0,
+            -10,
+            0
+          ],
+          "shape": "box"
+        }
+      ],
+      "details": [
+        {
+          "id": "head_fill",
+          "part": "body",
+          "region": [
+            0,
+            17,
+            0,
+            11,
+            25,
+            11
+          ],
+          "color": "#e0ac69"
+        },
+        {
+          "id": "collar",
+          "part": "body",
+          "region": [
+            0,
+            15,
+            0,
+            11,
+            16,
+            11
+          ],
+          "color": "#f2ede1"
+        },
+        {
+          "id": "brow",
+          "part": "body",
+          "region": [
+            2,
+            21,
+            11,
+            9,
+            21,
+            11
+          ],
+          "color": "#6b4423"
+        },
+        {
+          "id": "eyes",
+          "part": "body",
+          "region": [
+            3,
+            18,
+            11,
+            4,
+            19,
+            11
+          ],
+          "color": "#2a1f1a",
+          "mirror": true
+        },
+        {
+          "id": "mouth",
+          "part": "body",
+          "region": [
+            5,
+            17,
+            11,
+            6,
+            17,
+            11
+          ],
+          "color": "#6b3f2a"
+        },
+        {
+          "id": "torso_shade",
+          "part": "body",
+          "region": [
+            0,
+            10,
+            0,
+            11,
+            14,
+            11
+          ],
+          "color": "#c9a227"
+        },
+        {
+          "id": "chest_emblem",
+          "part": "body",
+          "region": [
+            4,
+            11,
+            11,
+            7,
+            13,
+            11
+          ],
+          "color": "#ffd700"
+        },
+        {
+          "id": "chest_gem",
+          "part": "body",
+          "region": [
+            5,
+            12,
+            11,
+            6,
+            12,
+            11
+          ],
+          "color": "#b02020"
+        },
+        {
+          "id": "waist_sash",
+          "part": "body",
+          "region": [
+            0,
+            8,
+            0,
+            11,
+            9,
+            11
+          ],
+          "color": "#ffd700"
+        },
+        {
+          "id": "arm_bands",
+          "part": "body",
+          "region": [
+            0,
+            5,
+            0,
+            1,
+            14,
+            11
+          ],
+          "color": "#6b5416",
+          "mirror": true
+        },
+        {
+          "id": "hem",
+          "part": "body",
+          "region": [
+            0,
+            0,
+            0,
+            11,
+            1,
+            11
+          ],
+          "color": "#5c4812"
+        },
+        {
+          "id": "crown_jewel_front",
+          "part": "crown",
+          "region": [
+            5,
+            1,
+            11,
+            6,
+            2,
+            11
+          ],
+          "color": "#b02020"
+        },
+        {
+          "id": "crown_jewel_side",
+          "part": "crown",
+          "region": [
+            2,
+            1,
+            11,
+            3,
+            2,
+            11
+          ],
+          "color": "#2050b0",
+          "mirror": true
+        },
+        {
+          "id": "crown_point_gem",
+          "part": "crown_point_c",
+          "region": [
+            1,
+            3,
+            1,
+            2,
+            4,
+            2
+          ],
+          "color": "#0a8a3c"
+        },
+        {
+          "id": "cape_trim",
+          "part": "cape",
+          "region": [
+            0,
+            15,
+            0,
+            11,
+            15,
+            1
+          ],
+          "color": "#d4af37"
+        },
+        {
+          "id": "ermine_spot_1",
+          "part": "cape",
+          "region": [
+            2,
+            3,
+            0,
+            3,
+            4,
+            1
+          ],
+          "color": "#1a1a1a"
+        },
+        {
+          "id": "ermine_spot_2",
+          "part": "cape",
+          "region": [
+            7,
+            6,
+            0,
+            8,
+            7,
+            1
+          ],
+          "color": "#1a1a1a"
+        },
+        {
+          "id": "ermine_spot_3",
+          "part": "cape",
+          "region": [
+            4,
+            9,
+            0,
+            5,
+            10,
+            1
+          ],
+          "color": "#1a1a1a"
+        },
+        {
+          "id": "ermine_spot_4",
+          "part": "cape",
+          "region": [
+            8,
+            12,
+            0,
+            9,
+            13,
+            1
+          ],
+          "color": "#1a1a1a"
+        },
+        {
+          "id": "ermine_spot_5",
+          "part": "cape",
+          "region": [
+            2,
+            13,
+            0,
+            3,
+            14,
+            1
+          ],
+          "color": "#1a1a1a"
+        }
+      ]
+    }
+  }
+}

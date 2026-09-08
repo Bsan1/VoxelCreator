@@ -1,0 +1,473 @@
+{
+  "name": "ref_robed_j",
+  "kind": "character",
+  "root": "body",
+  "parts": [
+    {
+      "id": "body",
+      "size": [
+        12,
+        27,
+        12
+      ],
+      "color": "#3f6b3a"
+    },
+    {
+      "id": "hood",
+      "size": [
+        12,
+        5,
+        12
+      ],
+      "color": "#4a3a2a",
+      "parent": "body",
+      "anchor": {
+        "to": "top",
+        "alignX": "center",
+        "alignZ": "center"
+      },
+      "offset": [
+        0,
+        -1,
+        0
+      ],
+      "shape": "box"
+    }
+  ],
+  "details": [
+    {
+      "id": "hood_face_cut",
+      "part": "hood",
+      "region": [
+        2,
+        0,
+        11,
+        9,
+        4,
+        11
+      ],
+      "color": "#e0ac69"
+    },
+    {
+      "id": "head_fill",
+      "part": "body",
+      "region": [
+        0,
+        18,
+        0,
+        11,
+        26,
+        11
+      ],
+      "color": "#e0ac69"
+    },
+    {
+      "id": "collar",
+      "part": "body",
+      "region": [
+        0,
+        17,
+        0,
+        11,
+        17,
+        11
+      ],
+      "color": "#f2ede1"
+    },
+    {
+      "id": "brow",
+      "part": "body",
+      "region": [
+        2,
+        22,
+        11,
+        9,
+        22,
+        11
+      ],
+      "color": "#8a6a4a"
+    },
+    {
+      "id": "eyes",
+      "part": "body",
+      "region": [
+        3,
+        20,
+        11,
+        4,
+        21,
+        11
+      ],
+      "color": "#2a1f1a",
+      "mirror": true
+    },
+    {
+      "id": "nose",
+      "part": "body",
+      "region": [
+        5,
+        19,
+        11,
+        6,
+        19,
+        11
+      ],
+      "color": "#c98d55"
+    },
+    {
+      "id": "mouth",
+      "part": "body",
+      "region": [
+        4,
+        18,
+        11,
+        7,
+        18,
+        11
+      ],
+      "color": "#8a4a3a"
+    },
+    {
+      "id": "jerkin_chest",
+      "part": "body",
+      "region": [
+        2,
+        9,
+        11,
+        9,
+        16,
+        11
+      ],
+      "color": "#5c4326"
+    },
+    {
+      "id": "jerkin_straps",
+      "part": "body",
+      "region": [
+        4,
+        9,
+        11,
+        7,
+        16,
+        11
+      ],
+      "color": "#3f6b3a"
+    },
+    {
+      "id": "emblem",
+      "part": "body",
+      "region": [
+        4,
+        10,
+        11,
+        7,
+        14,
+        11
+      ],
+      "color": "#c9a227"
+    },
+    {
+      "id": "belt",
+      "part": "body",
+      "region": [
+        0,
+        8,
+        0,
+        11,
+        9,
+        11
+      ],
+      "color": "#a67c3d"
+    },
+    {
+      "id": "buckle",
+      "part": "body",
+      "region": [
+        5,
+        8,
+        11,
+        6,
+        9,
+        11
+      ],
+      "color": "#e0b84a"
+    },
+    {
+      "id": "tunic_lower",
+      "part": "body",
+      "region": [
+        0,
+        1,
+        0,
+        11,
+        7,
+        11
+      ],
+      "color": "#345c30"
+    },
+    {
+      "id": "arm_r",
+      "part": "body",
+      "region": [
+        0,
+        9,
+        0,
+        1,
+        16,
+        11
+      ],
+      "color": "#2f4f2b",
+      "mirror": true
+    },
+    {
+      "id": "boots",
+      "part": "body",
+      "region": [
+        0,
+        0,
+        0,
+        11,
+        1,
+        11
+      ],
+      "color": "#3a281a"
+    }
+  ],
+  "meta": {
+    "genSpec": {
+      "name": "ref_robed_j",
+      "root": {
+        "id": "body",
+        "size": [
+          12,
+          27,
+          12
+        ],
+        "color": "#3f6b3a"
+      },
+      "parts": [
+        {
+          "id": "hood",
+          "size": [
+            12,
+            5,
+            12
+          ],
+          "color": "#4a3a2a",
+          "parent": "body",
+          "anchor": {
+            "to": "top",
+            "alignX": "center",
+            "alignZ": "center"
+          },
+          "offset": [
+            0,
+            -1,
+            0
+          ],
+          "shape": "box"
+        }
+      ],
+      "details": [
+        {
+          "id": "hood_face_cut",
+          "part": "hood",
+          "region": [
+            2,
+            0,
+            11,
+            9,
+            4,
+            11
+          ],
+          "color": "#e0ac69"
+        },
+        {
+          "id": "head_fill",
+          "part": "body",
+          "region": [
+            0,
+            18,
+            0,
+            11,
+            26,
+            11
+          ],
+          "color": "#e0ac69"
+        },
+        {
+          "id": "collar",
+          "part": "body",
+          "region": [
+            0,
+            17,
+            0,
+            11,
+            17,
+            11
+          ],
+          "color": "#f2ede1"
+        },
+        {
+          "id": "brow",
+          "part": "body",
+          "region": [
+            2,
+            22,
+            11,
+            9,
+            22,
+            11
+          ],
+          "color": "#8a6a4a"
+        },
+        {
+          "id": "eyes",
+          "part": "body",
+          "region": [
+            3,
+            20,
+            11,
+            4,
+            21,
+            11
+          ],
+          "color": "#2a1f1a",
+          "mirror": true
+        },
+        {
+          "id": "nose",
+          "part": "body",
+          "region": [
+            5,
+            19,
+            11,
+            6,
+            19,
+            11
+          ],
+          "color": "#c98d55"
+        },
+        {
+          "id": "mouth",
+          "part": "body",
+          "region": [
+            4,
+            18,
+            11,
+            7,
+            18,
+            11
+          ],
+          "color": "#8a4a3a"
+        },
+        {
+          "id": "jerkin_chest",
+          "part": "body",
+          "region": [
+            2,
+            9,
+            11,
+            9,
+            16,
+            11
+          ],
+          "color": "#5c4326"
+        },
+        {
+          "id": "jerkin_straps",
+          "part": "body",
+          "region": [
+            4,
+            9,
+            11,
+            7,
+            16,
+            11
+          ],
+          "color": "#3f6b3a"
+        },
+        {
+          "id": "emblem",
+          "part": "body",
+          "region": [
+            4,
+            10,
+            11,
+            7,
+            14,
+            11
+          ],
+          "color": "#c9a227"
+        },
+        {
+          "id": "belt",
+          "part": "body",
+          "region": [
+            0,
+            8,
+            0,
+            11,
+            9,
+            11
+          ],
+          "color": "#a67c3d"
+        },
+        {
+          "id": "buckle",
+          "part": "body",
+          "region": [
+            5,
+            8,
+            11,
+            6,
+            9,
+            11
+          ],
+          "color": "#e0b84a"
+        },
+        {
+          "id": "tunic_lower",
+          "part": "body",
+          "region": [
+            0,
+            1,
+            0,
+            11,
+            7,
+            11
+          ],
+          "color": "#345c30"
+        },
+        {
+          "id": "arm_r",
+          "part": "body",
+          "region": [
+            0,
+            9,
+            0,
+            1,
+            16,
+            11
+          ],
+          "color": "#2f4f2b",
+          "mirror": true
+        },
+        {
+          "id": "boots",
+          "part": "body",
+          "region": [
+            0,
+            0,
+            0,
+            11,
+            1,
+            11
+          ],
+          "color": "#3a281a"
+        }
+      ],
+      "kind": "character"
+    }
+  }
+}

@@ -1,0 +1,389 @@
+{
+  "name": "t_orc",
+  "kind": "character",
+  "root": "body",
+  "parts": [
+    {
+      "id": "body",
+      "size": [
+        12,
+        24,
+        12
+      ],
+      "color": "#5c4630"
+    },
+    {
+      "id": "tusk_r",
+      "size": [
+        2,
+        4,
+        3
+      ],
+      "color": "#e8dfc8",
+      "parent": "body",
+      "anchor": {
+        "to": "front",
+        "alignX": "min",
+        "alignY": "min"
+      },
+      "offset": [
+        2,
+        16,
+        -1
+      ],
+      "shape": "box"
+    },
+    {
+      "id": "tusk_l",
+      "size": [
+        2,
+        4,
+        3
+      ],
+      "color": "#e8dfc8",
+      "mirrorOf": "tusk_r"
+    }
+  ],
+  "details": [
+    {
+      "id": "head_fill",
+      "part": "body",
+      "region": [
+        0,
+        16,
+        0,
+        11,
+        23,
+        11
+      ],
+      "color": "#4a6b2e"
+    },
+    {
+      "id": "collar",
+      "part": "body",
+      "region": [
+        0,
+        15,
+        0,
+        11,
+        15,
+        11
+      ],
+      "color": "#241c12"
+    },
+    {
+      "id": "brow",
+      "part": "body",
+      "region": [
+        2,
+        21,
+        11,
+        9,
+        21,
+        11
+      ],
+      "color": "#38512a"
+    },
+    {
+      "id": "eyes",
+      "part": "body",
+      "region": [
+        3,
+        19,
+        11,
+        4,
+        20,
+        11
+      ],
+      "color": "#1b1b1f",
+      "mirror": true
+    },
+    {
+      "id": "mouth",
+      "part": "body",
+      "region": [
+        4,
+        17,
+        11,
+        7,
+        17,
+        11
+      ],
+      "color": "#2a1f16"
+    },
+    {
+      "id": "shoulder_strap",
+      "part": "body",
+      "region": [
+        0,
+        14,
+        11,
+        11,
+        15,
+        11
+      ],
+      "color": "#3a2c1c"
+    },
+    {
+      "id": "chest_leather",
+      "part": "body",
+      "region": [
+        0,
+        8,
+        11,
+        11,
+        13,
+        11
+      ],
+      "color": "#4a3820"
+    },
+    {
+      "id": "belt",
+      "part": "body",
+      "region": [
+        0,
+        7,
+        0,
+        11,
+        8,
+        11
+      ],
+      "color": "#2e2314"
+    },
+    {
+      "id": "buckle",
+      "part": "body",
+      "region": [
+        5,
+        7,
+        11,
+        6,
+        8,
+        11
+      ],
+      "color": "#8a7440"
+    },
+    {
+      "id": "arm_r",
+      "part": "body",
+      "region": [
+        10,
+        5,
+        11,
+        11,
+        14,
+        11
+      ],
+      "color": "#3f5c28",
+      "mirror": true
+    },
+    {
+      "id": "boots",
+      "part": "body",
+      "region": [
+        0,
+        0,
+        0,
+        11,
+        2,
+        11
+      ],
+      "color": "#2e2314"
+    }
+  ],
+  "meta": {
+    "genSpec": {
+      "name": "t_orc",
+      "kind": "character",
+      "root": {
+        "id": "body",
+        "size": [
+          12,
+          24,
+          12
+        ],
+        "color": "#5c4630"
+      },
+      "parts": [
+        {
+          "id": "tusk_r",
+          "size": [
+            2,
+            4,
+            3
+          ],
+          "color": "#e8dfc8",
+          "parent": "body",
+          "anchor": {
+            "to": "front",
+            "alignX": "min",
+            "alignY": "min"
+          },
+          "offset": [
+            2,
+            16,
+            -1
+          ],
+          "shape": "box"
+        },
+        {
+          "id": "tusk_l",
+          "size": [
+            2,
+            4,
+            3
+          ],
+          "color": "#e8dfc8",
+          "mirrorOf": "tusk_r"
+        }
+      ],
+      "details": [
+        {
+          "id": "head_fill",
+          "part": "body",
+          "region": [
+            0,
+            16,
+            0,
+            11,
+            23,
+            11
+          ],
+          "color": "#4a6b2e"
+        },
+        {
+          "id": "collar",
+          "part": "body",
+          "region": [
+            0,
+            15,
+            0,
+            11,
+            15,
+            11
+          ],
+          "color": "#241c12"
+        },
+        {
+          "id": "brow",
+          "part": "body",
+          "region": [
+            2,
+            21,
+            11,
+            9,
+            21,
+            11
+          ],
+          "color": "#38512a"
+        },
+        {
+          "id": "eyes",
+          "part": "body",
+          "region": [
+            3,
+            19,
+            11,
+            4,
+            20,
+            11
+          ],
+          "color": "#1b1b1f",
+          "mirror": true
+        },
+        {
+          "id": "mouth",
+          "part": "body",
+          "region": [
+            4,
+            17,
+            11,
+            7,
+            17,
+            11
+          ],
+          "color": "#2a1f16"
+        },
+        {
+          "id": "shoulder_strap",
+          "part": "body",
+          "region": [
+            0,
+            14,
+            11,
+            11,
+            15,
+            11
+          ],
+          "color": "#3a2c1c"
+        },
+        {
+          "id": "chest_leather",
+          "part": "body",
+          "region": [
+            0,
+            8,
+            11,
+            11,
+            13,
+            11
+          ],
+          "color": "#4a3820"
+        },
+        {
+          "id": "belt",
+          "part": "body",
+          "region": [
+            0,
+            7,
+            0,
+            11,
+            8,
+            11
+          ],
+          "color": "#2e2314"
+        },
+        {
+          "id": "buckle",
+          "part": "body",
+          "region": [
+            5,
+            7,
+            11,
+            6,
+            8,
+            11
+          ],
+          "color": "#8a7440"
+        },
+        {
+          "id": "arm_r",
+          "part": "body",
+          "region": [
+            10,
+            5,
+            11,
+            11,
+            14,
+            11
+          ],
+          "color": "#3f5c28",
+          "mirror": true
+        },
+        {
+          "id": "boots",
+          "part": "body",
+          "region": [
+            0,
+            0,
+            0,
+            11,
+            2,
+            11
+          ],
+          "color": "#2e2314"
+        }
+      ]
+    }
+  }
+}

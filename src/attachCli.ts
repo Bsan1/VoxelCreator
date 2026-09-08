@@ -37,7 +37,7 @@ const combined = attachItem(character, item, socketId);
 if (outName) combined.name = outName;
 
 const build = buildScene(combined);
-const report = validate(build, { kind: combined.kind });
+const report = validate(build, { kind: combined.kind, scene: combined });
 saveScene(combined);
 writeFileSync(join(OUT_DIR, `${combined.name}.vox`), writeVox(build.grid, build.palette));
 

@@ -1,0 +1,685 @@
+{
+  "name": "t_knight2",
+  "kind": "character",
+  "root": "body",
+  "parts": [
+    {
+      "id": "body",
+      "size": [
+        12,
+        26,
+        12
+      ],
+      "color": "#3d4149"
+    },
+    {
+      "id": "helmet",
+      "size": [
+        12,
+        4,
+        12
+      ],
+      "color": "#6b7280",
+      "parent": "body",
+      "anchor": {
+        "to": "top",
+        "alignX": "center",
+        "alignZ": "center"
+      },
+      "offset": [
+        0,
+        -1,
+        0
+      ],
+      "shape": "box"
+    },
+    {
+      "id": "plume",
+      "size": [
+        2,
+        7,
+        7
+      ],
+      "color": "#a31f24",
+      "parent": "helmet",
+      "anchor": {
+        "to": "top",
+        "alignX": "center",
+        "alignZ": "center"
+      },
+      "offset": [
+        0,
+        -1,
+        0
+      ],
+      "shape": "box"
+    },
+    {
+      "id": "pauldron_r",
+      "size": [
+        3,
+        5,
+        12
+      ],
+      "color": "#c6cbd4",
+      "parent": "body",
+      "anchor": {
+        "to": "right",
+        "alignY": "max"
+      },
+      "offset": [
+        0,
+        -4,
+        0
+      ],
+      "shape": "box"
+    },
+    {
+      "id": "pauldron_l",
+      "size": [
+        3,
+        5,
+        12
+      ],
+      "color": "#c6cbd4",
+      "mirrorOf": "pauldron_r"
+    }
+  ],
+  "details": [
+    {
+      "id": "head_fill",
+      "part": "body",
+      "region": [
+        0,
+        17,
+        0,
+        11,
+        25,
+        11
+      ],
+      "color": "#585e67"
+    },
+    {
+      "id": "gorget",
+      "part": "body",
+      "region": [
+        0,
+        16,
+        0,
+        11,
+        16,
+        11
+      ],
+      "color": "#b4bac4"
+    },
+    {
+      "id": "visor_brow",
+      "part": "body",
+      "region": [
+        2,
+        21,
+        11,
+        9,
+        21,
+        11
+      ],
+      "color": "#3d4149"
+    },
+    {
+      "id": "eye_slit",
+      "part": "body",
+      "region": [
+        3,
+        19,
+        11,
+        4,
+        19,
+        11
+      ],
+      "color": "#0e1012",
+      "mirror": true
+    },
+    {
+      "id": "breastplate",
+      "part": "body",
+      "region": [
+        1,
+        6,
+        11,
+        10,
+        15,
+        11
+      ],
+      "color": "#c6cbd4"
+    },
+    {
+      "id": "chest_ridge",
+      "part": "body",
+      "region": [
+        5,
+        6,
+        11,
+        6,
+        15,
+        11
+      ],
+      "color": "#dde2e8"
+    },
+    {
+      "id": "chest_fuller",
+      "part": "body",
+      "region": [
+        2,
+        10,
+        11,
+        9,
+        11,
+        11
+      ],
+      "color": "#dde2e8"
+    },
+    {
+      "id": "breastplate_rivets",
+      "part": "body",
+      "region": [
+        1,
+        7,
+        11,
+        1,
+        14,
+        11
+      ],
+      "color": "#dde2e8",
+      "mirror": true
+    },
+    {
+      "id": "arm_band_r",
+      "part": "body",
+      "region": [
+        9,
+        8,
+        0,
+        11,
+        15,
+        5
+      ],
+      "color": "#585e67",
+      "mirror": true
+    },
+    {
+      "id": "underarm_shadow",
+      "part": "body",
+      "region": [
+        9,
+        11,
+        0,
+        11,
+        14,
+        3
+      ],
+      "color": "#0e1012",
+      "mirror": true
+    },
+    {
+      "id": "belt",
+      "part": "body",
+      "region": [
+        0,
+        5,
+        0,
+        11,
+        6,
+        11
+      ],
+      "color": "#c2a136"
+    },
+    {
+      "id": "waist_shadow",
+      "part": "body",
+      "region": [
+        0,
+        4,
+        0,
+        11,
+        4,
+        11
+      ],
+      "color": "#14161a"
+    },
+    {
+      "id": "tasset",
+      "part": "body",
+      "region": [
+        1,
+        1,
+        11,
+        10,
+        3,
+        11
+      ],
+      "color": "#6b7280"
+    },
+    {
+      "id": "greave_center",
+      "part": "body",
+      "region": [
+        4,
+        0,
+        0,
+        7,
+        3,
+        11
+      ],
+      "color": "#0e1012"
+    },
+    {
+      "id": "greave_steel",
+      "part": "body",
+      "region": [
+        1,
+        0,
+        0,
+        3,
+        3,
+        11
+      ],
+      "color": "#c6cbd4",
+      "mirror": true
+    },
+    {
+      "id": "greave_trim",
+      "part": "body",
+      "region": [
+        0,
+        0,
+        0,
+        11,
+        0,
+        11
+      ],
+      "color": "#c2a136"
+    },
+    {
+      "id": "helmet_trim",
+      "part": "helmet",
+      "region": [
+        0,
+        0,
+        0,
+        11,
+        0,
+        11
+      ],
+      "color": "#c2a136"
+    },
+    {
+      "id": "pauldron_trim_r",
+      "part": "pauldron_r",
+      "region": [
+        0,
+        4,
+        0,
+        2,
+        4,
+        11
+      ],
+      "color": "#c2a136"
+    },
+    {
+      "id": "pauldron_trim_l",
+      "part": "pauldron_l",
+      "region": [
+        0,
+        4,
+        0,
+        2,
+        4,
+        11
+      ],
+      "color": "#c2a136"
+    }
+  ],
+  "meta": {
+    "genSpec": {
+      "name": "t_knight2",
+      "kind": "character",
+      "root": {
+        "id": "body",
+        "size": [
+          12,
+          26,
+          12
+        ],
+        "color": "#3d4149"
+      },
+      "parts": [
+        {
+          "id": "helmet",
+          "size": [
+            12,
+            4,
+            12
+          ],
+          "color": "#6b7280",
+          "parent": "body",
+          "anchor": {
+            "to": "top",
+            "alignX": "center",
+            "alignZ": "center"
+          },
+          "offset": [
+            0,
+            -1,
+            0
+          ],
+          "shape": "box"
+        },
+        {
+          "id": "plume",
+          "size": [
+            2,
+            7,
+            7
+          ],
+          "color": "#a31f24",
+          "parent": "helmet",
+          "anchor": {
+            "to": "top",
+            "alignX": "center",
+            "alignZ": "center"
+          },
+          "offset": [
+            0,
+            -1,
+            0
+          ],
+          "shape": "box"
+        },
+        {
+          "id": "pauldron_r",
+          "size": [
+            3,
+            5,
+            12
+          ],
+          "color": "#c6cbd4",
+          "parent": "body",
+          "anchor": {
+            "to": "right",
+            "alignY": "max"
+          },
+          "offset": [
+            0,
+            -4,
+            0
+          ],
+          "shape": "box"
+        },
+        {
+          "id": "pauldron_l",
+          "size": [
+            3,
+            5,
+            12
+          ],
+          "color": "#c6cbd4",
+          "mirrorOf": "pauldron_r"
+        }
+      ],
+      "details": [
+        {
+          "id": "head_fill",
+          "part": "body",
+          "region": [
+            0,
+            17,
+            0,
+            11,
+            25,
+            11
+          ],
+          "color": "#585e67"
+        },
+        {
+          "id": "gorget",
+          "part": "body",
+          "region": [
+            0,
+            16,
+            0,
+            11,
+            16,
+            11
+          ],
+          "color": "#b4bac4"
+        },
+        {
+          "id": "visor_brow",
+          "part": "body",
+          "region": [
+            2,
+            21,
+            11,
+            9,
+            21,
+            11
+          ],
+          "color": "#3d4149"
+        },
+        {
+          "id": "eye_slit",
+          "part": "body",
+          "region": [
+            3,
+            19,
+            11,
+            4,
+            19,
+            11
+          ],
+          "color": "#0e1012",
+          "mirror": true
+        },
+        {
+          "id": "breastplate",
+          "part": "body",
+          "region": [
+            1,
+            6,
+            11,
+            10,
+            15,
+            11
+          ],
+          "color": "#c6cbd4"
+        },
+        {
+          "id": "chest_ridge",
+          "part": "body",
+          "region": [
+            5,
+            6,
+            11,
+            6,
+            15,
+            11
+          ],
+          "color": "#dde2e8"
+        },
+        {
+          "id": "chest_fuller",
+          "part": "body",
+          "region": [
+            2,
+            10,
+            11,
+            9,
+            11,
+            11
+          ],
+          "color": "#dde2e8"
+        },
+        {
+          "id": "breastplate_rivets",
+          "part": "body",
+          "region": [
+            1,
+            7,
+            11,
+            1,
+            14,
+            11
+          ],
+          "color": "#dde2e8",
+          "mirror": true
+        },
+        {
+          "id": "arm_band_r",
+          "part": "body",
+          "region": [
+            9,
+            8,
+            0,
+            11,
+            15,
+            5
+          ],
+          "color": "#585e67",
+          "mirror": true
+        },
+        {
+          "id": "underarm_shadow",
+          "part": "body",
+          "region": [
+            9,
+            11,
+            0,
+            11,
+            14,
+            3
+          ],
+          "color": "#0e1012",
+          "mirror": true
+        },
+        {
+          "id": "belt",
+          "part": "body",
+          "region": [
+            0,
+            5,
+            0,
+            11,
+            6,
+            11
+          ],
+          "color": "#c2a136"
+        },
+        {
+          "id": "waist_shadow",
+          "part": "body",
+          "region": [
+            0,
+            4,
+            0,
+            11,
+            4,
+            11
+          ],
+          "color": "#14161a"
+        },
+        {
+          "id": "tasset",
+          "part": "body",
+          "region": [
+            1,
+            1,
+            11,
+            10,
+            3,
+            11
+          ],
+          "color": "#6b7280"
+        },
+        {
+          "id": "greave_center",
+          "part": "body",
+          "region": [
+            4,
+            0,
+            0,
+            7,
+            3,
+            11
+          ],
+          "color": "#0e1012"
+        },
+        {
+          "id": "greave_steel",
+          "part": "body",
+          "region": [
+            1,
+            0,
+            0,
+            3,
+            3,
+            11
+          ],
+          "color": "#c6cbd4",
+          "mirror": true
+        },
+        {
+          "id": "greave_trim",
+          "part": "body",
+          "region": [
+            0,
+            0,
+            0,
+            11,
+            0,
+            11
+          ],
+          "color": "#c2a136"
+        },
+        {
+          "id": "helmet_trim",
+          "part": "helmet",
+          "region": [
+            0,
+            0,
+            0,
+            11,
+            0,
+            11
+          ],
+          "color": "#c2a136"
+        },
+        {
+          "id": "pauldron_trim_r",
+          "part": "pauldron_r",
+          "region": [
+            0,
+            4,
+            0,
+            2,
+            4,
+            11
+          ],
+          "color": "#c2a136"
+        },
+        {
+          "id": "pauldron_trim_l",
+          "part": "pauldron_l",
+          "region": [
+            0,
+            4,
+            0,
+            2,
+            4,
+            11
+          ],
+          "color": "#c2a136"
+        }
+      ]
+    }
+  }
+}

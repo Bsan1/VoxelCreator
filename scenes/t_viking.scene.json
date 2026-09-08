@@ -1,0 +1,585 @@
+{
+  "name": "t_viking",
+  "kind": "character",
+  "root": "body",
+  "parts": [
+    {
+      "id": "body",
+      "size": [
+        12,
+        26,
+        12
+      ],
+      "color": "#6b4a2f"
+    },
+    {
+      "id": "cloak",
+      "size": [
+        12,
+        16,
+        2
+      ],
+      "color": "#7d7267",
+      "parent": "body",
+      "anchor": {
+        "to": "back",
+        "alignX": "center",
+        "alignY": "max"
+      },
+      "offset": [
+        0,
+        -9,
+        1
+      ],
+      "shape": "box"
+    }
+  ],
+  "details": [
+    {
+      "id": "head_fill",
+      "part": "body",
+      "region": [
+        0,
+        18,
+        0,
+        11,
+        25,
+        11
+      ],
+      "color": "#e0ac69"
+    },
+    {
+      "id": "collar",
+      "part": "body",
+      "region": [
+        0,
+        16,
+        0,
+        11,
+        17,
+        11
+      ],
+      "color": "#d9cfc1"
+    },
+    {
+      "id": "hair_crown",
+      "part": "body",
+      "region": [
+        0,
+        24,
+        0,
+        11,
+        25,
+        11
+      ],
+      "color": "#e8c873"
+    },
+    {
+      "id": "hair_back",
+      "part": "body",
+      "region": [
+        0,
+        18,
+        0,
+        11,
+        23,
+        3
+      ],
+      "color": "#e8c873"
+    },
+    {
+      "id": "mouth",
+      "part": "body",
+      "region": [
+        5,
+        18,
+        11,
+        6,
+        18,
+        11
+      ],
+      "color": "#a8503f"
+    },
+    {
+      "id": "eyes",
+      "part": "body",
+      "region": [
+        3,
+        20,
+        11,
+        4,
+        21,
+        11
+      ],
+      "color": "#2a1f1a",
+      "mirror": true
+    },
+    {
+      "id": "brow",
+      "part": "body",
+      "region": [
+        2,
+        23,
+        11,
+        9,
+        23,
+        11
+      ],
+      "color": "#8a6a45"
+    },
+    {
+      "id": "braid",
+      "part": "body",
+      "region": [
+        10,
+        9,
+        0,
+        11,
+        16,
+        1
+      ],
+      "color": "#c9a24c",
+      "mirror": true
+    },
+    {
+      "id": "braid_hi",
+      "part": "body",
+      "region": [
+        10,
+        12,
+        0,
+        11,
+        13,
+        1
+      ],
+      "color": "#e8c873",
+      "mirror": true
+    },
+    {
+      "id": "belt",
+      "part": "body",
+      "region": [
+        0,
+        8,
+        0,
+        11,
+        9,
+        11
+      ],
+      "color": "#3a2818"
+    },
+    {
+      "id": "buckle",
+      "part": "body",
+      "region": [
+        5,
+        8,
+        11,
+        6,
+        9,
+        11
+      ],
+      "color": "#9a9a9a"
+    },
+    {
+      "id": "chest_strap",
+      "part": "body",
+      "region": [
+        2,
+        9,
+        11,
+        3,
+        15,
+        11
+      ],
+      "color": "#3a2818",
+      "mirror": true
+    },
+    {
+      "id": "brooch",
+      "part": "body",
+      "region": [
+        5,
+        13,
+        11,
+        6,
+        14,
+        11
+      ],
+      "color": "#9a9a9a"
+    },
+    {
+      "id": "sleeve",
+      "part": "body",
+      "region": [
+        10,
+        2,
+        11,
+        11,
+        16,
+        11
+      ],
+      "color": "#8a6a45",
+      "mirror": true
+    },
+    {
+      "id": "bracer",
+      "part": "body",
+      "region": [
+        10,
+        2,
+        11,
+        11,
+        3,
+        11
+      ],
+      "color": "#9a9a9a",
+      "mirror": true
+    },
+    {
+      "id": "boots",
+      "part": "body",
+      "region": [
+        0,
+        0,
+        0,
+        11,
+        2,
+        11
+      ],
+      "color": "#3a2818"
+    },
+    {
+      "id": "cloak_trim",
+      "part": "cloak",
+      "region": [
+        0,
+        14,
+        0,
+        11,
+        15,
+        1
+      ],
+      "color": "#8a6a45"
+    },
+    {
+      "id": "cloak_mottle_a",
+      "part": "cloak",
+      "region": [
+        1,
+        9,
+        0,
+        3,
+        11,
+        1
+      ],
+      "color": "#5f564a"
+    },
+    {
+      "id": "cloak_mottle_b",
+      "part": "cloak",
+      "region": [
+        7,
+        3,
+        0,
+        9,
+        5,
+        1
+      ],
+      "color": "#5f564a"
+    }
+  ],
+  "meta": {
+    "genSpec": {
+      "name": "t_viking",
+      "kind": "character",
+      "root": {
+        "id": "body",
+        "size": [
+          12,
+          26,
+          12
+        ],
+        "color": "#6b4a2f"
+      },
+      "parts": [
+        {
+          "id": "cloak",
+          "size": [
+            12,
+            16,
+            2
+          ],
+          "color": "#7d7267",
+          "parent": "body",
+          "anchor": {
+            "to": "back",
+            "alignX": "center",
+            "alignY": "max"
+          },
+          "offset": [
+            0,
+            -9,
+            1
+          ],
+          "shape": "box"
+        }
+      ],
+      "details": [
+        {
+          "id": "head_fill",
+          "part": "body",
+          "region": [
+            0,
+            18,
+            0,
+            11,
+            25,
+            11
+          ],
+          "color": "#e0ac69"
+        },
+        {
+          "id": "collar",
+          "part": "body",
+          "region": [
+            0,
+            16,
+            0,
+            11,
+            17,
+            11
+          ],
+          "color": "#d9cfc1"
+        },
+        {
+          "id": "hair_crown",
+          "part": "body",
+          "region": [
+            0,
+            24,
+            0,
+            11,
+            25,
+            11
+          ],
+          "color": "#e8c873"
+        },
+        {
+          "id": "hair_back",
+          "part": "body",
+          "region": [
+            0,
+            18,
+            0,
+            11,
+            23,
+            3
+          ],
+          "color": "#e8c873"
+        },
+        {
+          "id": "mouth",
+          "part": "body",
+          "region": [
+            5,
+            18,
+            11,
+            6,
+            18,
+            11
+          ],
+          "color": "#a8503f"
+        },
+        {
+          "id": "eyes",
+          "part": "body",
+          "region": [
+            3,
+            20,
+            11,
+            4,
+            21,
+            11
+          ],
+          "color": "#2a1f1a",
+          "mirror": true
+        },
+        {
+          "id": "brow",
+          "part": "body",
+          "region": [
+            2,
+            23,
+            11,
+            9,
+            23,
+            11
+          ],
+          "color": "#8a6a45"
+        },
+        {
+          "id": "braid",
+          "part": "body",
+          "region": [
+            10,
+            9,
+            0,
+            11,
+            16,
+            1
+          ],
+          "color": "#c9a24c",
+          "mirror": true
+        },
+        {
+          "id": "braid_hi",
+          "part": "body",
+          "region": [
+            10,
+            12,
+            0,
+            11,
+            13,
+            1
+          ],
+          "color": "#e8c873",
+          "mirror": true
+        },
+        {
+          "id": "belt",
+          "part": "body",
+          "region": [
+            0,
+            8,
+            0,
+            11,
+            9,
+            11
+          ],
+          "color": "#3a2818"
+        },
+        {
+          "id": "buckle",
+          "part": "body",
+          "region": [
+            5,
+            8,
+            11,
+            6,
+            9,
+            11
+          ],
+          "color": "#9a9a9a"
+        },
+        {
+          "id": "chest_strap",
+          "part": "body",
+          "region": [
+            2,
+            9,
+            11,
+            3,
+            15,
+            11
+          ],
+          "color": "#3a2818",
+          "mirror": true
+        },
+        {
+          "id": "brooch",
+          "part": "body",
+          "region": [
+            5,
+            13,
+            11,
+            6,
+            14,
+            11
+          ],
+          "color": "#9a9a9a"
+        },
+        {
+          "id": "sleeve",
+          "part": "body",
+          "region": [
+            10,
+            2,
+            11,
+            11,
+            16,
+            11
+          ],
+          "color": "#8a6a45",
+          "mirror": true
+        },
+        {
+          "id": "bracer",
+          "part": "body",
+          "region": [
+            10,
+            2,
+            11,
+            11,
+            3,
+            11
+          ],
+          "color": "#9a9a9a",
+          "mirror": true
+        },
+        {
+          "id": "boots",
+          "part": "body",
+          "region": [
+            0,
+            0,
+            0,
+            11,
+            2,
+            11
+          ],
+          "color": "#3a2818"
+        },
+        {
+          "id": "cloak_trim",
+          "part": "cloak",
+          "region": [
+            0,
+            14,
+            0,
+            11,
+            15,
+            1
+          ],
+          "color": "#8a6a45"
+        },
+        {
+          "id": "cloak_mottle_a",
+          "part": "cloak",
+          "region": [
+            1,
+            9,
+            0,
+            3,
+            11,
+            1
+          ],
+          "color": "#5f564a"
+        },
+        {
+          "id": "cloak_mottle_b",
+          "part": "cloak",
+          "region": [
+            7,
+            3,
+            0,
+            9,
+            5,
+            1
+          ],
+          "color": "#5f564a"
+        }
+      ]
+    }
+  }
+}

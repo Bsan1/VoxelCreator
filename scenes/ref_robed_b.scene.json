@@ -1,0 +1,419 @@
+{
+  "name": "ref_robed_b",
+  "kind": "character",
+  "root": "body",
+  "parts": [
+    {
+      "id": "body",
+      "size": [
+        12,
+        27,
+        12
+      ],
+      "color": "#3d5c2e"
+    },
+    {
+      "id": "hood",
+      "size": [
+        12,
+        3,
+        12
+      ],
+      "color": "#2f4a24",
+      "parent": "body",
+      "anchor": {
+        "to": "top",
+        "alignX": "center",
+        "alignZ": "center"
+      },
+      "offset": [
+        0,
+        -1,
+        0
+      ],
+      "shape": "box"
+    }
+  ],
+  "details": [
+    {
+      "id": "hood_fill",
+      "part": "body",
+      "region": [
+        0,
+        18,
+        0,
+        11,
+        26,
+        11
+      ],
+      "color": "#2f4a24"
+    },
+    {
+      "id": "face_patch",
+      "part": "body",
+      "region": [
+        1,
+        18,
+        11,
+        10,
+        25,
+        11
+      ],
+      "color": "#d9a066"
+    },
+    {
+      "id": "collar",
+      "part": "body",
+      "region": [
+        0,
+        17,
+        0,
+        11,
+        17,
+        11
+      ],
+      "color": "#5c3b23"
+    },
+    {
+      "id": "brow",
+      "part": "body",
+      "region": [
+        3,
+        25,
+        11,
+        8,
+        25,
+        11
+      ],
+      "color": "#6b4a35"
+    },
+    {
+      "id": "eyes",
+      "part": "body",
+      "region": [
+        3,
+        22,
+        11,
+        4,
+        23,
+        11
+      ],
+      "color": "#241a15",
+      "mirror": true
+    },
+    {
+      "id": "nose",
+      "part": "body",
+      "region": [
+        5,
+        20,
+        11,
+        6,
+        20,
+        11
+      ],
+      "color": "#6b4a35"
+    },
+    {
+      "id": "mouth",
+      "part": "body",
+      "region": [
+        4,
+        18,
+        11,
+        7,
+        19,
+        11
+      ],
+      "color": "#7a3b2e"
+    },
+    {
+      "id": "jerkin_front",
+      "part": "body",
+      "region": [
+        1,
+        8,
+        11,
+        10,
+        16,
+        11
+      ],
+      "color": "#5c3b23"
+    },
+    {
+      "id": "jerkin_back",
+      "part": "body",
+      "region": [
+        1,
+        8,
+        0,
+        10,
+        16,
+        0
+      ],
+      "color": "#5c3b23"
+    },
+    {
+      "id": "belt",
+      "part": "body",
+      "region": [
+        0,
+        7,
+        0,
+        11,
+        7,
+        11
+      ],
+      "color": "#a97142"
+    },
+    {
+      "id": "emblem",
+      "part": "body",
+      "region": [
+        4,
+        10,
+        11,
+        7,
+        14,
+        11
+      ],
+      "color": "#d4af37"
+    },
+    {
+      "id": "hem",
+      "part": "body",
+      "region": [
+        0,
+        0,
+        0,
+        11,
+        0,
+        11
+      ],
+      "color": "#24361a"
+    },
+    {
+      "id": "hood_trim",
+      "part": "hood",
+      "region": [
+        0,
+        0,
+        0,
+        11,
+        0,
+        11
+      ],
+      "color": "#a97142"
+    }
+  ],
+  "meta": {
+    "genSpec": {
+      "name": "ref_robed_b",
+      "kind": "character",
+      "root": {
+        "id": "body",
+        "size": [
+          12,
+          27,
+          12
+        ],
+        "color": "#3d5c2e"
+      },
+      "parts": [
+        {
+          "id": "hood",
+          "size": [
+            12,
+            3,
+            12
+          ],
+          "color": "#2f4a24",
+          "parent": "body",
+          "anchor": {
+            "to": "top",
+            "alignX": "center",
+            "alignZ": "center"
+          },
+          "offset": [
+            0,
+            -1,
+            0
+          ],
+          "shape": "box"
+        }
+      ],
+      "details": [
+        {
+          "id": "hood_fill",
+          "part": "body",
+          "region": [
+            0,
+            18,
+            0,
+            11,
+            26,
+            11
+          ],
+          "color": "#2f4a24"
+        },
+        {
+          "id": "face_patch",
+          "part": "body",
+          "region": [
+            1,
+            18,
+            11,
+            10,
+            25,
+            11
+          ],
+          "color": "#d9a066"
+        },
+        {
+          "id": "collar",
+          "part": "body",
+          "region": [
+            0,
+            17,
+            0,
+            11,
+            17,
+            11
+          ],
+          "color": "#5c3b23"
+        },
+        {
+          "id": "brow",
+          "part": "body",
+          "region": [
+            3,
+            25,
+            11,
+            8,
+            25,
+            11
+          ],
+          "color": "#6b4a35"
+        },
+        {
+          "id": "eyes",
+          "part": "body",
+          "region": [
+            3,
+            22,
+            11,
+            4,
+            23,
+            11
+          ],
+          "color": "#241a15",
+          "mirror": true
+        },
+        {
+          "id": "nose",
+          "part": "body",
+          "region": [
+            5,
+            20,
+            11,
+            6,
+            20,
+            11
+          ],
+          "color": "#6b4a35"
+        },
+        {
+          "id": "mouth",
+          "part": "body",
+          "region": [
+            4,
+            18,
+            11,
+            7,
+            19,
+            11
+          ],
+          "color": "#7a3b2e"
+        },
+        {
+          "id": "jerkin_front",
+          "part": "body",
+          "region": [
+            1,
+            8,
+            11,
+            10,
+            16,
+            11
+          ],
+          "color": "#5c3b23"
+        },
+        {
+          "id": "jerkin_back",
+          "part": "body",
+          "region": [
+            1,
+            8,
+            0,
+            10,
+            16,
+            0
+          ],
+          "color": "#5c3b23"
+        },
+        {
+          "id": "belt",
+          "part": "body",
+          "region": [
+            0,
+            7,
+            0,
+            11,
+            7,
+            11
+          ],
+          "color": "#a97142"
+        },
+        {
+          "id": "emblem",
+          "part": "body",
+          "region": [
+            4,
+            10,
+            11,
+            7,
+            14,
+            11
+          ],
+          "color": "#d4af37"
+        },
+        {
+          "id": "hem",
+          "part": "body",
+          "region": [
+            0,
+            0,
+            0,
+            11,
+            0,
+            11
+          ],
+          "color": "#24361a"
+        },
+        {
+          "id": "hood_trim",
+          "part": "hood",
+          "region": [
+            0,
+            0,
+            0,
+            11,
+            0,
+            11
+          ],
+          "color": "#a97142"
+        }
+      ]
+    }
+  }
+}

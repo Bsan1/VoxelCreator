@@ -1,0 +1,423 @@
+{
+  "name": "black_clergy_style_figure",
+  "kind": "character",
+  "root": "body",
+  "parts": [
+    {
+      "id": "body",
+      "size": [
+        8,
+        18,
+        8
+      ],
+      "color": "#1c1c1e"
+    },
+    {
+      "id": "torso_wrap",
+      "size": [
+        10,
+        12,
+        10
+      ],
+      "color": "#1c1c1e",
+      "parent": "body",
+      "anchor": {
+        "to": "bottom"
+      },
+      "shape": "box"
+    },
+    {
+      "id": "hat_brim",
+      "size": [
+        10,
+        1,
+        10
+      ],
+      "color": "#1c1c1e",
+      "parent": "body",
+      "anchor": {
+        "to": "top"
+      },
+      "offset": [
+        0,
+        -1,
+        0
+      ],
+      "shape": "box"
+    },
+    {
+      "id": "hat_crown",
+      "size": [
+        6,
+        4,
+        6
+      ],
+      "color": "#1c1c1e",
+      "parent": "hat_brim",
+      "anchor": {
+        "to": "top"
+      },
+      "shape": "box"
+    },
+    {
+      "id": "hat_tip",
+      "size": [
+        4,
+        1,
+        4
+      ],
+      "color": "#c0c0c8",
+      "parent": "hat_crown",
+      "anchor": {
+        "to": "top"
+      },
+      "shape": "box"
+    }
+  ],
+  "details": [
+    {
+      "id": "face_patch",
+      "part": "body",
+      "region": [
+        0,
+        12,
+        7,
+        7,
+        17,
+        7
+      ],
+      "color": "#e0ac69"
+    },
+    {
+      "id": "arm_band_r",
+      "part": "torso_wrap",
+      "region": [
+        0,
+        1,
+        0,
+        0,
+        9,
+        9
+      ],
+      "color": "#101012",
+      "mirror": true
+    },
+    {
+      "id": "brow",
+      "part": "body",
+      "region": [
+        1,
+        16,
+        7,
+        6,
+        16,
+        7
+      ],
+      "color": "#000000"
+    },
+    {
+      "id": "eye_r",
+      "part": "body",
+      "region": [
+        4,
+        14,
+        7,
+        5,
+        15,
+        7
+      ],
+      "color": "#000000",
+      "mirror": true
+    },
+    {
+      "id": "mouth",
+      "part": "body",
+      "region": [
+        3,
+        12,
+        7,
+        4,
+        12,
+        7
+      ],
+      "color": "#000000"
+    },
+    {
+      "id": "collar_band",
+      "part": "torso_wrap",
+      "region": [
+        0,
+        10,
+        0,
+        9,
+        11,
+        9
+      ],
+      "color": "#ffffff"
+    },
+    {
+      "id": "front_tab",
+      "part": "torso_wrap",
+      "region": [
+        4,
+        0,
+        9,
+        5,
+        10,
+        9
+      ],
+      "color": "#ffffff"
+    },
+    {
+      "id": "waist_trim",
+      "part": "torso_wrap",
+      "region": [
+        0,
+        5,
+        0,
+        9,
+        5,
+        9
+      ],
+      "color": "#8a8a92"
+    },
+    {
+      "id": "hem_trim",
+      "part": "torso_wrap",
+      "region": [
+        0,
+        0,
+        0,
+        9,
+        0,
+        9
+      ],
+      "color": "#8a8a92"
+    },
+    {
+      "id": "hat_trim",
+      "part": "hat_crown",
+      "region": [
+        0,
+        0,
+        0,
+        5,
+        0,
+        5
+      ],
+      "color": "#8a8a92"
+    }
+  ],
+  "meta": {
+    "genSpec": {
+      "name": "black_clergy_style_figure",
+      "root": {
+        "id": "body",
+        "size": [
+          8,
+          18,
+          8
+        ],
+        "color": "#1c1c1e"
+      },
+      "parts": [
+        {
+          "id": "torso_wrap",
+          "size": [
+            10,
+            12,
+            10
+          ],
+          "color": "#1c1c1e",
+          "parent": "body",
+          "anchor": {
+            "to": "bottom"
+          },
+          "shape": "box"
+        },
+        {
+          "id": "hat_brim",
+          "size": [
+            10,
+            1,
+            10
+          ],
+          "color": "#1c1c1e",
+          "parent": "body",
+          "anchor": {
+            "to": "top"
+          },
+          "offset": [
+            0,
+            -1,
+            0
+          ],
+          "shape": "box"
+        },
+        {
+          "id": "hat_crown",
+          "size": [
+            6,
+            4,
+            6
+          ],
+          "color": "#1c1c1e",
+          "parent": "hat_brim",
+          "anchor": {
+            "to": "top"
+          },
+          "shape": "box"
+        },
+        {
+          "id": "hat_tip",
+          "size": [
+            4,
+            1,
+            4
+          ],
+          "color": "#c0c0c8",
+          "parent": "hat_crown",
+          "anchor": {
+            "to": "top"
+          },
+          "shape": "box"
+        }
+      ],
+      "details": [
+        {
+          "id": "face_patch",
+          "part": "body",
+          "region": [
+            0,
+            12,
+            7,
+            7,
+            17,
+            7
+          ],
+          "color": "#e0ac69"
+        },
+        {
+          "id": "brow",
+          "part": "body",
+          "region": [
+            1,
+            16,
+            7,
+            6,
+            16,
+            7
+          ],
+          "color": "#101012"
+        },
+        {
+          "id": "eye_r",
+          "part": "body",
+          "region": [
+            4,
+            14,
+            7,
+            5,
+            15,
+            7
+          ],
+          "color": "#101012",
+          "mirror": true
+        },
+        {
+          "id": "mouth",
+          "part": "body",
+          "region": [
+            3,
+            12,
+            7,
+            4,
+            12,
+            7
+          ],
+          "color": "#101012"
+        },
+        {
+          "id": "hat_trim",
+          "part": "hat_crown",
+          "region": [
+            0,
+            0,
+            0,
+            5,
+            0,
+            5
+          ],
+          "color": "#c0c0c8"
+        },
+        {
+          "id": "collar_band",
+          "part": "torso_wrap",
+          "region": [
+            0,
+            10,
+            0,
+            9,
+            11,
+            9
+          ],
+          "color": "#f2f2f2"
+        },
+        {
+          "id": "front_tab",
+          "part": "torso_wrap",
+          "region": [
+            4,
+            7,
+            9,
+            5,
+            8,
+            9
+          ],
+          "color": "#f2f2f2"
+        },
+        {
+          "id": "waist_trim",
+          "part": "torso_wrap",
+          "region": [
+            0,
+            5,
+            0,
+            9,
+            5,
+            9
+          ],
+          "color": "#c0c0c8"
+        },
+        {
+          "id": "hem_trim",
+          "part": "torso_wrap",
+          "region": [
+            0,
+            0,
+            0,
+            9,
+            0,
+            9
+          ],
+          "color": "#c0c0c8"
+        },
+        {
+          "id": "arm_band_r",
+          "part": "torso_wrap",
+          "region": [
+            0,
+            1,
+            0,
+            0,
+            9,
+            9
+          ],
+          "color": "#101012",
+          "mirror": true
+        }
+      ],
+      "kind": "character"
+    }
+  }
+}

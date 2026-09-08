@@ -15,6 +15,7 @@ import { buildPatchRepairPrompt, buildRevisePrompt } from './revisePrompt.js';
 import { buildQuestionsPrompt, type Question } from './questions.js';
 import { buildCritiquePrompt } from './visual.js';
 import { renderSheet } from '../render/raster.js';
+import { activeStyle } from '../styles/index.js';
 
 /**
  * Generation runs through the user's own Claude Code or Codex CLI over stdin,
@@ -191,10 +192,12 @@ export const runCliForTest = runCli;
 /**
  * Turn a reply into a validated candidate, or throw with a usable message.
  *
- * Two reply shapes are accepted. A revision normally answers with an edit list
- * (`{"ops": [...]}`) applied to `base`; a first generation, and any correction
- * pass, answers with a whole spec. Accepting both means the repair loop needs
- * no special case.
+ * Which reply shape is legal depends on `base`. A revision has one, and MUST
+ * answer with an edit list (`{"ops": [...]}`) applied to it; a first generation
+ * has none and answers with a whole spec. Revision used to accept a spec too,
+ * which turned any reply that ignored the op format into a silent regeneration
+ * — one dropped a figure's face and kept its clothes. It is a defect now, so
+ * the repair pass asks again instead.
  */
 function evaluate(
   raw: string,
@@ -215,6 +218,16 @@ function evaluate(
     scene = patched.scene;
     applied = patched.applied;
     if (opts.name) scene.name = opts.name;
+  } else if (opts.base) {
+    // A revision that comes back as a whole model is not a revision: it is a
+    // regeneration, and it silently drops whatever the model failed to restate.
+    // One did exactly that and deleted a figure's painted face while correctly
+    // keeping its clothing. Reject it here so the repair pass asks for ops
+    // again, rather than overwriting work the artist had already accepted.
+    throw new Error(
+      'a revision must be an edit list, but this reply restated the whole model. ' +
+        'Output {"ops": [...]} holding ONLY the changes for the requested edit.',
+    );
   } else {
     const spec = json as unknown as GenSpec;
     if (opts.name) spec.name = opts.name;
@@ -222,6 +235,7 @@ function evaluate(
     scene = specToScene(spec);
   }
 
+  const { profile, tiers } = activeStyle();
   const report = validate(buildScene(scene), {
     kind: scene.kind,
     detailCount: scene.details.length,
@@ -229,6 +243,9 @@ function evaluate(
     // of painted detail, because the failure mode is always too little.
     detailMin: scene.kind === 'item' ? undefined : 10,
     requestedSize: opts.requestedSize,
+    scene,
+    profile,
+    tiers,
   }); // throws before anything is saved
   const problems = report.checks
     .filter((c) => c.severity !== 'pass')

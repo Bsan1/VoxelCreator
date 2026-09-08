@@ -1,9 +1,12 @@
+import { sizeLadderBlock, tierNearestHeight } from './scale.js';
+import { activeStyle } from '../styles/index.js';
+import { referenceBlock } from './reference.js';
 /**
  * The instruction given to the generating model.
  *
  * The house style is one rectangular prism. Everything here exists to keep the
  * model from drifting away from that: the default is a plain box, and every
- * deviation — a stepped profile, a protrusion, a relief panel — has to be
+ * deviation — a protrusion, a relief panel — has to be
  * earned by something in the request. Left unchecked a model will decorate,
  * which is what produces a figure covered in pointless bumps.
  */
@@ -12,6 +15,12 @@ export function buildPrompt(
   answers?: string,
   size?: [number, number, number],
 ): string {
+  // A size the artist typed wins, but it still comes with the detail budget of
+  // whichever rung it sits nearest: the point of the ladder is that how much a
+  // model can carry is set by its voxel count, not by how much the request asks
+  // for.
+  const { profile, tiers } = activeStyle();
+  const near = size ? tierNearestHeight(tiers, size[1]) : undefined;
   const sizeBlock = size
     ? `
 === THE BODY SIZE IS FIXED ===
@@ -23,7 +32,15 @@ round them, do not talk yourself into a different shape.
 Everything else scales to fit: the head is the top third of ${size[1]}, so
 roughly y = ${Math.round((size[1] * 2) / 3)} to ${size[1]}, and headwear is at
 most ${Math.round(size[1] * 0.4)} tall and ${size[0] + 4} wide.
-` : '';
+
+That is close to the "${near!.label}" rung of the house ladder, so work to its
+budget: ${near!.details[0]}-${near!.details[1]} painted regions.
+FACE: ${near!.face}
+${near!.notes}
+`
+    : `
+${sizeLadderBlock(profile, tiers)}
+`;
   return `You are a voxel artist working in one specific house style. Turn the request below into ONE JSON object describing a voxel model.
 
 Output ONLY the JSON object. No prose, no explanation, no code fence.
@@ -35,6 +52,8 @@ ${answers}
 The request may be written in any language. Read it in whatever language it is
 written, and answer with JSON either way. Keep "name" and every id in English
 snake_case regardless — they are identifiers, not display text.
+
+${referenceBlock(userPrompt)}
 
 === THE HOUSE STYLE ===
 
@@ -49,30 +68,27 @@ brim and a real tapering cone above it. A helmet has a crest. A crown has
 points. Give headwear its true shape — a plain box on top of a plain box is
 the single most common way these models come out looking like a postbox.
 
-  Use "shape": "cone" for a pointed hat and "pyramid" for an angular one.
+  Use "shape": "cone" for a pointed hat and "pyramid" for an angular one. Do
+  not fake a point by stacking boxes.
 
-  A tall thin BOX on the head is not a hat. If you write a box up there, stop
-  and make it a cone, or step it down in pieces.
+  HEADWEAR STARTS AT THE BODY'S OWN WIDTH, AND IT IS SMALL.
 
-  HEADWEAR IS BUILT AS A STEPPED STACK, AND IT IS SMALL.
+  The default is ONE piece, as wide and as deep as the body, 3 to 5 voxels
+  tall, sunk one voxel in with "offset": [0, -1, 0]. That is what the finished
+  model above does, and a cap, hood, mitre or helmet is all one piece.
 
-  On a body 10 wide, 22 tall and 10 deep, a wizard hat is exactly this:
+  Add a second piece only when the concept genuinely has one:
+    - a BRIM, for a wide-brimmed hat. It grows in BOTH directions equally and
+      only by 2 each — width AND depth. A brim wider than the body but no
+      deeper is a plank; one twice the body depth is a flying saucer. 1 or 2
+      voxels tall, never more.
+    - a CONE or PYRAMID above it, for a genuinely pointed hat.
 
-    brim  [12, 1, 12]   +2 on width AND depth, 1 voxel tall
-    cone  [ 6, 6,  6]   drops to about 60% of the body width
-    tip   [ 4, 2,  4]   a short cap on top
+  NEVER STACK THREE SHRINKING BOXES. A brim, then a narrower box, then a
+  narrower box again is a wedding cake, not a hat.
 
-  The rules that shape comes from:
-    - A BRIM GROWS IN BOTH DIRECTIONS EQUALLY, and only by 2 each. A brim
-      wider than the body but no deeper is a plank; one twice the body depth
-      is a flying saucer. Match the body's depth plus 2.
-    - A brim is 1 or 2 voxels tall. Never more.
-    - Above the brim, step down in two or three pieces rather than running one
-      long cone. Each piece is narrower and shorter than the one below.
-    - Everything on the head together is at most 40% of the body height.
-    - A helmet or cap with no brim is 4-6 tall and the body's own width.
-
-  A hat taller than the head it sits on turns the figure into a tower.
+  Everything on the head together is at most 40% of the body height. A hat
+  taller than the head it sits on turns the figure into a tower.
 
 THE BASE IS ONE SOLID FOOTING. Never split the bottom into two leg blocks —
 that turns the figure into a puppet, which this style does not do. Boots are a
@@ -82,21 +98,20 @@ relief panel.
 
 The ways you may leave the plain box, within the silhouette budget above:
 
-1. STEPPED PROFILE — stack boxes of different widths on the same centre line.
-   Use this for a silhouette the concept genuinely has: a dress or robe that
-   flares (narrow above, wide below), broad shoulders over a narrower waist.
-   If the request does not imply a shape like that, do not step it.
+1. THE BODY DOES NOT WIDEN. There is no stepped profile in this style, and a
+   flared robe is NOT built — it is painted. Every stepped attempt was measured
+   and came out worse: the added width pushed the figure to an aspect of 0.49
+   to 0.59, where it reads as a barrel or as a statue on a plinth, while the
+   straight figures sit at 0.40 to 0.44 and read as people.
 
-   A FLARE IS NOT A PLINTH. A wide slab at the bottom, in a bright colour,
-   ringed with bands, is a pedestal the figure stands on — not a garment.
-
-     at most 4 voxels wider than the body IN TOTAL, so 16 on a 12-wide body
-     at most a quarter of the body height
-     the SAME colour family as the robe above it, never a metal
-     no horizontal bands across it
-
-   Most characters do not need one at all. Unless the request says gown, robe
-   or dress, leave the body straight and paint the hem.
+   A ROBE IS PAINTED, AND THIS IS HOW. On the front face, run VERTICAL bands
+   down the garment, alternating a slightly darker and a slightly lighter shade
+   of the garment colour — two or three of them, of uneven widths, not centred.
+   Those are the folds, and they are what makes cloth read. Then:
+     a darker band across the bottom for the hem, 1-2 rows
+     a collar or yoke where the garment meets the head band
+     the sleeves as vertical bands down the left and right front edges
+   Horizontal bands alone make a postbox. Vertical bands make cloth.
 
    BIG MASSES TAKE THE GARMENT COLOUR. Gold, silver and brass are for thin
    trim lines only — a few voxels tall. A large gold shape reads as masonry
@@ -217,23 +232,47 @@ face colour on each side of it.
   no face. "Long white beard" still means about 5 voxels tall, not 12. Length
   in the request describes the character, not the voxel count.
 
-THIS IS WHERE YOU DO THE WORK. On a 12x26x9 body, paint:
-  THE FACE FIRST, in the head third (y 17-26) on the front face (z = 8):
-    eyes — two blocks, each 2 wide and 2 tall, around y = 21-22, with 2 or 3
-      voxels of face between them. Small single-voxel eyes disappear.
-    brow or visor — a darker band just above the eyes reads as a helmet slot
-    mouth or beard — small, below the eyes, around y = 18-19
-    leave the rest of the head band in face colour so the features register
-  hair or a helmet as a cap over the very top and upper sides only
-  a collar as a band where the head meets the body, around y = 16
-  the tunic, dress or breastplate as a broad band across the middle
-  an emblem centred on the chest — a cross, a crest, a stripe
-  trim as thin horizontal bands at the collar and waist, in a metal colour
-  arms as two vertical bands down the left and right front edges
-  boots as a band across the bottom
+THIS IS WHERE YOU DO THE WORK. Paint in this order, as the finished model above
+does. On a 12x26x9 body:
+  1. THE HEAD BAND FIRST, and wrap it on ALL FOUR SIDES (the full z range, not
+     just the front): the whole head third y 17-26 in skin, or in hood or
+     helmet colour. This one region is what makes a block read as a head. Never
+     paint a small patch on the front and leave the sides in garment colour.
+  2. A COLLAR band directly under it, around y 16, in a colour that separates
+     head from body.
+  3. THE FEATURES, on the front face (z = 8), inside the head band:
+       eyes — two blocks, each 2 wide and 2 tall, around y = 21-22, with 2 or 3
+         voxels of face between them. Single-voxel eyes disappear.
+       brow — a band above the eyes, with a row of skin left between them, in a
+         MID-TONE. A black brow touching black eyes merges into one bar.
+       mouth or beard — small, below the eyes, around y = 18-19
+     Leave the rest of the head band in face colour so the features register.
+  4. Then the garment: the tunic, dress or breastplate as a broad band across
+     the middle, an emblem centred on the chest, thin trim at collar and waist
+     in a metal colour, arms as two vertical bands down the left and right
+     front edges, boots as a band across the bottom.
 
 Do not ring the figure with evenly spaced horizontal stripes. Three or four
 bands at equal intervals down a tall block is what a postbox looks like.
+
+NO STRETCH OF THE FIGURE MAY BE A BLANK SLAB, and this is measured: no run of
+rows taller than a quarter of the whole figure may be one flat colour with
+nothing painted on it. It is always the same stretch that fails — the face
+gets painted and the hem gets painted, and the long drop between the collar
+and the belt is left as a bare column. Carry the garment over it, and break it
+with an emblem, a seam, a fold in a near shade or a change of garment colour.
+GIVE THE FIGURE A TONAL RANGE, AND THIS IS MEASURED. Painting trim in another
+shade of the same near-black is the same as not painting it: the renderer
+shades the three visible faces of a cube across a wider spread than the gap
+between #0a0a0a and #161616, so that seam is gone before anyone looks at it.
+Choose the garment's darkest shade first, then make every marking laid on it
+clearly lighter or clearly a different hue. A black cassock still needs its
+collar, belt, hem and emblem to READ — bone, grey, gold, oxblood.
+
+KEEP FACIAL FEATURES APART. Leave at least one row of face colour between the
+brow and the eyes, and between the eyes and the nose or mouth. Features that
+touch merge into one dark bar and the figure ends up looking like it is wearing
+a visor.
 
 Layered trim is what makes these read as designed rather than plain: a dark
 base, a broad mid-tone garment, then thin bright trim lines picking out the
@@ -311,6 +350,17 @@ How to fix each kind:
 - "only N painted regions": add more entries to "details" — trim bands at the
   collar, waist and hem, an emblem on the chest, seams, cuffs, a contrasting
   band for the footwear. Do NOT add parts to satisfy this.
+- "rows y A-B are N rows of one flat colour": that stretch is a bare column.
+  Paint over it — carry the garment across it, add an emblem, a seam or a
+  panel in a near shade. Do not add parts, and do not answer it with evenly
+  spaced stripes.
+- "the head band ... uses only N colour(s)": the figure has no face. Paint the
+  whole head band in a face, hood or helmet colour, then put the eyes, brow
+  and mouth inside it, before any clothing detail.
+- "painted regions mostly disappear into the surface": those markings are in
+  shades too close to what they sit on. Do NOT add more details — change the
+  colours of the ones listed so each is clearly lighter than, or a clearly
+  different hue from, the surface beneath it.
 - "exceeds the 255 the .vox format allows": reduce the number of colours.
 
 NEVER DROP A FEATURE THE REQUEST ASKED FOR. If the request names a staff, a

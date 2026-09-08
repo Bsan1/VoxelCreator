@@ -150,7 +150,7 @@ function renderSingle(): void {
   modelRoot.add(mesh);
 
   const { grid, palette, layout } = build;
-  const report = validate(build, { kind: entry.scene.kind });
+  const report = validate(build, { kind: entry.scene.kind, scene: entry.scene });
   const problems = report.checks.filter((c) => c.severity !== 'pass');
 
   framing = {

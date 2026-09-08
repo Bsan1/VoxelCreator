@@ -1,0 +1,447 @@
+{
+  "name": "pr_7",
+  "kind": "character",
+  "root": "body",
+  "parts": [
+    {
+      "id": "body",
+      "size": [
+        12,
+        27,
+        12
+      ],
+      "color": "#2d4a35"
+    },
+    {
+      "id": "hood_peak",
+      "size": [
+        12,
+        4,
+        12
+      ],
+      "color": "#1f3626",
+      "parent": "body",
+      "anchor": {
+        "to": "top",
+        "alignX": "center",
+        "alignZ": "center"
+      },
+      "offset": [
+        0,
+        -1,
+        0
+      ],
+      "shape": "box"
+    }
+  ],
+  "details": [
+    {
+      "id": "head_wrap",
+      "part": "body",
+      "region": [
+        0,
+        18,
+        0,
+        11,
+        26,
+        11
+      ],
+      "color": "#142318"
+    },
+    {
+      "id": "face_skin",
+      "part": "body",
+      "region": [
+        2,
+        18,
+        10,
+        9,
+        26,
+        11
+      ],
+      "color": "#d9a066"
+    },
+    {
+      "id": "brow",
+      "part": "body",
+      "region": [
+        3,
+        25,
+        11,
+        8,
+        25,
+        11
+      ],
+      "color": "#5c4a34"
+    },
+    {
+      "id": "eyes",
+      "part": "body",
+      "region": [
+        3,
+        22,
+        11,
+        4,
+        23,
+        11
+      ],
+      "color": "#2a1f1a",
+      "mirror": true
+    },
+    {
+      "id": "nose",
+      "part": "body",
+      "region": [
+        5,
+        21,
+        11,
+        6,
+        21,
+        11
+      ],
+      "color": "#8a5a35"
+    },
+    {
+      "id": "mouth",
+      "part": "body",
+      "region": [
+        4,
+        19,
+        11,
+        7,
+        20,
+        11
+      ],
+      "color": "#7a3b2e"
+    },
+    {
+      "id": "collar",
+      "part": "body",
+      "region": [
+        0,
+        17,
+        0,
+        11,
+        17,
+        11
+      ],
+      "color": "#a97142"
+    },
+    {
+      "id": "clasp",
+      "part": "body",
+      "region": [
+        5,
+        16,
+        11,
+        6,
+        17,
+        11
+      ],
+      "color": "#c98a4b"
+    },
+    {
+      "id": "sleeve",
+      "part": "body",
+      "region": [
+        0,
+        3,
+        11,
+        1,
+        15,
+        11
+      ],
+      "color": "#142318",
+      "mirror": true
+    },
+    {
+      "id": "fold_dark",
+      "part": "body",
+      "region": [
+        2,
+        2,
+        11,
+        3,
+        16,
+        11
+      ],
+      "color": "#16281c"
+    },
+    {
+      "id": "fold_light",
+      "part": "body",
+      "region": [
+        8,
+        2,
+        11,
+        10,
+        16,
+        11
+      ],
+      "color": "#4f7a58"
+    },
+    {
+      "id": "chest_clasp_chain",
+      "part": "body",
+      "region": [
+        4,
+        11,
+        11,
+        7,
+        15,
+        11
+      ],
+      "color": "#a97142"
+    },
+    {
+      "id": "belt",
+      "part": "body",
+      "region": [
+        0,
+        8,
+        0,
+        11,
+        9,
+        11
+      ],
+      "color": "#a97142"
+    },
+    {
+      "id": "hem",
+      "part": "body",
+      "region": [
+        0,
+        0,
+        0,
+        11,
+        1,
+        11
+      ],
+      "color": "#16281b"
+    }
+  ],
+  "meta": {
+    "genSpec": {
+      "name": "pr_7",
+      "kind": "character",
+      "root": {
+        "id": "body",
+        "size": [
+          12,
+          27,
+          12
+        ],
+        "color": "#2d4a35"
+      },
+      "parts": [
+        {
+          "id": "hood_peak",
+          "size": [
+            12,
+            4,
+            12
+          ],
+          "color": "#1f3626",
+          "parent": "body",
+          "anchor": {
+            "to": "top",
+            "alignX": "center",
+            "alignZ": "center"
+          },
+          "offset": [
+            0,
+            -1,
+            0
+          ],
+          "shape": "box"
+        }
+      ],
+      "details": [
+        {
+          "id": "head_wrap",
+          "part": "body",
+          "region": [
+            0,
+            18,
+            0,
+            11,
+            26,
+            11
+          ],
+          "color": "#142318"
+        },
+        {
+          "id": "face_skin",
+          "part": "body",
+          "region": [
+            2,
+            18,
+            10,
+            9,
+            26,
+            11
+          ],
+          "color": "#d9a066"
+        },
+        {
+          "id": "brow",
+          "part": "body",
+          "region": [
+            3,
+            25,
+            11,
+            8,
+            25,
+            11
+          ],
+          "color": "#5c4a34"
+        },
+        {
+          "id": "eyes",
+          "part": "body",
+          "region": [
+            3,
+            22,
+            11,
+            4,
+            23,
+            11
+          ],
+          "color": "#2a1f1a",
+          "mirror": true
+        },
+        {
+          "id": "nose",
+          "part": "body",
+          "region": [
+            5,
+            21,
+            11,
+            6,
+            21,
+            11
+          ],
+          "color": "#8a5a35"
+        },
+        {
+          "id": "mouth",
+          "part": "body",
+          "region": [
+            4,
+            19,
+            11,
+            7,
+            20,
+            11
+          ],
+          "color": "#7a3b2e"
+        },
+        {
+          "id": "collar",
+          "part": "body",
+          "region": [
+            0,
+            17,
+            0,
+            11,
+            17,
+            11
+          ],
+          "color": "#a97142"
+        },
+        {
+          "id": "clasp",
+          "part": "body",
+          "region": [
+            5,
+            16,
+            11,
+            6,
+            17,
+            11
+          ],
+          "color": "#c98a4b"
+        },
+        {
+          "id": "sleeve",
+          "part": "body",
+          "region": [
+            0,
+            3,
+            11,
+            1,
+            15,
+            11
+          ],
+          "color": "#142318",
+          "mirror": true
+        },
+        {
+          "id": "fold_dark",
+          "part": "body",
+          "region": [
+            2,
+            2,
+            11,
+            3,
+            16,
+            11
+          ],
+          "color": "#16281c"
+        },
+        {
+          "id": "fold_light",
+          "part": "body",
+          "region": [
+            8,
+            2,
+            11,
+            10,
+            16,
+            11
+          ],
+          "color": "#4f7a58"
+        },
+        {
+          "id": "chest_clasp_chain",
+          "part": "body",
+          "region": [
+            4,
+            11,
+            11,
+            7,
+            15,
+            11
+          ],
+          "color": "#a97142"
+        },
+        {
+          "id": "belt",
+          "part": "body",
+          "region": [
+            0,
+            8,
+            0,
+            11,
+            9,
+            11
+          ],
+          "color": "#a97142"
+        },
+        {
+          "id": "hem",
+          "part": "body",
+          "region": [
+            0,
+            0,
+            0,
+            11,
+            1,
+            11
+          ],
+          "color": "#16281b"
+        }
+      ]
+    }
+  }
+}

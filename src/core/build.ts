@@ -1,3 +1,4 @@
+import { DEFAULT_TAPER, type TaperRule } from './style.js';
 import { VoxelGrid } from './grid.js';
 import { fillShape, hollowRegion } from './primitives.js';
 import { layoutScene, type LayoutResult } from './layout.js';
@@ -49,7 +50,26 @@ function applyRegion(
  * Deterministic scene -> voxels. Same scene in, same grid out: revisions edit
  * the scene and rebuild rather than mutating voxels in place.
  */
-export function buildScene(scene: VoxelScene): BuildResult {
+/**
+ * The taper every build uses unless one is passed in.
+ *
+ * There are twenty-odd call sites for buildScene — the viewer, the renderer,
+ * every CLI, every MCP tool — and threading a style through all of them would
+ * leave some of them wired and some not, which is precisely the half-applied
+ * style that makes output inconsistent. The style registry sets this once when
+ * it loads instead, so a profile swap reaches every build at the same moment.
+ */
+let ambientTaper: TaperRule = DEFAULT_TAPER;
+
+/** Called by the style registry on load. Not for per-build overrides. */
+export function setAmbientTaper(taper: TaperRule): void {
+  ambientTaper = taper;
+}
+
+export function buildScene(
+  scene: VoxelScene,
+  opts: { taper?: TaperRule } = {},
+): BuildResult {
   const layout = layoutScene(scene);
   const [gx, gy, gz] = layout.size;
   if (gx <= 0 || gy <= 0 || gz <= 0) {
@@ -84,7 +104,7 @@ export function buildScene(scene: VoxelScene): BuildResult {
   for (const pp of shifted) {
     const source = byId.get(pp.sourceId)!;
     const colorIdx = palette.indexOf(source.color);
-    fillShape(grid, source.shape ?? 'box', pp.pos, pp.size, colorIdx);
+    fillShape(grid, source.shape ?? 'box', pp.pos, pp.size, colorIdx, opts.taper ?? ambientTaper);
     if (source.hollow) hollowRegion(grid, pp.pos, pp.size);
   }
 

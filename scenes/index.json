@@ -1,6 +1,38 @@
 {
   "scenes": [
-    "rahip"
+    "black_clergy_style_figure",
+    "papaz_v3",
+    "pr_1",
+    "pr_2",
+    "pr_3",
+    "pr_4",
+    "pr_5",
+    "pr_7",
+    "priest_in_black",
+    "rahip",
+    "ref_robed_1",
+    "ref_robed_a",
+    "ref_robed_b",
+    "ref_robed_c",
+    "ref_robed_d",
+    "ref_robed_e",
+    "ref_robed_f",
+    "ref_robed_g",
+    "ref_robed_h",
+    "ref_robed_i",
+    "ref_robed_j",
+    "ref_robed_k",
+    "ref_robed_l",
+    "ref_robed_m",
+    "ref_robed_n",
+    "ref_robed_o",
+    "ref_robed_p",
+    "t_king",
+    "t_knight2",
+    "t_orc",
+    "t_robot2",
+    "t_viking",
+    "t_wizard"
   ],
-  "updated": 1788697769733
+  "updated": 1788806145332
 }

@@ -1,6 +1,8 @@
 import type { VoxelGrid } from './grid.js';
 import type { BuildResult } from './build.js';
-import type { SceneKind } from './types.js';
+import type { SceneKind, VoxelScene } from './types.js';
+import { nearestTier, tierFor, type SizeTier, type StyleProfile } from './style.js';
+import { contrastFloorFor, luminanceOf } from './shading.js';
 
 /**
  * Deterministic structural QA. These checks are what let an agent revise a
@@ -93,6 +95,16 @@ export function validate(
     detailMin?: number;
     /** Exact body size the artist asked for, if any. */
     requestedSize?: [number, number, number];
+    /** The scene itself, for checks that need the painted details, not voxels. */
+    scene?: VoxelScene;
+    /**
+     * The active style profile. Every threshold below used to be a constant in
+     * this file, which meant one project's taste was compiled into the tool.
+     * They come from the profile now; without one the style checks stand down
+     * rather than quietly applying somebody else's numbers.
+     */
+    profile?: StyleProfile;
+    tiers?: SizeTier[];
   } = {},
 ): ValidationReport {
   const { grid, palette } = build;
@@ -208,9 +220,16 @@ export function validate(
   // below the head line. A hat brim sunk a voxel into the head would otherwise
   // widen the body's bounding box and make a solid torso score 40%.
   let bodyMinX = Infinity, bodyMaxX = -Infinity, bodyMinZ = Infinity, bodyMaxZ = -Infinity;
+  // Headwear is whatever sits at the top of the body. Classifying it by its
+  // CENTRE was wrong: the prompt tells the model to sink a hat brim into the
+  // head with a negative offset, which puts the brim's centre just below the
+  // head line, so it counted as torso. A 16-wide brim on a 12-wide body then
+  // widened the body box and scored a perfectly solid prism at 58% — the check
+  // punishing the exact construction the prompt asks for. Classify by where a
+  // part starts, allowing for that sink.
+  const HEADWEAR_SINK = 2;
   for (const p of build.layout.placed) {
-    const centreY = p.pos[1] + p.size[1] / 2;
-    if (centreY >= bodyTop) continue; // headwear
+    if (p.part.parent && p.pos[1] >= bodyTop - HEADWEAR_SINK) continue; // headwear
     bodyMinX = Math.min(bodyMinX, p.pos[0]);
     bodyMaxX = Math.max(bodyMaxX, p.pos[0] + p.size[0] - 1);
     bodyMinZ = Math.min(bodyMinZ, p.pos[2]);
@@ -232,7 +251,7 @@ export function validate(
       ? 0
       : (bodyMaxX - bodyMinX + 1) * Math.min(bodyTop, grid.sy) * (bodyMaxZ - bodyMinZ + 1);
 
-  const PRISM_MIN_PCT = opts.prismMinPct ?? 60;
+  const PRISM_MIN_PCT = opts.prismMinPct ?? opts.profile?.prismMinPct ?? 60;
   const fillPct = bodyVolume > 0 ? (bodyVoxels / bodyVolume) * 100 : (voxels / volume) * 100;
   if (!isCharacter) {
     add(
@@ -289,10 +308,110 @@ export function validate(
     );
   }
 
+  // Does the head read as a head?
+  //
+  // The prompt has asked for a painted face since the postbox complaints, but
+  // nothing measured it, so a model could ship with a bare block on top and
+  // still pass every check — which is exactly what happened. One colour across
+  // the whole head band means no face, no hair, nothing.
+  if (!isCharacter || !rootPlaced) {
+    add('face', 'pass', 'Face rules apply to characters only');
+  } else {
+    const top = rootPlaced.pos[1] + rootPlaced.size[1];
+    const headBottom = Math.max(0, top - Math.round(rootPlaced.size[1] / 3));
+    const shades = new Set<number>();
+    for (let y = headBottom; y < Math.min(top, grid.sy); y++) {
+      for (let z = rootPlaced.pos[2]; z < rootPlaced.pos[2] + rootPlaced.size[2]; z++) {
+        for (let x = rootPlaced.pos[0]; x < rootPlaced.pos[0] + rootPlaced.size[0]; x++) {
+          const v = grid.get(x, y, z);
+          if (v !== 0) shades.add(v);
+        }
+      }
+    }
+    if (shades.size >= (opts.profile?.minFaceShades ?? 3)) {
+      add('face', 'pass', `Head band uses ${shades.size} colours`);
+    } else {
+      add(
+        'face',
+        'warn',
+        `The head band (y ${headBottom}-${top}) uses only ${shades.size} colour(s), so there ` +
+          'is no face on it. Paint the head area — skin or helmet across it, then eyes, ' +
+          'brow and mouth inside that — before any clothing detail.',
+      );
+    }
+  }
+
+  // Is any stretch of the figure a featureless slab?
+  //
+  // The complaint that keeps coming back is that a model "looks like a
+  // postbox", and this is what that means numerically: a long run of rows in
+  // one flat colour with nothing painted on it. Checks for silhouette, base and
+  // face all pass on such a model, because none of them look at the middle. The
+  // measure is deliberately about the whole figure rather than any one part, so
+  // it catches an unpainted torso, an unpainted skirt or an unpainted hat alike.
+  if (!isCharacter) {
+    add('flat_band', 'pass', 'Flat-band rule applies to characters only');
+  } else {
+    const shadesPerRow: number[] = [];
+    const onlyShade: number[] = [];
+    let filledRows = 0;
+    for (let y = 0; y < grid.sy; y++) {
+      const seen = new Set<number>();
+      for (let z = 0; z < grid.sz; z++) {
+        for (let x = 0; x < grid.sx; x++) {
+          const v = grid.get(x, y, z);
+          if (v !== 0) seen.add(v);
+        }
+      }
+      shadesPerRow.push(seen.size);
+      onlyShade.push(seen.size === 1 ? [...seen][0] : -1);
+      if (seen.size > 0) filledRows++;
+    }
+
+    let longest = 0;
+    let from = 0;
+    let to = -1;
+    let runStart = -1;
+    let runShade = -1;
+    for (let y = 0; y < grid.sy; y++) {
+      const shade = onlyShade[y];
+      if (shade === -1) {
+        runStart = -1;
+        runShade = -1;
+        continue;
+      }
+      if (shade !== runShade) {
+        runStart = y;
+        runShade = shade;
+      }
+      const len = y - runStart + 1;
+      if (len > longest) {
+        longest = len;
+        from = runStart;
+        to = y;
+      }
+    }
+
+    // A quarter of the figure is generous: a plain skirt or a plain hat crown
+    // stays under it, an undecorated torso does not.
+    const limit = Math.max(4, Math.round((filledRows * (opts.profile?.maxFlatBandPct ?? 25)) / 100));
+    if (longest <= limit) {
+      add('flat_band', 'pass', `Longest flat run is ${longest} rows (limit ${limit})`);
+    } else {
+      add(
+        'flat_band',
+        'warn',
+        `Rows y ${from}-${to} are ${longest} rows of one flat colour with nothing ` +
+          `painted on them, out of ${filledRows} — the figure reads as a blank slab ` +
+          `there. Paint that stretch: a belt, a seam, a shaded panel, a change of ` +
+          `garment colour. Do not fix this by adding parts.`,
+      );
+    }
+  }
   // A tall narrow block reads as a monument, not a character. Voxel figures
   // need to be chunky — this is the proportion failure that no amount of
   // painted detail can rescue.
-  const MIN_ASPECT = 0.4;
+  const MIN_ASPECT = opts.profile?.minAspect ?? 0.4;
   if (!isCharacter || !rootPlaced || opts.requestedSize) {
     add('proportion', 'pass', 'Proportion is the artist\'s call here');
   } else {
@@ -411,6 +530,259 @@ export function validate(
         `least ${opts.detailMin}. Add painted detail — trim at the collar, belt and ` +
         'hem, an emblem, seams — rather than adding parts.',
     );
+  }
+
+  // Can the paint actually be seen?
+  //
+  // detail_density counts painted regions, and a model can satisfy it while
+  // painting nothing visible: one came back with 21 details in a palette of
+  // eight near-blacks, trim at #0a0a0a laid on a body at #161616. Every check
+  // passed and the figure read as a plain black slab. Counting work is not the
+  // same as measuring whether the work registers, so measure it — each detail
+  // against the surface it is actually laid on, which means replaying a part's
+  // details in order rather than comparing against the part colour, because the
+  // eyes go on the face patch and not on the body.
+  if (!opts.scene) {
+    add('contrast', 'pass', 'Scene not supplied, paint contrast not measured');
+  } else {
+    const scene = opts.scene;
+    const partById = new Map(scene.parts.map((q) => [q.id, q]));
+    // Luminance-weighted RGB distance. The renderer shades a cube's three
+    // visible faces across roughly 55-100% brightness, so a marking below that
+    // spread is lost to shading before anyone reads it as a marking.
+    // Not one threshold but one per surface. A marking has to beat the range
+    // that surface already covers just from which way its faces point, and that
+    // range scales with the surface: about 18 on a deep red, about 74 on
+    // polished steel. A fixed 20 passed markings on light armour that were
+    // simply invisible.
+    const FLOOR = opts.profile?.minPaintContrast ?? 20;
+    const thresholdFor = (hex: string): number => {
+      const [r8, g8, b8] = rgbOf(hex);
+      return contrastFloorFor(luminanceOf(r8, g8, b8), FLOOR);
+    };
+    const rgbOf = (hex: string): [number, number, number] => {
+      const n = parseInt(hex.replace(/^#/, ''), 16);
+      return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+    };
+    const distance = (a: string, b: string): number => {
+      const [ar, ag, ab] = rgbOf(a);
+      const [br, bg, bb] = rgbOf(b);
+      const dr = ar - br;
+      const dg = ag - bg;
+      const db = ab - bb;
+      return Math.sqrt(0.3 * dr * dr + 0.59 * dg * dg + 0.11 * db * db);
+    };
+
+    // Part-local surface colour, built up as details are replayed. A mirrored
+    // twin shares its source's colours, so one pass per source part is enough.
+    const surface = new Map<string, Map<string, string>>();
+    const faint: Array<{ id: string; on: string; d: number }> = [];
+
+    for (const detail of scene.details) {
+      const part = partById.get(detail.part);
+      if (!part) continue;
+      const [psx, psy, psz] = part.size;
+      const painted = surface.get(part.id) ?? new Map<string, string>();
+      surface.set(part.id, painted);
+
+      const [ax0, ay0, az0, ax1, ay1, az1] = detail.region;
+      const x0 = Math.max(0, Math.min(ax0, ax1));
+      const x1 = Math.min(psx - 1, Math.max(ax0, ax1));
+      const y0 = Math.max(0, Math.min(ay0, ay1));
+      const y1 = Math.min(psy - 1, Math.max(ay0, ay1));
+      const z0 = Math.max(0, Math.min(az0, az1));
+      const z1 = Math.min(psz - 1, Math.max(az0, az1));
+
+      // How a marking reads is set by the surface it covers most of, so weight
+      // by area rather than taking the best or worst single voxel.
+      const beneath = new Map<string, number>();
+      for (let z = z0; z <= z1; z++) {
+        for (let y = y0; y <= y1; y++) {
+          for (let x = x0; x <= x1; x++) {
+            const key = `${x},${y},${z}`;
+            const under = painted.get(key) ?? part.color;
+            beneath.set(under, (beneath.get(under) ?? 0) + 1);
+            painted.set(key, detail.color);
+          }
+        }
+      }
+      if (beneath.size === 0) continue;
+
+      // How much of the marking disappears? Averaging the distance across the
+      // region hid the failure it was meant to catch: hair painted #1c1c1c over
+      // a #161616 head vanishes across three quarters of its area, but the
+      // quarter that clips the face patch pulled the mean up and it scored as
+      // fine. Judge a marking by the share of it that cannot be seen.
+      let total = 0;
+      let lost = 0;
+      for (const [under, n] of beneath) {
+        total += n;
+        if (distance(detail.color, under) < thresholdFor(under)) lost += n;
+      }
+      const dominant = [...beneath.entries()].sort((a, b) => b[1] - a[1])[0][0];
+      const lostPct = total > 0 ? lost / total : 0;
+      if (lostPct > 0.5) {
+        faint.push({ id: detail.id ?? '(unnamed)', on: dominant, d: lostPct });
+      }
+    }
+
+    const paintedCount = scene.details.length;
+    // One deliberately subtle marking is fine; a palette with no range is not.
+    const allowed = Math.max(1, Math.floor(paintedCount * 0.25));
+    if (paintedCount === 0) {
+      add('contrast', 'pass', 'No painted details to measure');
+    } else if (faint.length <= allowed) {
+      add(
+        'contrast',
+        'pass',
+        `${paintedCount - faint.length} of ${paintedCount} painted regions read against their surface`,
+      );
+    } else {
+      const worst = faint
+        .sort((a, b) => b.d - a.d)
+        .slice(0, 5)
+        .map((f) => `${f.id} (${Math.round(f.d * 100)}% lost on ${f.on})`)
+        .join(', ');
+      add(
+        'contrast',
+        'warn',
+        `${faint.length} of ${paintedCount} painted regions mostly disappear into ` +
+          `the surface they are painted on (${worst}). How far apart two colours ` +
+          `must be depends on the SURFACE: a marking on a near-black garment needs ` +
+          `about 20, one on skin or polished steel needs 70 or more, because a lit ` +
+          `surface already covers that much range on its own. Recolour the ones ` +
+          `listed so each is clearly lighter than, or a clearly different hue from, ` +
+          `what it sits on. Do not answer this by adding more detail.`,
+      );
+    }
+  }
+
+  // Is the body on the size ladder?
+  //
+  // Voxel count is to voxel art what pixel size is to pixel art, and models were
+  // arriving at 12x24x14, 16x34x16, 18x35x12 — no two on the same scale, so no
+  // two looked like they came from the same set. Unlike everything else in this
+  // file this is not a matter of taste, it is a number, which is exactly why it
+  // is worth checking rather than only asking for.
+  if (!isCharacter || !rootPlaced || opts.requestedSize || !opts.profile || !opts.tiers) {
+    add('size_ladder', 'pass', 'Ladder applies to characters with a free size and a style');
+  } else {
+    const s = rootPlaced.size;
+    const exact = tierFor(opts.tiers, s);
+    if (exact) {
+      add('size_ladder', 'pass', `${s.join('x')} is the "${exact.label}" rung`);
+    } else {
+      const near = nearestTier(opts.tiers, s[1]);
+      add(
+        'size_ladder',
+        'warn',
+        `Body is ${s.join('x')}, which is not on the house size ladder. Use ` +
+          `${near.size.join('x')} (the "${near.label}" rung) instead — every model is ` +
+          `the base ${opts.profile.baseSize.join('x')} or a clean multiple of it, so two of ` +
+          `them side by side belong to the same set. Width and depth must match.`,
+      );
+    }
+  }
+
+  // Does a flared garment read as cloth or as a plinth?
+  //
+  // A robe hangs from the shoulders and gathers weight downward, so it widens
+  // from about the waist and reaches its widest at the hem. Sixteen generated
+  // robes put ALL of their widening in the bottom sixth of the figure, in one
+  // hard step, and every one of them read as a figure standing on a base.
+  //
+  // The step size matters as much as where it starts. A step exposes a TOP face,
+  // which is the brightest surface the renderer produces; a width change of 2
+  // leaves exactly one voxel of it, which is a single-voxel cluster of the
+  // highest-contrast value on the model — an orphan pixel in the worst place.
+  if (!isCharacter || !rootPlaced || !opts.profile) {
+    add('flare', 'pass', 'Flare rules apply to characters with a style');
+  } else {
+    // Stop short of the head line for the same reason prism_fidelity does: the
+    // prompt tells the model to sink a hat brim into the head, so the brim's
+    // bottom row sits inside the body's own range and a 16-wide brim on a
+    // 12-wide body looked exactly like a flare.
+    const bodyRows = Math.max(1, Math.min(bodyTop - HEADWEAR_SINK, grid.sy));
+    const widths: number[] = [];
+    for (let y = 0; y < bodyRows; y++) {
+      let lo = Infinity;
+      let hi = -Infinity;
+      for (let z = 0; z < grid.sz; z++) {
+        for (let x = 0; x < grid.sx; x++) {
+          if (grid.get(x, y, z) === 0) continue;
+          if (x < lo) lo = x;
+          if (x > hi) hi = x;
+        }
+      }
+      widths.push(hi < lo ? 0 : hi - lo + 1);
+    }
+    const filled = widths.filter((w) => w > 0);
+    const torso = filled.length > 0 ? Math.min(...filled) : 0;
+    const widest = filled.length > 0 ? Math.max(...filled) : 0;
+    const startPct = opts.profile.flareStartPct;
+    const minStep = opts.profile.minStepWidth;
+
+    if (widest === torso) {
+      add('flare', 'pass', 'Straight silhouette, no flare to judge');
+    } else if (opts.profile.bodyFlare === 'none') {
+      // Measured, not asserted: every stepped robe came out at aspect 0.49-0.59
+      // and read as a barrel, while the straight figures sit at 0.40-0.44 and
+      // read as people. The ladder's proportions have no width to spare, so the
+      // garment is conveyed in paint.
+      add(
+        'flare',
+        'warn',
+        `The body widens ${torso} to ${widest} on its way down. This style does not ` +
+          'build flared garments — the width pushes the silhouette out of proportion ' +
+          'and it reads as a plinth or a barrel. Keep the body a straight prism and ' +
+          'paint the robe instead: vertical bands of a darker and a lighter shade of ' +
+          'the garment colour read as folds, with a darker band at the hem.',
+      );
+    } else {
+      // The highest row still wider than the torso is where the drape begins.
+      let begins = 0;
+      for (let y = 0; y < bodyRows; y++) if (widths[y] > torso) begins = y;
+      const beginsPct = Math.round(((begins + 1) / bodyRows) * 100);
+      const rungs = [...new Set(filled)].sort((a, b) => a - b);
+      const steps: number[] = [];
+      for (let i = 1; i < rungs.length; i++) steps.push(rungs[i] - rungs[i - 1]);
+      const meanStep = steps.length > 0 ? Math.min(...steps) : 0;
+
+      const problems: string[] = [];
+      if (beginsPct < startPct) {
+        problems.push(
+          `it only starts at ${beginsPct}% of the body height and should start at ` +
+            `${startPct}% or higher — a garment widens from the waist, not from the ankles`,
+        );
+      }
+      if (steps.length < 2) {
+        problems.push(
+          'it gets there in one step, and one step is a ledge — spread it over two ' +
+            'or more so the silhouette slopes',
+        );
+      }
+      if (meanStep > 0 && meanStep < minStep) {
+        problems.push(
+          `its narrowest step changes the width by ${meanStep}, under the ${minStep} ` +
+            'minimum — a 2-voxel step leaves a one-voxel band of the brightest value ' +
+            'on the model, which reads as a stray line rather than as form',
+        );
+      }
+
+      if (problems.length === 0) {
+        add(
+          'flare',
+          'pass',
+          `Flare begins at ${beginsPct}% over ${steps.length} steps (${rungs.join(' to ')})`,
+        );
+      } else {
+        add(
+          'flare',
+          'warn',
+          `The silhouette widens ${rungs.join(' to ')} but ${problems.join('; and ')}.`,
+        );
+      }
+    }
   }
 
   const maxAxis = Math.max(grid.sx, grid.sy, grid.sz);

@@ -1,0 +1,447 @@
+{
+  "name": "pr_1",
+  "kind": "character",
+  "root": "body",
+  "parts": [
+    {
+      "id": "body",
+      "size": [
+        12,
+        27,
+        12
+      ],
+      "color": "#234d34"
+    },
+    {
+      "id": "hood",
+      "size": [
+        12,
+        3,
+        12
+      ],
+      "color": "#1a3527",
+      "parent": "body",
+      "anchor": {
+        "to": "top",
+        "alignX": "center",
+        "alignZ": "center"
+      },
+      "offset": [
+        0,
+        -1,
+        0
+      ],
+      "shape": "box"
+    }
+  ],
+  "details": [
+    {
+      "id": "head_fill",
+      "part": "body",
+      "region": [
+        0,
+        18,
+        0,
+        11,
+        26,
+        11
+      ],
+      "color": "#d9a066"
+    },
+    {
+      "id": "collar",
+      "part": "body",
+      "region": [
+        0,
+        16,
+        0,
+        11,
+        17,
+        11
+      ],
+      "color": "#e8dcc4"
+    },
+    {
+      "id": "brow",
+      "part": "body",
+      "region": [
+        3,
+        23,
+        11,
+        8,
+        23,
+        11
+      ],
+      "color": "#5c4028"
+    },
+    {
+      "id": "eyes",
+      "part": "body",
+      "region": [
+        3,
+        20,
+        11,
+        4,
+        21,
+        11
+      ],
+      "color": "#241a12",
+      "mirror": true
+    },
+    {
+      "id": "mouth",
+      "part": "body",
+      "region": [
+        4,
+        18,
+        11,
+        7,
+        18,
+        11
+      ],
+      "color": "#6b3a2a"
+    },
+    {
+      "id": "robe_fold_dark_a",
+      "part": "body",
+      "region": [
+        1,
+        1,
+        11,
+        2,
+        15,
+        11
+      ],
+      "color": "#0f2b1c"
+    },
+    {
+      "id": "robe_fold_dark_b",
+      "part": "body",
+      "region": [
+        5,
+        2,
+        11,
+        6,
+        14,
+        11
+      ],
+      "color": "#0f2b1c"
+    },
+    {
+      "id": "robe_fold_light",
+      "part": "body",
+      "region": [
+        9,
+        1,
+        11,
+        10,
+        15,
+        11
+      ],
+      "color": "#3d7a54"
+    },
+    {
+      "id": "sleeve_r",
+      "part": "body",
+      "region": [
+        9,
+        3,
+        0,
+        11,
+        14,
+        11
+      ],
+      "color": "#0f2b1c",
+      "mirror": true
+    },
+    {
+      "id": "waist_belt",
+      "part": "body",
+      "region": [
+        0,
+        5,
+        0,
+        11,
+        5,
+        11
+      ],
+      "color": "#a97142"
+    },
+    {
+      "id": "chest_clasp",
+      "part": "body",
+      "region": [
+        4,
+        10,
+        11,
+        7,
+        14,
+        11
+      ],
+      "color": "#c9975a"
+    },
+    {
+      "id": "hem",
+      "part": "body",
+      "region": [
+        0,
+        0,
+        0,
+        11,
+        1,
+        11
+      ],
+      "color": "#0f2417"
+    },
+    {
+      "id": "collar_trim",
+      "part": "body",
+      "region": [
+        0,
+        15,
+        0,
+        11,
+        15,
+        11
+      ],
+      "color": "#a97142"
+    },
+    {
+      "id": "hood_trim",
+      "part": "hood",
+      "region": [
+        0,
+        0,
+        0,
+        11,
+        0,
+        11
+      ],
+      "color": "#a97142"
+    }
+  ],
+  "meta": {
+    "genSpec": {
+      "name": "pr_1",
+      "kind": "character",
+      "root": {
+        "id": "body",
+        "size": [
+          12,
+          27,
+          12
+        ],
+        "color": "#234d34"
+      },
+      "parts": [
+        {
+          "id": "hood",
+          "size": [
+            12,
+            3,
+            12
+          ],
+          "color": "#1a3527",
+          "parent": "body",
+          "anchor": {
+            "to": "top",
+            "alignX": "center",
+            "alignZ": "center"
+          },
+          "offset": [
+            0,
+            -1,
+            0
+          ],
+          "shape": "box"
+        }
+      ],
+      "details": [
+        {
+          "id": "head_fill",
+          "part": "body",
+          "region": [
+            0,
+            18,
+            0,
+            11,
+            26,
+            11
+          ],
+          "color": "#d9a066"
+        },
+        {
+          "id": "collar",
+          "part": "body",
+          "region": [
+            0,
+            16,
+            0,
+            11,
+            17,
+            11
+          ],
+          "color": "#e8dcc4"
+        },
+        {
+          "id": "brow",
+          "part": "body",
+          "region": [
+            3,
+            23,
+            11,
+            8,
+            23,
+            11
+          ],
+          "color": "#5c4028"
+        },
+        {
+          "id": "eyes",
+          "part": "body",
+          "region": [
+            3,
+            20,
+            11,
+            4,
+            21,
+            11
+          ],
+          "color": "#241a12",
+          "mirror": true
+        },
+        {
+          "id": "mouth",
+          "part": "body",
+          "region": [
+            4,
+            18,
+            11,
+            7,
+            18,
+            11
+          ],
+          "color": "#6b3a2a"
+        },
+        {
+          "id": "robe_fold_dark_a",
+          "part": "body",
+          "region": [
+            1,
+            1,
+            11,
+            2,
+            15,
+            11
+          ],
+          "color": "#0f2b1c"
+        },
+        {
+          "id": "robe_fold_dark_b",
+          "part": "body",
+          "region": [
+            5,
+            2,
+            11,
+            6,
+            14,
+            11
+          ],
+          "color": "#0f2b1c"
+        },
+        {
+          "id": "robe_fold_light",
+          "part": "body",
+          "region": [
+            9,
+            1,
+            11,
+            10,
+            15,
+            11
+          ],
+          "color": "#3d7a54"
+        },
+        {
+          "id": "sleeve_r",
+          "part": "body",
+          "region": [
+            9,
+            3,
+            0,
+            11,
+            14,
+            11
+          ],
+          "color": "#0f2b1c",
+          "mirror": true
+        },
+        {
+          "id": "waist_belt",
+          "part": "body",
+          "region": [
+            0,
+            5,
+            0,
+            11,
+            5,
+            11
+          ],
+          "color": "#a97142"
+        },
+        {
+          "id": "chest_clasp",
+          "part": "body",
+          "region": [
+            4,
+            10,
+            11,
+            7,
+            14,
+            11
+          ],
+          "color": "#c9975a"
+        },
+        {
+          "id": "hem",
+          "part": "body",
+          "region": [
+            0,
+            0,
+            0,
+            11,
+            1,
+            11
+          ],
+          "color": "#0f2417"
+        },
+        {
+          "id": "collar_trim",
+          "part": "body",
+          "region": [
+            0,
+            15,
+            0,
+            11,
+            15,
+            11
+          ],
+          "color": "#a97142"
+        },
+        {
+          "id": "hood_trim",
+          "part": "hood",
+          "region": [
+            0,
+            0,
+            0,
+            11,
+            0,
+            11
+          ],
+          "color": "#a97142"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,473 @@
+{
+  "name": "t_robot2",
+  "kind": "character",
+  "root": "body",
+  "parts": [
+    {
+      "id": "body",
+      "size": [
+        12,
+        26,
+        12
+      ],
+      "color": "#6b3f22"
+    },
+    {
+      "id": "vent",
+      "size": [
+        4,
+        5,
+        4
+      ],
+      "color": "#4a3a2c",
+      "parent": "body",
+      "anchor": {
+        "to": "top",
+        "alignX": "center",
+        "alignZ": "center"
+      },
+      "offset": [
+        0,
+        -1,
+        0
+      ],
+      "shape": "cylinder"
+    },
+    {
+      "id": "shoulder_r",
+      "size": [
+        2,
+        5,
+        10
+      ],
+      "color": "#4a3a2c",
+      "parent": "body",
+      "anchor": {
+        "to": "right",
+        "alignY": "max",
+        "alignZ": "center"
+      },
+      "offset": [
+        -1,
+        -5,
+        0
+      ],
+      "shape": "box"
+    },
+    {
+      "id": "shoulder_l",
+      "mirrorOf": "shoulder_r"
+    }
+  ],
+  "details": [
+    {
+      "id": "head_fill",
+      "part": "body",
+      "region": [
+        0,
+        17,
+        0,
+        11,
+        25,
+        11
+      ],
+      "color": "#8a5a35"
+    },
+    {
+      "id": "collar_seam",
+      "part": "body",
+      "region": [
+        0,
+        16,
+        0,
+        11,
+        16,
+        11
+      ],
+      "color": "#2e2015"
+    },
+    {
+      "id": "eye_glow",
+      "part": "body",
+      "region": [
+        3,
+        20,
+        11,
+        4,
+        21,
+        11
+      ],
+      "color": "#ff8c1a",
+      "mirror": true
+    },
+    {
+      "id": "brow_plate",
+      "part": "body",
+      "region": [
+        2,
+        23,
+        11,
+        9,
+        23,
+        11
+      ],
+      "color": "#4a3a2c"
+    },
+    {
+      "id": "vent_grille",
+      "part": "body",
+      "region": [
+        4,
+        18,
+        11,
+        7,
+        18,
+        11
+      ],
+      "color": "#2e2015"
+    },
+    {
+      "id": "chest_plate",
+      "part": "body",
+      "region": [
+        2,
+        10,
+        11,
+        9,
+        14,
+        11
+      ],
+      "color": "#b0763f"
+    },
+    {
+      "id": "chest_rivets",
+      "part": "body",
+      "region": [
+        2,
+        11,
+        11,
+        2,
+        13,
+        11
+      ],
+      "color": "#d98f3b",
+      "mirror": true
+    },
+    {
+      "id": "rust_drip",
+      "part": "body",
+      "region": [
+        5,
+        6,
+        11,
+        6,
+        15,
+        11
+      ],
+      "color": "#3b2a1f"
+    },
+    {
+      "id": "side_shadow",
+      "part": "body",
+      "region": [
+        0,
+        6,
+        0,
+        0,
+        15,
+        3
+      ],
+      "color": "#1c130d",
+      "mirror": true
+    },
+    {
+      "id": "waist_seam",
+      "part": "body",
+      "region": [
+        0,
+        5,
+        0,
+        11,
+        5,
+        11
+      ],
+      "color": "#2e2015"
+    },
+    {
+      "id": "leg_trim",
+      "part": "body",
+      "region": [
+        0,
+        3,
+        0,
+        11,
+        3,
+        11
+      ],
+      "color": "#d98f3b"
+    },
+    {
+      "id": "foot_band",
+      "part": "body",
+      "region": [
+        0,
+        0,
+        0,
+        11,
+        2,
+        11
+      ],
+      "color": "#3b2a1f"
+    },
+    {
+      "id": "vent_trim",
+      "part": "vent",
+      "region": [
+        0,
+        0,
+        0,
+        3,
+        0,
+        3
+      ],
+      "color": "#d98f3b"
+    }
+  ],
+  "meta": {
+    "genSpec": {
+      "name": "t_robot2",
+      "kind": "character",
+      "root": {
+        "id": "body",
+        "size": [
+          12,
+          26,
+          12
+        ],
+        "color": "#6b3f22"
+      },
+      "parts": [
+        {
+          "id": "vent",
+          "size": [
+            4,
+            5,
+            4
+          ],
+          "color": "#4a3a2c",
+          "parent": "body",
+          "anchor": {
+            "to": "top",
+            "alignX": "center",
+            "alignZ": "center"
+          },
+          "offset": [
+            0,
+            -1,
+            0
+          ],
+          "shape": "cylinder"
+        },
+        {
+          "id": "shoulder_r",
+          "size": [
+            2,
+            5,
+            10
+          ],
+          "color": "#4a3a2c",
+          "parent": "body",
+          "anchor": {
+            "to": "right",
+            "alignY": "max",
+            "alignZ": "center"
+          },
+          "offset": [
+            -1,
+            -5,
+            0
+          ],
+          "shape": "box"
+        },
+        {
+          "id": "shoulder_l",
+          "mirrorOf": "shoulder_r"
+        }
+      ],
+      "details": [
+        {
+          "id": "head_fill",
+          "part": "body",
+          "region": [
+            0,
+            17,
+            0,
+            11,
+            25,
+            11
+          ],
+          "color": "#8a5a35"
+        },
+        {
+          "id": "collar_seam",
+          "part": "body",
+          "region": [
+            0,
+            16,
+            0,
+            11,
+            16,
+            11
+          ],
+          "color": "#2e2015"
+        },
+        {
+          "id": "eye_glow",
+          "part": "body",
+          "region": [
+            3,
+            20,
+            11,
+            4,
+            21,
+            11
+          ],
+          "color": "#ff8c1a",
+          "mirror": true
+        },
+        {
+          "id": "brow_plate",
+          "part": "body",
+          "region": [
+            2,
+            23,
+            11,
+            9,
+            23,
+            11
+          ],
+          "color": "#4a3a2c"
+        },
+        {
+          "id": "vent_grille",
+          "part": "body",
+          "region": [
+            4,
+            18,
+            11,
+            7,
+            18,
+            11
+          ],
+          "color": "#2e2015"
+        },
+        {
+          "id": "chest_plate",
+          "part": "body",
+          "region": [
+            2,
+            10,
+            11,
+            9,
+            14,
+            11
+          ],
+          "color": "#b0763f"
+        },
+        {
+          "id": "chest_rivets",
+          "part": "body",
+          "region": [
+            2,
+            11,
+            11,
+            2,
+            13,
+            11
+          ],
+          "color": "#d98f3b",
+          "mirror": true
+        },
+        {
+          "id": "rust_drip",
+          "part": "body",
+          "region": [
+            5,
+            6,
+            11,
+            6,
+            15,
+            11
+          ],
+          "color": "#3b2a1f"
+        },
+        {
+          "id": "side_shadow",
+          "part": "body",
+          "region": [
+            0,
+            6,
+            0,
+            0,
+            15,
+            3
+          ],
+          "color": "#1c130d",
+          "mirror": true
+        },
+        {
+          "id": "waist_seam",
+          "part": "body",
+          "region": [
+            0,
+            5,
+            0,
+            11,
+            5,
+            11
+          ],
+          "color": "#2e2015"
+        },
+        {
+          "id": "leg_trim",
+          "part": "body",
+          "region": [
+            0,
+            3,
+            0,
+            11,
+            3,
+            11
+          ],
+          "color": "#d98f3b"
+        },
+        {
+          "id": "foot_band",
+          "part": "body",
+          "region": [
+            0,
+            0,
+            0,
+            11,
+            2,
+            11
+          ],
+          "color": "#3b2a1f"
+        },
+        {
+          "id": "vent_trim",
+          "part": "vent",
+          "region": [
+            0,
+            0,
+            0,
+            3,
+            0,
+            3
+          ],
+          "color": "#d98f3b"
+        }
+      ]
+    }
+  }
+}

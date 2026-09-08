@@ -1,0 +1,467 @@
+{
+  "name": "t_wizard",
+  "kind": "character",
+  "root": "body",
+  "parts": [
+    {
+      "id": "body",
+      "size": [
+        12,
+        26,
+        12
+      ],
+      "color": "#362f7a"
+    },
+    {
+      "id": "hat_brim",
+      "size": [
+        16,
+        2,
+        16
+      ],
+      "color": "#1c1650",
+      "parent": "body",
+      "anchor": {
+        "to": "top",
+        "alignX": "center",
+        "alignZ": "center"
+      },
+      "offset": [
+        0,
+        -1,
+        0
+      ],
+      "shape": "box"
+    },
+    {
+      "id": "hat_cone",
+      "size": [
+        12,
+        8,
+        12
+      ],
+      "color": "#2e2585",
+      "parent": "hat_brim",
+      "anchor": {
+        "to": "top",
+        "alignX": "center",
+        "alignZ": "center"
+      },
+      "offset": [
+        0,
+        -1,
+        0
+      ],
+      "shape": "cone"
+    }
+  ],
+  "details": [
+    {
+      "id": "head_fill",
+      "part": "body",
+      "region": [
+        0,
+        17,
+        0,
+        11,
+        25,
+        11
+      ],
+      "color": "#e0ac69"
+    },
+    {
+      "id": "collar",
+      "part": "body",
+      "region": [
+        0,
+        16,
+        0,
+        11,
+        16,
+        11
+      ],
+      "color": "#d9d2c5"
+    },
+    {
+      "id": "brow",
+      "part": "body",
+      "region": [
+        3,
+        23,
+        11,
+        8,
+        23,
+        11
+      ],
+      "color": "#6b4a2f"
+    },
+    {
+      "id": "eyes",
+      "part": "body",
+      "region": [
+        3,
+        21,
+        11,
+        4,
+        22,
+        11
+      ],
+      "color": "#1b1b1f",
+      "mirror": true
+    },
+    {
+      "id": "beard",
+      "part": "body",
+      "region": [
+        4,
+        18,
+        11,
+        7,
+        19,
+        11
+      ],
+      "color": "#e8e4da"
+    },
+    {
+      "id": "belt",
+      "part": "body",
+      "region": [
+        0,
+        7,
+        0,
+        11,
+        8,
+        11
+      ],
+      "color": "#c9a227"
+    },
+    {
+      "id": "arm",
+      "part": "body",
+      "region": [
+        10,
+        2,
+        11,
+        11,
+        14,
+        11
+      ],
+      "color": "#221c52",
+      "mirror": true
+    },
+    {
+      "id": "hem",
+      "part": "body",
+      "region": [
+        0,
+        0,
+        0,
+        11,
+        1,
+        11
+      ],
+      "color": "#221c52"
+    },
+    {
+      "id": "star_chest",
+      "part": "body",
+      "region": [
+        5,
+        10,
+        11,
+        6,
+        11,
+        11
+      ],
+      "color": "#f4e04d"
+    },
+    {
+      "id": "star_side_r",
+      "part": "body",
+      "region": [
+        8,
+        13,
+        11,
+        9,
+        14,
+        11
+      ],
+      "color": "#f4e04d",
+      "mirror": true
+    },
+    {
+      "id": "star_low",
+      "part": "body",
+      "region": [
+        3,
+        3,
+        11,
+        4,
+        4,
+        11
+      ],
+      "color": "#f4e04d",
+      "mirror": true
+    },
+    {
+      "id": "hat_star",
+      "part": "hat_cone",
+      "region": [
+        5,
+        4,
+        11,
+        6,
+        5,
+        11
+      ],
+      "color": "#f4e04d"
+    },
+    {
+      "id": "brim_trim",
+      "part": "hat_brim",
+      "region": [
+        0,
+        0,
+        0,
+        15,
+        0,
+        15
+      ],
+      "color": "#c9a227"
+    }
+  ],
+  "meta": {
+    "genSpec": {
+      "name": "t_wizard",
+      "kind": "character",
+      "root": {
+        "id": "body",
+        "size": [
+          12,
+          26,
+          12
+        ],
+        "color": "#362f7a"
+      },
+      "parts": [
+        {
+          "id": "hat_brim",
+          "size": [
+            16,
+            2,
+            16
+          ],
+          "color": "#1c1650",
+          "parent": "body",
+          "anchor": {
+            "to": "top",
+            "alignX": "center",
+            "alignZ": "center"
+          },
+          "offset": [
+            0,
+            -1,
+            0
+          ],
+          "shape": "box"
+        },
+        {
+          "id": "hat_cone",
+          "size": [
+            12,
+            8,
+            12
+          ],
+          "color": "#2e2585",
+          "parent": "hat_brim",
+          "anchor": {
+            "to": "top",
+            "alignX": "center",
+            "alignZ": "center"
+          },
+          "offset": [
+            0,
+            -1,
+            0
+          ],
+          "shape": "cone"
+        }
+      ],
+      "details": [
+        {
+          "id": "head_fill",
+          "part": "body",
+          "region": [
+            0,
+            17,
+            0,
+            11,
+            25,
+            11
+          ],
+          "color": "#e0ac69"
+        },
+        {
+          "id": "collar",
+          "part": "body",
+          "region": [
+            0,
+            16,
+            0,
+            11,
+            16,
+            11
+          ],
+          "color": "#d9d2c5"
+        },
+        {
+          "id": "brow",
+          "part": "body",
+          "region": [
+            3,
+            23,
+            11,
+            8,
+            23,
+            11
+          ],
+          "color": "#6b4a2f"
+        },
+        {
+          "id": "eyes",
+          "part": "body",
+          "region": [
+            3,
+            21,
+            11,
+            4,
+            22,
+            11
+          ],
+          "color": "#1b1b1f",
+          "mirror": true
+        },
+        {
+          "id": "beard",
+          "part": "body",
+          "region": [
+            4,
+            18,
+            11,
+            7,
+            19,
+            11
+          ],
+          "color": "#e8e4da"
+        },
+        {
+          "id": "belt",
+          "part": "body",
+          "region": [
+            0,
+            7,
+            0,
+            11,
+            8,
+            11
+          ],
+          "color": "#c9a227"
+        },
+        {
+          "id": "arm",
+          "part": "body",
+          "region": [
+            10,
+            2,
+            11,
+            11,
+            14,
+            11
+          ],
+          "color": "#221c52",
+          "mirror": true
+        },
+        {
+          "id": "hem",
+          "part": "body",
+          "region": [
+            0,
+            0,
+            0,
+            11,
+            1,
+            11
+          ],
+          "color": "#221c52"
+        },
+        {
+          "id": "star_chest",
+          "part": "body",
+          "region": [
+            5,
+            10,
+            11,
+            6,
+            11,
+            11
+          ],
+          "color": "#f4e04d"
+        },
+        {
+          "id": "star_side_r",
+          "part": "body",
+          "region": [
+            8,
+            13,
+            11,
+            9,
+            14,
+            11
+          ],
+          "color": "#f4e04d",
+          "mirror": true
+        },
+        {
+          "id": "star_low",
+          "part": "body",
+          "region": [
+            3,
+            3,
+            11,
+            4,
+            4,
+            11
+          ],
+          "color": "#f4e04d",
+          "mirror": true
+        },
+        {
+          "id": "hat_star",
+          "part": "hat_cone",
+          "region": [
+            5,
+            4,
+            11,
+            6,
+            5,
+            11
+          ],
+          "color": "#f4e04d"
+        },
+        {
+          "id": "brim_trim",
+          "part": "hat_brim",
+          "region": [
+            0,
+            0,
+            0,
+            15,
+            0,
+            15
+          ],
+          "color": "#c9a227"
+        }
+      ]
+    }
+  }
+}
